@@ -1,0 +1,18 @@
+/*
+Theme Name: wos-furnace-core
+Theme URI: https://howasaba-code.com
+Author: Antigravity
+Author URI: https://howasaba-code.com
+Description: A custom WordPress theme with a Tech/Cyberpunk aesthetic, using Tailwind CSS.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: wos-furnace-core
+Tags: dark, tech, tailwind, custom
+*/
+
+/* 
+ * Usage:
+ * This theme relies on Tailwind CSS via CDN for styling.
+ * Custom styles can be added here if necessary, but utility classes are preferred.
+ */
