@@ -5,6 +5,29 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
 
+    <?php
+    // OGP Settings
+    $og_title = is_front_page() ? get_bloginfo('name') : get_the_title() . ' | ' . get_bloginfo('name');
+    $og_url   = get_permalink();
+    $og_desc  = is_single() ? get_the_excerpt() : get_bloginfo('description');
+    $og_image = get_template_directory_uri() . '/screenshot.png'; // Default image
+
+    if ( has_post_thumbnail() ) {
+        $og_image = get_the_post_thumbnail_url(null, 'large');
+    }
+    ?>
+    <meta property="og:title" content="<?php echo esc_attr($og_title); ?>" />
+    <meta property="og:type" content="<?php echo is_single() ? 'article' : 'website'; ?>" />
+    <meta property="og:url" content="<?php echo esc_url($og_url); ?>" />
+    <meta property="og:image" content="<?php echo esc_url($og_image); ?>" />
+    <meta property="og:description" content="<?php echo esc_attr($og_desc); ?>" />
+    <meta property="og:site_name" content="<?php bloginfo('name'); ?>" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="<?php echo esc_attr($og_title); ?>" />
+    <meta name="twitter:description" content="<?php echo esc_attr($og_desc); ?>" />
+    <meta name="twitter:image" content="<?php echo esc_url($og_image); ?>" />
+
 	<!-- Tailwind CSS CDN -->
 	<script src="https://cdn.tailwindcss.com"></script>
 	<script>
@@ -73,7 +96,7 @@
 						'theme_location' => 'menu-1',
 						'menu_id'        => 'primary-menu',
                         'container'      => false,
-                        'menu_class'     => 'flex gap-6 text-sm font-medium',
+                        'menu_class'     => 'flex gap-6 text-sm font-medium text-white', // Added text-white
                         'fallback_cb'    => false,
 					)
 				);
