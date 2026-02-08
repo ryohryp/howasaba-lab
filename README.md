@@ -1,73 +1,48 @@
-# React + TypeScript + Vite
+# wos-furnace-core
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+WordPress Theme for "howasaba-code.com" (Server Core Design).
+Designed with a "Tech/Cyberpunk" aesthetic using Tailwind CSS (CDN).
 
-Currently, two official plugins are available:
+## デプロイ設定 (GitHub Actions)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+このリポジトリは `main` ブランチへのプッシュ時に Xserver へ自動デプロイするように設定されています。
 
-## React Compiler
+### 1. GitHub Secrets の設定
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+リポジトリの **Settings > Secrets and variables > Actions** に以下のシークレットを登録してください。
 
-## Expanding the ESLint configuration
+| Secret Name | Description | Example Value |
+|---|---|---|
+| `FTP_SERVER` | FTPホスト名 (Xserver) | `sv****.xserver.jp` |
+| `FTP_USERNAME` | FTPユーザー名 | `your_username` |
+| `FTP_PASSWORD` | FTPパスワード | `your_password` |
+| `SERVER_DIR` | アップロード先ディレクトリ | `/your-domain.com/public_html/wp-content/themes/wos-furnace-core/` |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+> [!IMPORTANT]
+> `SERVER_DIR` は必ず末尾にスラッシュ `/` を付けてください。
+> パスはXserverのFTPルートからの絶対パス、またはFTPアカウントのルートからの相対パスに合わせてください。
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## WordPress 側の準備
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### テーマのインストール
+自動デプロイが成功すると、Xserver上の指定ディレクトリにテーマファイルが転送されます。
+- 基本的に `FTP-Deploy-Action` は存在しないディレクトリを自動生成しようとしますが、権限エラー等を防ぐため、初回のみ **FTPソフト等で `wos-furnace-core` フォルダを手動作成** しておくことを推奨します。
+- テーマ一覧に「wos-furnace-core」が表示されたら有効化してください。
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### ツールページのセットアップ
+`https://wos-navi.vercel.app/` を埋め込むための固定ページを作成します。
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. WordPress管理画面で **固定ページ > 新規追加** をクリック。
+2. タイトルに「ツール」など任意の名前を入力。
+3. 右側のサイドバー「ページ設定」または「テンプレート」セクションで、**テンプレート: Tools Page** を選択。
+    - ※ ブロックエディタの場合は「テンプレート」パネルで切り替えます。
+4. 本文は空のままでOKです。
+5. 「公開」をクリック。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### トップページの設定
+独自の「SERVER AGE」ヒーローセクションを表示するためには:
+1. WordPress管理画面で **設定 > 表示設定** をクリック。
+2. 「ホームページの表示」で「**固定ページ**」を選択する場合:
+   - 専用のトップページ用固定ページを作成し、テンプレート（またはデフォルト）を適用します。
+   - `front-page.php` が存在するため、WordPressの表示設定に関わらず、サイトのルートURLにアクセスするとこのテンプレートが優先的に使用される場合があります（設定によります）。
+   - 確実に適用するには、表示設定で「最新の投稿」のままでも `front-page.php` が優先されます。

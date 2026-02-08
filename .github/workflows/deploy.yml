@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./wos-furnace-core/
-          server-dir: /wp-content/themes/wos-furnace-core/
+          server-dir: ${{ secrets.SERVER_DIR }}
           exclude: |
             **/.git*
             **/.git*/**
