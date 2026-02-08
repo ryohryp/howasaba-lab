@@ -7,7 +7,17 @@ Version: 1.0.1
 */
 
 /* 
- * Usage:
  * This theme relies on Tailwind CSS via CDN for styling.
  * Custom styles can be added here if necessary, but utility classes are preferred.
  */
+
+/* Global Navigation Styles */
+#global-nav li a {
+    color: #FFFFFF !important;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+#global-nav li a:hover {
+    color: #00FFFF !important;
+}

@@ -43,7 +43,7 @@ function wos_furnace_core_setup() {
 	// Register Navigation Menus
 	register_nav_menus(
 		array(
-			'menu-1' => esc_html__( 'Primary', 'wos-furnace-core' ),
+			'global-nav' => esc_html__( 'Global Navigation', 'wos-furnace-core' ),
 		)
 	);
 }

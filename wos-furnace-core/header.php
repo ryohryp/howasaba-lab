@@ -93,10 +93,10 @@
 				<?php
 				wp_nav_menu(
 					array(
-						'theme_location' => 'menu-1',
-						'menu_id'        => 'primary-menu',
+						'theme_location' => 'global-nav',
+						'menu_id'        => 'global-nav',
                         'container'      => false,
-                        'menu_class'     => 'flex gap-6 text-sm font-medium text-white', // Added text-white
+                        'menu_class'     => 'flex gap-6 text-sm font-medium', // text-white and hover:text-accent will be handled by CSS/Tailwind
                         'fallback_cb'    => false,
 					)
 				);
