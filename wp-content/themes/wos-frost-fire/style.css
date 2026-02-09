@@ -1,0 +1,17 @@
+/*
+Theme Name: WOS Frost & Fire
+Theme URI: https://example.com/wos-frost-fire
+Author: Antigravity
+Author URI: https://example.com
+Description: A Whiteout Survival inspired immersive theme with glassmorphism and frost effects. Optimized for Xserver.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: wos-frost-fire
+Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-comments, translation-ready
+*/
+
+/* 
+ * Main styles are handled by Tailwind CSS via Vite build process.
+ * Do not add styles here directly.
+ */

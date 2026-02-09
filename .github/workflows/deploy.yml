@@ -6,26 +6,38 @@ on:
       - main
 
 jobs:
-  deploy:
-    name: Deploy
+  web-deploy:
+    name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      - name: FTP Deploy
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'wp-content/themes/wos-frost-fire/package-lock.json'
+
+      - name: 📦 Install Dependencies
+        working-directory: ./wp-content/themes/wos-frost-fire
+        run: npm ci
+
+      - name: 🏗️ Build Assets
+        working-directory: ./wp-content/themes/wos-frost-fire
+        run: npm run build
+
+      - name: 📂 Sync files (FTP)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          dry-run: false
-          log-level: verbose
-          local-dir: ./wos-furnace-core/
-          server-dir: ${{ secrets.SERVER_DIR }}
+          local-dir: ./wp-content/themes/wos-frost-fire/
+          server-dir: /your-domain.com/public_html/wp-content/themes/wos-frost-fire/
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
-            README.md
-            **/.DS_Store
+            **/src/**
