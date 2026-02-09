@@ -1,79 +1,87 @@
 <?php
 /**
- * WOS Frost & Fire functions and definitions
+ * WoS Frost & Fire functions and definitions
  *
- * @package WOS_Frost_Fire
+ * @package WoS_Frost_Fire
  */
 
-if ( ! defined( 'WOS_VERSION' ) ) {
-	// Version for cache busting
-	define( 'WOS_VERSION', '1.0.0' );
+if ( ! defined( 'WOS_THEME_VERSION' ) ) {
+    // Replace the version number of the theme on each release.
+    define( 'WOS_THEME_VERSION', '1.0.0' );
 }
+
+if ( ! defined( 'WOS_TEXT_DOMAIN' ) ) {
+    define( 'WOS_TEXT_DOMAIN', 'wos-frost-fire' );
+}
+
+/**
+ * Sets up theme defaults and registers support for various WordPress features.
+ */
+function wos_frost_fire_setup() {
+    // Add default posts and comments RSS feed links to head.
+    add_theme_support( 'automatic-feed-links' );
+
+    // Let WordPress manage the document title.
+    add_theme_support( 'title-tag' );
+
+    // Enable support for Post Thumbnails on posts and pages.
+    add_theme_support( 'post-thumbnails' );
+
+    // This theme uses wp_nav_menu() in one location.
+    register_nav_menus(
+        [
+            'menu-1' => esc_html__( 'Primary', WOS_TEXT_DOMAIN ),
+        ]
+    );
+
+    /*
+     * Switch default core markup for search form, comment form, and comments
+     * to output valid HTML5.
+     */
+    add_theme_support(
+        'html5',
+        [
+            'search-form',
+            'comment-form',
+            'comment-list',
+            'gallery',
+            'caption',
+            'style',
+            'script',
+        ]
+    );
+}
+add_action( 'after_setup_theme', 'wos_frost_fire_setup' );
 
 /**
  * Enqueue scripts and styles.
  */
-function wos_scripts() {
-    // Vite integration
-    $vite_env = 'production'; // Change to 'development' for local dev with HMR
-    $dist_path = get_template_directory_uri() . '/dist';
-    $dist_dir = get_template_directory() . '/dist';
+function wos_frost_fire_scripts() {
+    // Enqueue compiled CSS (from Vite build)
+    // Adjust path based on your Vite output structure
+    wp_enqueue_style( 'wos-frost-fire-style', get_template_directory_uri() . '/assets/css/app.css', [], WOS_THEME_VERSION );
 
-    if ( defined( 'WP_ENVIRONMENT_TYPE' ) && 'local' === WP_ENVIRONMENT_TYPE ) {
-        $vite_env = 'development';
-    }
+    // Enqueue Alpine.js (CDN for development, local for production recommended)
+    wp_enqueue_script( 'alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js', [], '3.x.x', true );
 
-    if ( $vite_env === 'development' ) {
-        // Vite Dev Server
-        wp_enqueue_script( 'wos-vite-client', 'http://localhost:5173/@vite/client', array(), null, true );
-        wp_enqueue_script( 'wos-app', 'http://localhost:5173/assets/js/app.js', array('wos-vite-client'), null, true );
-        // CSS is injected by Vite in dev mode
-    } else {
-        // Production build
-        $manifest_path = $dist_dir . '/.vite/manifest.json';
-        if ( file_exists( $manifest_path ) ) {
-            $manifest = json_decode( file_get_contents( $manifest_path ), true );
-            
-            // CSS
-            if ( isset( $manifest['assets/js/app.js']['css'] ) ) {
-                foreach ( $manifest['assets/js/app.js']['css'] as $css_file ) {
-                    wp_enqueue_style( 'wos-app-style', $dist_path . '/' . $css_file, array(), WOS_VERSION );
-                }
-            }
-            
-            // JS
-            if ( isset( $manifest['assets/js/app.js']['file'] ) ) {
-                wp_enqueue_script( 'wos-app', $dist_path . '/' . $manifest['assets/js/app.js']['file'], array(), WOS_VERSION, true );
-            }
-        }
-    }
+    // Enqueue Theme JS
+    wp_enqueue_script( 'wos-frost-fire-script', get_template_directory_uri() . '/assets/js/app.js', ['alpine-js'], WOS_THEME_VERSION, true );
 }
-add_action( 'wp_enqueue_scripts', 'wos_scripts' );
+add_action( 'wp_enqueue_scripts', 'wos_frost_fire_scripts' );
 
 /**
- * Theme Support
+ * Load Custom Post Types and Classes.
  */
-function wos_setup() {
-    add_theme_support( 'title-tag' );
-    add_theme_support( 'post-thumbnails' );
-    add_theme_support( 'html5', array(
-        'search-form',
-        'comment-form',
-        'comment-list',
-        'gallery',
-        'caption',
-        'style',
-        'script',
-    ) );
-    
-    register_nav_menus( array(
-        'menu-1' => esc_html__( 'Primary', 'wos-frost-fire' ),
-    ) );
-}
-add_action( 'after_setup_theme', 'wos_setup' );
+require get_template_directory() . '/inc/cpt-heroes.php';
+require get_template_directory() . '/inc/cpt-events.php';
+require get_template_directory() . '/inc/class-wos-hero-query.php';
 
 /**
- * Load Custom Post Types & Taxonomies
+ * Custom Template Tags for this theme.
  */
-require get_template_directory() . '/inc/cpt.php';
+// require get_template_directory() . '/inc/template-tags.php';
 
+/**
+ * Functions which enhance the theme by hooking into WordPress.
+ */
+// require get_template_directory() . '/inc/template-functions.php';
