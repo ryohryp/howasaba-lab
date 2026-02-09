@@ -5,7 +5,7 @@
 /* Custom Base Styles */
 @layer base {
     body {
-        @apply bg-deep-freeze text-white font-body;
+        @apply bg-deep-freeze text-white font-sans;
     }
 }
 
