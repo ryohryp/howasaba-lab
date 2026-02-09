@@ -35,7 +35,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./wp-content/themes/wos-frost-fire/
-          server-dir: /your-domain.com/public_html/wp-content/themes/wos-frost-fire/
+          server-dir: /sv16627.xserver.jp/public_html/wp-content/themes/wos-frost-fire/
           exclude: |
             **/.git*
             **/.git*/**
