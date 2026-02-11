@@ -57,7 +57,7 @@ C:\tools\php\php.exe vendor/bin/phpunit
     3. `npm run build` でアセット（CSS/JS）をビルド
 - **デプロイ**:
     - `SamKirkland/FTP-Deploy-Action` を使用して FTP でファイルを同期
-    - **同期先**: `/sv16627.xserver.jp/public_html/wp-content/themes/wos-frost-fire/`
+    - **同期先**: `/sv16627.xserver.jp/public_html/wp-content/themes/wos-furnace-core/`
     - **除外**: `.git`, `node_modules`, `src` などの開発用ファイル
 
 ### 必要な Secrets
