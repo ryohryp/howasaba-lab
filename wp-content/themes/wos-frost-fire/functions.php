@@ -95,3 +95,65 @@ require get_template_directory() . '/inc/class-wos-hero-query.php';
  * Functions which enhance the theme by hooking into WordPress.
  */
 // require get_template_directory() . '/inc/template-functions.php';
+/**
+ * Seed Hero Data (Development Helper)
+ */
+function wos_seed_heroes() {
+    // Only run if admin and triggered via specific GET param (e.g. ?seed_heroes=1)
+    if ( ! is_admin() || ! isset($_GET['seed_heroes']) ) {
+        return;
+    }
+
+    $heroes_data = [
+        // Gen 1
+        'Jeronimo' => ['gen' => 'Gen 1', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [85, 90, 80], 'day' => 1],
+        'Natalia'  => ['gen' => 'Gen 1', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [88, 85, 82], 'day' => 1],
+        'Molly'    => ['gen' => 'Gen 1', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [92, 70, 75], 'day' => 1],
+        'Zinman'   => ['gen' => 'Gen 1', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [80, 75, 78], 'day' => 1],
+        // Gen 2
+        'Flint'    => ['gen' => 'Gen 2', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [88, 95, 90], 'day' => 45],
+        'Philly'   => ['gen' => 'Gen 2', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [94, 72, 78], 'day' => 45],
+        'Alonso'   => ['gen' => 'Gen 2', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [95, 65, 70], 'day' => 45],
+        // Gen 11
+        'Rufus'    => ['gen' => 'Gen 11', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [98, 70, 75], 'day' => 600],
+        'Lloyd'    => ['gen' => 'Gen 11', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [96, 75, 80], 'day' => 600],
+        'Eleonora' => ['gen' => 'Gen 11', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [92, 95, 95], 'day' => 600],
+    ];
+
+    foreach ($heroes_data as $name => $data) {
+        $existing = get_page_by_title($name, OBJECT, 'wos_hero');
+        
+        $post_data = array(
+            'post_title'    => $name,
+            'post_content'  => "Description for $name via seeder.",
+            'post_status'   => 'publish',
+            'post_type'     => 'wos_hero',
+        );
+
+        if ($existing) {
+            $post_data['ID'] = $existing->ID;
+            $post_id = wp_update_post($post_data);
+        } else {
+            $post_id = wp_insert_post($post_data);
+        }
+
+        if ( ! is_wp_error($post_id) ) {
+            // Set Taxonomies
+            wp_set_object_terms($post_id, $data['gen'], 'hero_generation');
+            wp_set_object_terms($post_id, strtolower($data['type']), 'hero_type');
+            wp_set_object_terms($post_id, $data['rarity'], 'hero_rarity');
+
+            // Set Meta
+            update_post_meta($post_id, '_hero_unlock_day', $data['day']);
+            update_post_meta($post_id, '_hero_stats_atk', $data['stats'][0]);
+            update_post_meta($post_id, '_hero_stats_def', $data['stats'][1]);
+            update_post_meta($post_id, '_hero_stats_hp', $data['stats'][2]);
+        }
+    }
+    
+    // Add admin notice
+    add_action('admin_notices', function() {
+        echo '<div class="notice notice-success"><p>Heroes Seeded Successfully (Theme: WoS Frost & Fire)!</p></div>';
+    });
+}
+add_action('init', 'wos_seed_heroes');

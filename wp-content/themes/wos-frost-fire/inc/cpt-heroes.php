@@ -13,6 +13,9 @@ class WoS_Hero_CPT {
         add_action( 'add_meta_boxes', [ $this, 'register_meta_boxes' ] );
         add_action( 'save_post', [ $this, 'save_meta_box_data' ] );
     }
+    add_action( 'add_meta_boxes', [ $this, 'register_meta_boxes' ] );
+        add_action( 'save_post', [ $this, 'save_meta_box_data' ] );
+    }
 
     /**
      * Register Custom Post Type.
@@ -205,6 +208,17 @@ class WoS_Hero_CPT {
             }
         }
     }
+}
+
+/**
+ * Helper function to get Hero Stats
+ */
+function wos_get_hero_stats( $post_id ) {
+    return [
+        'atk' => (int) get_post_meta( $post_id, '_hero_stats_atk', true ),
+        'def' => (int) get_post_meta( $post_id, '_hero_stats_def', true ),
+        'hp'  => (int) get_post_meta( $post_id, '_hero_stats_hp', true ),
+    ];
 }
 
 new WoS_Hero_CPT();
