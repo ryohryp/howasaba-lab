@@ -47,7 +47,7 @@ get_header();
 
             </header><!-- .entry-header -->
 
-            <div class="entry-content text-gray-300 prose prose-invert prose-lg max-w-none prose-headings:text-ice-blue prose-a:text-cyan-400 hover:prose-a:text-cyan-300 prose-blockquote:border-l-ice-blue prose-blockquote:bg-white/5 prose-blockquote:py-2 prose-blockquote:px-4 prose-code:text-pink-300">
+            <div class="entry-content text-gray-300 prose prose-invert prose-lg mx-auto prose-headings:text-ice-blue prose-a:text-cyan-400 hover:prose-a:text-cyan-300 prose-blockquote:border-l-ice-blue prose-blockquote:bg-white/5 prose-blockquote:py-2 prose-blockquote:px-4 prose-code:text-pink-300">
                 <?php
                 the_content();
 
