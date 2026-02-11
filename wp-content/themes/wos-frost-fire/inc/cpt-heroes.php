@@ -144,12 +144,14 @@ class WoS_Hero_CPT {
         wp_nonce_field( 'wos_save_hero_data', 'wos_hero_meta_box_nonce' );
 
         $fields = [
-            'hero_unlock_day'  => __( 'Unlock Day (from server start)', WOS_TEXT_DOMAIN ),
-            'hero_source'      => __( 'Source (e.g. Lucky Wheel)', WOS_TEXT_DOMAIN ),
-            'hero_widget_name' => __( 'Exclusive Widget Name', WOS_TEXT_DOMAIN ),
-            'hero_stats_atk'   => __( 'ATK (0-100)', WOS_TEXT_DOMAIN ),
-            'hero_stats_def'   => __( 'DEF (0-100)', WOS_TEXT_DOMAIN ),
-            'hero_stats_hp'    => __( 'HP (0-100)', WOS_TEXT_DOMAIN ),
+            'hero_unlock_day'        => __( 'Unlock Day (from server start)', WOS_TEXT_DOMAIN ),
+            'hero_source'            => __( 'Source (e.g. Lucky Wheel)', WOS_TEXT_DOMAIN ),
+            'hero_widget_name'       => __( 'Exclusive Widget Name', WOS_TEXT_DOMAIN ),
+            'hero_stats_atk'         => __( 'ATK (0-100)', WOS_TEXT_DOMAIN ),
+            'hero_stats_def'         => __( 'DEF (0-100)', WOS_TEXT_DOMAIN ),
+            'hero_stats_hp'          => __( 'HP (0-100)', WOS_TEXT_DOMAIN ),
+            'hero_expedition_skill'  => __( 'Expedition Skill (Description)', WOS_TEXT_DOMAIN ),
+            'hero_exploration_skill' => __( 'Exploration Skill (Description)', WOS_TEXT_DOMAIN ),
         ];
 
         $values = [];
@@ -166,9 +168,15 @@ class WoS_Hero_CPT {
 
         foreach ( $fields as $key => $label ) {
             $type = ( strpos( $key, 'stats' ) !== false || strpos( $key, 'day' ) !== false ) ? 'number' : 'text';
+            $is_textarea = strpos( $key, 'skill' ) !== false;
+            
             echo '<div class="wos-meta-row">';
             echo '<label for="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</label>';
-            echo '<input type="' . $type . '" id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" value="' . esc_attr( $values[ $key ] ) . '" />';
+            if ( $is_textarea ) {
+                echo '<textarea id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" rows="3" style="width:100%; max-width:600px;">' . esc_textarea( $values[ $key ] ) . '</textarea>';
+            } else {
+                echo '<input type="' . $type . '" id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" value="' . esc_attr( $values[ $key ] ) . '" />';
+            }
             echo '</div>';
         }
     }
@@ -197,11 +205,18 @@ class WoS_Hero_CPT {
             'hero_stats_atk',
             'hero_stats_def',
             'hero_stats_hp',
+            'hero_expedition_skill',
+            'hero_exploration_skill',
         ];
 
         foreach ( $fields as $field ) {
             if ( isset( $_POST[ $field ] ) ) {
-                update_post_meta( $post_id, '_' . $field, sanitize_text_field( $_POST[ $field ] ) );
+                // Use sanitize_textarea_field for skills as they might be longer
+                if ( strpos($field, 'skill') !== false ) {
+                    update_post_meta( $post_id, '_' . $field, sanitize_textarea_field( $_POST[ $field ] ) );
+                } else {
+                    update_post_meta( $post_id, '_' . $field, sanitize_text_field( $_POST[ $field ] ) );
+                }
             }
         }
     }

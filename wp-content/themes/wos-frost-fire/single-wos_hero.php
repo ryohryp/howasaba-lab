@@ -9,11 +9,11 @@ get_header();
 
 // Get Hero Meta Data
 $hero_id = get_the_ID();
-$stats_attack = get_post_meta( $hero_id, 'stats_attack', true );
-$stats_defense = get_post_meta( $hero_id, 'stats_defense', true );
-$stats_health = get_post_meta( $hero_id, 'stats_health', true );
-$expedition_skill = get_post_meta( $hero_id, 'expedition_skill', true );
-$exploration_skill = get_post_meta( $hero_id, 'exploration_skill', true );
+$stats_attack = get_post_meta( $hero_id, '_hero_stats_atk', true );
+$stats_defense = get_post_meta( $hero_id, '_hero_stats_def', true );
+$stats_health = get_post_meta( $hero_id, '_hero_stats_hp', true );
+$expedition_skill = get_post_meta( $hero_id, '_hero_expedition_skill', true );
+$exploration_skill = get_post_meta( $hero_id, '_hero_exploration_skill', true );
 
 // Terms
 $generation = get_the_terms( $hero_id, 'hero_generation' );
