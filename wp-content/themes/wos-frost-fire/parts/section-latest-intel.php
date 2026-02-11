@@ -25,18 +25,16 @@
         if ( $latest_guides->have_posts() ) :
             while ( $latest_guides->have_posts() ) : $latest_guides->the_post();
                 ?>
-                <div class="group backdrop-blur-xl bg-white/5 border border-white/10 shadow-lg rounded-2xl p-4 hover:bg-white/10 hover:border-blue-200/30 cursor-pointer transition-all duration-300">
-                    <a href="<?php the_permalink(); ?>" class="block">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-xs font-mono text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded">GUIDE</span>
-                            <span class="text-xs text-blue-200/40"><?php echo get_the_date( 'Y.m.d' ); ?></span>
-                        </div>
-                        <h3 class="font-bold text-lg text-blue-100 mb-1 group-hover:text-white transition-colors"><?php the_title(); ?></h3>
-                        <div class="text-sm text-blue-200/60 line-clamp-2">
-                            <?php the_excerpt(); ?>
-                        </div>
-                    </a>
-                </div>
+                <a href="<?php the_permalink(); ?>" class="block group backdrop-blur-xl bg-white/5 border border-white/10 shadow-lg rounded-2xl p-4 hover:bg-white/10 hover:border-blue-200/30 cursor-pointer transition-all duration-300">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-mono text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded">GUIDE</span>
+                        <span class="text-xs text-blue-200/40"><?php echo get_the_date( 'Y.m.d' ); ?></span>
+                    </div>
+                    <h3 class="font-bold text-lg text-blue-100 mb-1 group-hover:text-white transition-colors"><?php the_title(); ?></h3>
+                    <div class="text-sm text-blue-200/60 line-clamp-2">
+                        <?php the_excerpt(); ?>
+                    </div>
+                </a>
                 <?php
             endwhile;
             wp_reset_postdata();
