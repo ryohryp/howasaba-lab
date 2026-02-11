@@ -1,0 +1,58 @@
+/*
+Theme Name: GlacialCore
+Theme URI: https://whiteoutsurvival.wiki
+Author: GlacialCore Team
+Author URI: https://whiteoutsurvival.wiki
+Description: A custom WordPress theme for Whiteout Survival strategy guide, featuring a 'Frost & Fire' design aesthetic.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: glacial-core
+Tags: custom-background, threaded-comments, translation-ready
+*/
+
+:root {
+    /* Color Palette */
+    --bg-frost: #0f172a; /* Deep Ice Blue */
+    --text-snow: #f8fafc; /* Whiteout White */
+    --accent-fire-crystal: #ff4500; /* Glowing Red/Orange */
+    --glass-panel: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    
+    /* Typography */
+    --font-main: 'Inter', sans-serif;
+    
+    /* Spacing */
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+}
+
+body {
+    background-color: var(--bg-frost);
+    color: var(--text-snow);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Utility Classes for Glassmorphism */
+.glass-panel {
+    background: var(--glass-panel);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+}
+
+/* Snow Effect Container */
+#snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
