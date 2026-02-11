@@ -42,7 +42,7 @@ C:\tools\php\php.exe vendor/bin/phpunit
 
 ## 開発ガイドライン (Development Guidelines)
 
-1. **言語**: すべてのドキュメント、コミットメッセージ、Artifactは **日本語** で作成してください。
+1. **言語**: すべてのドキュメント、コミットメッセージ、Artifactは **日本語** で作成してください。特に `implementation_plan.md` と `task.md` は必ず日本語で記述してください。
 2. **テスト**: 新機能開発時は、必ず `tests/` に対応するテストを追加し、`Run Tests` タスクで検証してください。
 3. **依存関係**: 新しいパッケージを追加する場合は、必ず `C:\tools\composer.bat` を使用してください。
 
