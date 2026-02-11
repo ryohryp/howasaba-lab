@@ -12,6 +12,7 @@
 <?php wp_body_open(); ?>
 
 <!-- Snow Overlay -->
+<!-- DEBUG: THEME UPDATED TO 1.0.1 (DEPLOY TARGET: wos-furnace-core) -->
 <?php get_template_part( 'parts/snow-overlay' ); ?>
 
 <div id="page" class="site relative z-10 flex min-h-screen flex-col">
