@@ -22,7 +22,18 @@ if ($rarity_name === 'R') $rarity_class = 'text-blue-400';
 
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class('relative group overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:shadow-lg hover:shadow-ice-blue/20'); ?>>
+<article 
+    id="post-<?php the_ID(); ?>" 
+    <?php post_class('relative group overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:shadow-lg hover:shadow-ice-blue/20'); ?>
+    x-show="isVisible($el)"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 scale-90"
+    x-transition:enter-end="opacity-100 scale-100"
+    data-name="<?php echo esc_attr( get_the_title() ); ?>"
+    data-gen="<?php echo esc_attr( isset($generation[0]) ? $generation[0]->slug : '' ); ?>"
+    data-type="<?php echo esc_attr( isset($type[0]) ? $type[0]->slug : '' ); ?>"
+    data-rarity="<?php echo esc_attr( isset($rarity[0]) ? $rarity[0]->slug : '' ); ?>"
+>
     <a href="<?php the_permalink(); ?>" class="block h-full">
         <div class="aspect-w-3 aspect-h-4 relative overflow-hidden rounded-t-xl">
             <?php if ( has_post_thumbnail() ) : ?>
