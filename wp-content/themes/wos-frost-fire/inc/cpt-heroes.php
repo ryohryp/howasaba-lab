@@ -10,6 +10,8 @@ class WoS_Hero_CPT {
     public function __construct() {
         add_action( 'init', [ $this, 'register_cpt' ], 0 );
         add_action( 'init', [ $this, 'register_taxonomies' ], 0 );
+        add_action( 'add_meta_boxes', [ $this, 'register_meta_boxes' ] );
+        add_action( 'save_post', [ $this, 'save_meta_box_data' ] );
     }
 
     /**
@@ -66,6 +68,7 @@ class WoS_Hero_CPT {
             'publicly_queryable'    => true,
             'capability_type'       => 'post',
             'show_in_rest'          => true, // Key for Gutenberg editor support
+            'rewrite'               => [ 'slug' => 'hero', 'with_front' => true ],
         ];
         register_post_type( 'wos_hero', $args );
     }
@@ -118,6 +121,89 @@ class WoS_Hero_CPT {
             'rewrite'           => [ 'slug' => 'rarity' ],
             'show_in_rest'      => true,
         ]);
+    }
+
+    /**
+     * Register Meta Boxes for Hero
+     */
+    public function register_meta_boxes() {
+        add_meta_box(
+            'hero_details',
+            __( 'Hero Details', WOS_TEXT_DOMAIN ),
+            [ $this, 'hero_meta_box_callback' ],
+            'wos_hero',
+            'normal',
+            'high'
+        );
+    }
+
+    /**
+     * Meta Box Callback
+     */
+    public function hero_meta_box_callback( $post ) {
+        wp_nonce_field( 'wos_save_hero_data', 'wos_hero_meta_box_nonce' );
+
+        $fields = [
+            'hero_unlock_day'  => __( 'Unlock Day (from server start)', WOS_TEXT_DOMAIN ),
+            'hero_source'      => __( 'Source (e.g. Lucky Wheel)', WOS_TEXT_DOMAIN ),
+            'hero_widget_name' => __( 'Exclusive Widget Name', WOS_TEXT_DOMAIN ),
+            'hero_stats_atk'   => __( 'ATK (0-100)', WOS_TEXT_DOMAIN ),
+            'hero_stats_def'   => __( 'DEF (0-100)', WOS_TEXT_DOMAIN ),
+            'hero_stats_hp'    => __( 'HP (0-100)', WOS_TEXT_DOMAIN ),
+        ];
+
+        $values = [];
+        foreach ( $fields as $key => $label ) {
+            $values[ $key ] = get_post_meta( $post->ID, '_' . $key, true );
+        }
+
+        echo '<style>
+            .wos-meta-row { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+            .wos-meta-row:last-child { border-bottom: none; }
+            .wos-meta-row label { display: block; font-weight: bold; margin-bottom: 5px; }
+            .wos-meta-row input[type="text"], .wos-meta-row input[type="number"] { width: 100%; max-width: 400px; }
+        </style>';
+
+        foreach ( $fields as $key => $label ) {
+            $type = ( strpos( $key, 'stats' ) !== false || strpos( $key, 'day' ) !== false ) ? 'number' : 'text';
+            echo '<div class="wos-meta-row">';
+            echo '<label for="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</label>';
+            echo '<input type="' . $type . '" id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" value="' . esc_attr( $values[ $key ] ) . '" />';
+            echo '</div>';
+        }
+    }
+
+    /**
+     * Save Meta Box Data
+     */
+    public function save_meta_box_data( $post_id ) {
+        if ( ! isset( $_POST['wos_hero_meta_box_nonce'] ) ) {
+            return;
+        }
+        if ( ! wp_verify_nonce( $_POST['wos_hero_meta_box_nonce'], 'wos_save_hero_data' ) ) {
+            return;
+        }
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+            return;
+        }
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return;
+        }
+
+        $fields = [
+            'hero_unlock_day',
+            'hero_source',
+            'hero_widget_name',
+            'hero_stats_atk',
+            'hero_stats_def',
+            'hero_stats_hp',
+        ];
+
+        foreach ( $fields as $field ) {
+            if ( isset( $_POST[ $field ] ) ) {
+                update_post_meta( $post_id, '_' . $field, sanitize_text_field( $_POST[ $field ] ) );
+            }
+        }
     }
 }
 
