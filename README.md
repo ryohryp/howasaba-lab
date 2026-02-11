@@ -1,7 +1,7 @@
-# wos-furnace-core
+# WoS Frost & Fire (Server Folder: wos-furnace-core)
 
-WordPress Theme for "howasaba-code.com" (Server Core Design).
-Designed with a "Tech/Cyberpunk" aesthetic using Tailwind CSS (CDN).
+WordPress Theme for "howasaba-code.com".
+Designed with a "Tech/Cyberpunk" aesthetic using Tailwind CSS & Vite.
 
 ## デプロイ設定 (GitHub Actions)
 
@@ -11,16 +11,16 @@ Designed with a "Tech/Cyberpunk" aesthetic using Tailwind CSS (CDN).
 
 リポジトリの **Settings > Secrets and variables > Actions** に以下のシークレットを登録してください。
 
-| Secret Name | Description | Example Value |
+| Secret Name | Description | Value |
 |---|---|---|
-| `FTP_SERVER` | FTPホスト名 (Xserver) | `sv****.xserver.jp` |
-| `FTP_USERNAME` | FTPユーザー名 | `your_username` |
-| `FTP_PASSWORD` | FTPパスワード | `your_password` |
-| `SERVER_DIR` | アップロード先ディレクトリ | `/your-domain.com/public_html/wp-content/themes/wos-furnace-core/` |
+| `FTP_SERVER` | FTPホスト名 (Xserver) | `sv16627.xserver.jp` |
+| `FTP_USERNAME` | FTPユーザー名 | `ryohryp@howasaba-code.com` |
+| `FTP_PASSWORD` | FTPパスワード | (User defined) |
+| `SERVER_DIR` | アップロード先ディレクトリ | `/howasaba-code.com/public_html/wp-content/themes/wos-furnace-core/` |
 
 > [!IMPORTANT]
 > `SERVER_DIR` は必ず末尾にスラッシュ `/` を付けてください。
-> パスはXserverのFTPルートからの絶対パス、またはFTPアカウントのルートからの相対パスに合わせてください。
+> ローカルは `wos-frost-fire` ですが、サーバー上では `wos-furnace-core` としてデプロイされます。
 
 ## WordPress 側の準備
 

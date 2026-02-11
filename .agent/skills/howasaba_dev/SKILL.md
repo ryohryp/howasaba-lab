@@ -35,7 +35,8 @@ C:\tools\php\php.exe vendor/bin/phpunit
 ## プロジェクト構造 (Project Structure)
 
 - **Root**: `i:\04_develop\howasaba-lab`
-- **Theme Root**: `wp-content/themes/wos-frost-fire`
+- **Theme Root (Local)**: `wp-content/themes/wos-frost-fire`
+- **Theme Root (Server)**: `wp-content/themes/wos-furnace-core` (Deploy Target)
 - **Tests**: `tests/`
 - **Vendor**: `vendor/`
 
