@@ -157,3 +157,58 @@ function wos_seed_heroes() {
     });
 }
 add_action('init', 'wos_seed_heroes');
+
+/**
+ * Seed Event Data (Development Helper)
+ */
+function wos_seed_events() {
+    // Only run if admin and triggered via specific GET param (e.g. ?seed_events=1)
+    if ( ! is_admin() || ! isset($_GET['seed_events']) ) {
+        return;
+    }
+
+    $today = date('Y-m-d');
+    $future = date('Y-m-d', strtotime('+30 days')); // Further out for upcoming
+    // Make sure we have dates that differ
+    $upcoming_date = date('Y-m-d', strtotime('+5 days'));
+    $past_date = date('Y-m-d', strtotime('-10 days'));
+
+    $events_data = [
+        'Sunfire Castle Battle' => ['start' => $upcoming_date, 'duration' => '1 Day',  'server_age' => 90, 'desc' => 'Prepare for the ultimate battle for the Sunfire Castle!'], // Upcoming
+        'Gina\'s Revenge'       => ['start' => $today,         'duration' => '3 Days', 'server_age' => 10, 'desc' => 'Hunt the beasts and earn exclusive rewards.'],       // Active
+        'Bear Hunt'             => ['start' => $past_date,     'duration' => '2 Days', 'server_age' => 5,  'desc' => 'Join your alliance to take down the Polar Terror.'],   // Past
+        'Crazy Joe'             => ['start' => $future,        'duration' => '1 Day',  'server_age' => 15, 'desc' => 'Defend your city against waves of bandits.'],          // Upcoming
+        'Foundry Battle'        => ['start' => $today,         'duration' => '1 Day',  'server_age' => 30, 'desc' => 'Alliance vs Alliance battle.'],                        // Active
+    ];
+
+    foreach ($events_data as $name => $data) {
+        $existing = get_page_by_title($name, OBJECT, 'wos_event');
+        
+        $post_data = array(
+            'post_title'    => $name,
+            'post_content'  => $data['desc'],
+            'post_status'   => 'publish',
+            'post_type'     => 'wos_event',
+        );
+
+        if ($existing) {
+            $post_data['ID'] = $existing->ID;
+            $post_id = wp_update_post($post_data);
+        } else {
+            $post_id = wp_insert_post($post_data);
+        }
+
+        if ( ! is_wp_error($post_id) ) {
+            // Set Meta
+            update_post_meta($post_id, '_event_start_date', $data['start']);
+            update_post_meta($post_id, '_event_duration', $data['duration']);
+            update_post_meta($post_id, '_server_age_requirement', $data['server_age']);
+        }
+    }
+    
+    // Add admin notice
+    add_action('admin_notices', function() {
+        echo '<div class="notice notice-success"><p>Events Seeded Successfully (Theme: WoS Frost & Fire)!</p></div>';
+    });
+}
+add_action('init', 'wos_seed_events');
