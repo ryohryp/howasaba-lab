@@ -12,6 +12,8 @@ class WoS_Hero_CPT {
         add_action( 'init', [ $this, 'register_taxonomies' ], 0 );
         add_action( 'add_meta_boxes', [ $this, 'register_meta_boxes' ] );
         add_action( 'save_post', [ $this, 'save_meta_box_data' ] );
+        add_action( 'quick_edit_custom_box', [ $this, 'display_quick_edit_custom_box' ], 10, 2 );
+        add_action( 'admin_footer-edit.php', [ $this, 'quick_edit_javascript' ] );
     }
 
     /**
