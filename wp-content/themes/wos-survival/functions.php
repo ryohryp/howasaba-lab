@@ -420,8 +420,9 @@ function wos_seed_gen6_skills() {
             'skill_exploration_active'    => '「広域展開」- 長杖を高速で回し、風をも通さない障壁を作り出す。自身を2秒間無敵状態にする。その後、前方を横払いして、攻撃力100%の範囲ダメージを与える。<br>Lv.UP: 与範囲ダメージ上昇: 100%/110%/120%/130%/140%',
             'skill_exploration_passive_1' => '「練気集中」- 雑念を取り除き、戦いに集中する。自身の攻撃力が8%、防御力が16%上昇する。4秒持続。<br>Lv.UP: 攻撃力上昇: 8%/12%/16%/20%/24%, 防御力上昇: 16%/24%/32%/40%/48%',
             'skill_exploration_passive_2' => '「隔山打牛」- 深い内功により、無名の通常攻撃に貫通力が満ちる。通常攻撃する毎に、ランダムな敵に攻撃力20%のダメージを与える。<br>Lv.UP: 与ダメージ上昇: 20%/22%/24%/26%/28%',
-            'skill_expedition_1'          => '「鉄壁の守護」- 防衛時、部隊の被ダメージを25%軽減する。',
-            'skill_expedition_2'          => '「反撃の狼煙」- 攻撃時、部隊の全ダメージを20%上昇させる。',
+            'skill_expedition_1'          => '「避風補雨」- 無名は、敵の鋭い刃を避けて無力化する術を熟知している。盾兵が受ける通常攻撃ダメージが5%、スキルダメージが6%減少する。<br>Lv.UP: 通常攻撃被ダメ減: 5%/10%/15%/20%/25%, スキル被ダメ減: 6%/12%/18%/24%/30%',
+            'skill_expedition_2'          => '「半月飛翔」- 無名は兵士たちに巧みな技を教える。味方全部隊が与えるダメージが4%上昇する。<br>Lv.UP: ダメージ上昇: 4%/8%/12%/16%/20%',
+            'skill_expedition_3'          => '「四象明晰」- 無名の指導により、皆の戦闘スキルに対する理解が更に深まる。味方全部隊のスキルダメージが5%上昇する。<br>Lv.UP: スキルダメージ上昇: 5%/10%/15%/20%/25%',
         ],
         'Renee' => [
             'skill_exploration_active' => '「フレイムボレー」- 扇形範囲の敵に150%のダメージを与え、5秒間持続的な燃焼ダメージを付与。',
@@ -467,6 +468,11 @@ function wos_seed_gen6_skills() {
         if ( !empty($data['skill_expedition_2']) ) {
             update_post_meta($page->ID, 'skill_expedition_2', $highlight_nums($data['skill_expedition_2']));
             update_post_meta($page->ID, '_skill_expedition_2', 'field_skill_expedition_2');
+        }
+
+        if ( !empty($data['skill_expedition_3']) ) {
+            update_post_meta($page->ID, 'skill_expedition_3', $highlight_nums($data['skill_expedition_3']));
+            update_post_meta($page->ID, '_skill_expedition_3', 'field_skill_expedition_3');
         }
 
         $count++;

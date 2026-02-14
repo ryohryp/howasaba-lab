@@ -39,7 +39,7 @@ $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
     <a href="<?php the_permalink(); ?>" class="hero-card group block relative overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30">
     
         <!-- Hero Image Area (Top) -->
-        <div class="relative h-48 w-full overflow-hidden bg-slate-900">
+        <div class="relative w-[90px] h-[90px] mx-auto mt-4 overflow-hidden bg-slate-900 rounded-lg">
             <?php if ( has_post_thumbnail() ) : ?>
                 <?php the_post_thumbnail( 'medium', array( 'class' => 'h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110' ) ); ?>
             <?php else : ?>
@@ -48,33 +48,38 @@ $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
                 </div>
             <?php endif; ?>
             
-            <!-- Gen Badge (Top Left) -->
-            <div class="absolute top-2 left-2 flex gap-1">
-                <span class="inline-block px-2 py-1 bg-slate-900/90 text-ice-blue text-xs font-bold rounded border border-white/10 shadow-sm backdrop-blur-none">
-                    <?php echo esc_html( $gen_name ); ?>
-                </span>
-                
-                <!-- Type Icon -->
-                <?php if ( $type_slug ) : ?>
-                    <div class="flex items-center justify-center w-6 h-6 bg-slate-900/90 rounded border border-white/10 shadow-sm backdrop-blur-none text-white" title="<?php echo esc_attr( $type_name ); ?>">
-                        <?php if ( in_array( $type_slug, ['infantry', 'shield'] ) ) : ?>
-                            <!-- Shield Icon (Infantry) - Image Asset -->
-                            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-infantry.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
-                        <?php elseif ( in_array( $type_slug, ['lancer', 'spear'] ) ) : ?>
-                             <!-- Spear Icon (Lancer) - Image Asset -->
-                             <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-lancer.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
-                        <?php elseif ( in_array( $type_slug, ['marksman', 'bow', 'archer'] ) ) : ?>
-                             <!-- Bow Icon (Marksman) - Image Asset -->
-                             <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-marksman.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
-                        <?php else : ?>
-                            <span class="text-xs font-bold"><?php echo esc_html( substr( $type_name, 0, 1 ) ); ?></span>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-            
             <!-- Hover interaction: Ice crack effect overlay -->
             <div class="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-ice-blue/10 to-transparent"></div>
+        </div>
+
+        <!-- Gen Badge (Top Left) - Moved outside image -->
+        <div class="absolute top-2 left-2 flex gap-1 z-10">
+            <span class="inline-block px-2 py-1 bg-slate-900/90 text-ice-blue text-xs font-bold rounded border border-white/10 shadow-sm backdrop-blur-none">
+                <?php echo esc_html( $gen_name ); ?>
+            </span>
+            
+            <!-- Type Icon -->
+            <?php if ( $type_slug ) : ?>
+                <div class="flex items-center justify-center w-6 h-6 bg-slate-900/90 rounded border border-white/10 shadow-sm backdrop-blur-none text-white" title="<?php echo esc_attr( $type_name ); ?>">
+                    <?php if ( in_array( $type_slug, ['infantry', 'shield'] ) ) : ?>
+                        <!-- Shield Icon (Infantry) - Image Asset -->
+                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-infantry.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
+                    <?php elseif ( in_array( $type_slug, ['lancer', 'spear'] ) ) : ?>
+                            <!-- Spear Icon (Lancer) - Image Asset -->
+                            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-lancer.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
+                    <?php elseif ( in_array( $type_slug, ['marksman', 'bow', 'archer'] ) ) : ?>
+                            <!-- Bow Icon (Marksman) - Image Asset -->
+                            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-marksman.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
+                    <?php else : ?>
+                        <span class="text-xs font-bold"><?php echo esc_html( substr( $type_name, 0, 1 ) ); ?></span>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <!-- Hero Name -->
+        <div class="px-2 pb-4 pt-2 text-center">
+            <h3 class="text-white font-bold text-lg leading-tight group-hover:text-ice-blue transition-colors"><?php the_title(); ?></h3>
         </div>
     </a>
 </article>

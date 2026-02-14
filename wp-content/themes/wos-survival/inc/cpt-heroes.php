@@ -158,6 +158,7 @@ class WoS_Hero_CPT {
             'skill_exploration_passive_2' => __( 'Exploration Skill (Passive 2)', WOS_TEXT_DOMAIN ),
             'skill_expedition_1'          => __( 'Expedition Skill 1', WOS_TEXT_DOMAIN ),
             'skill_expedition_2'          => __( 'Expedition Skill 2', WOS_TEXT_DOMAIN ),
+            'skill_expedition_3'          => __( 'Expedition Skill 3', WOS_TEXT_DOMAIN ),
             'hero_expedition_skill'      => __( 'Expedition Skill (Legacy)', WOS_TEXT_DOMAIN ),
             'hero_exploration_skill'     => __( 'Exploration Skill (Legacy)', WOS_TEXT_DOMAIN ),
         ];
@@ -165,7 +166,7 @@ class WoS_Hero_CPT {
         $values = [];
         foreach ( $fields as $key => $label ) {
             // Keys that don't use underscore prefix in existing data
-             $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2' ];
+             $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2', 'skill_expedition_3' ];
             $meta_key = in_array( $key, $no_underscore ) ? $key : '_' . $key;
             $values[ $key ] = get_post_meta( $post->ID, $meta_key, true );
         }
@@ -334,6 +335,7 @@ class WoS_Hero_CPT {
             'skill_exploration_passive_2',
             'skill_expedition_1',
             'skill_expedition_2',
+            'skill_expedition_3',
             'hero_expedition_skill', // Legacy
             'hero_exploration_skill', // Legacy
         ];
@@ -341,7 +343,7 @@ class WoS_Hero_CPT {
         foreach ( $fields as $field ) {
             if ( isset( $_POST[ $field ] ) ) {
                 // Keys that don't use underscore prefix
-                $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2' ];
+                $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2', 'skill_expedition_3' ];
                 $meta_key = in_array( $field, $no_underscore ) ? $field : '_' . $field;
 
                 // Use sanitize_textarea_field for skills as they might be longer

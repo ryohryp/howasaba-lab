@@ -21,6 +21,7 @@ $exploration_skill = get_post_meta( $hero_id, '_hero_exploration_skill', true );
 $skill_exploration_active = get_post_meta( $hero_id, 'skill_exploration_active', true );
 $skill_expedition_1 = get_post_meta( $hero_id, 'skill_expedition_1', true );
 $skill_expedition_2 = get_post_meta( $hero_id, 'skill_expedition_2', true );
+$skill_expedition_3 = get_post_meta( $hero_id, 'skill_expedition_3', true );
 
 // Japanese Name
 $japanese_name = get_post_meta( $hero_id, 'japanese_name', true );
@@ -197,7 +198,7 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                         <span class="text-2xl">⚔️</span> <?php _e( 'Expedition Skills', 'wos-frost-fire' ); ?>
                     </h3>
                     <div class="text-slate-300 leading-relaxed space-y-6">
-                        <?php if ( $skill_expedition_1 || $skill_expedition_2 ) : ?>
+                        <?php if ( $skill_expedition_1 || $skill_expedition_2 || $skill_expedition_3 ) : ?>
                             <?php if ( $skill_expedition_1 ) : ?>
                                 <div>
                                     <strong class="block text-slate-400 text-xs uppercase tracking-wider mb-2"><?php _e( 'Skill 1', 'wos-frost-fire' ); ?></strong>
@@ -208,6 +209,12 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                                 <div>
                                     <strong class="block text-slate-400 text-xs uppercase tracking-wider mb-2"><?php _e( 'Skill 2', 'wos-frost-fire' ); ?></strong>
                                     <div class="text-lg"><?php echo wp_kses_post( $skill_expedition_2 ); ?></div>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ( $skill_expedition_3 ) : ?>
+                                <div>
+                                    <strong class="block text-slate-400 text-xs uppercase tracking-wider mb-2"><?php _e( 'Skill 3', 'wos-frost-fire' ); ?></strong>
+                                    <div class="text-lg"><?php echo wp_kses_post( $skill_expedition_3 ); ?></div>
                                 </div>
                             <?php endif; ?>
                         <?php elseif ( $expedition_skill ) : ?>
