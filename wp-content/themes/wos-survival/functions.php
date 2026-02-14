@@ -7,7 +7,7 @@
 
 if ( ! defined( 'WOS_THEME_VERSION' ) ) {
     // Replace the version number of the theme on each release.
-    define( 'WOS_THEME_VERSION', '1.0.1' );
+    define( 'WOS_THEME_VERSION', '1.0.2' );
 }
 
 if ( ! defined( 'WOS_TEXT_DOMAIN' ) ) {

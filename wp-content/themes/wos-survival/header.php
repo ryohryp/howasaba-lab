@@ -8,7 +8,7 @@
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class('bg-deep-freeze text-white font-sans antialiased selection:bg-fire-crystal selection:text-white'); ?>>
+<body <?php body_class('bg-deep-freeze text-white font-sans antialiased selection:bg-fire-crystal selection:text-white'); ?> x-data="{ mobileMenuOpen: false }">
 <?php wp_body_open(); ?>
 
 <!-- Snow Overlay Removed -->

@@ -6,6 +6,13 @@
 @layer base {
     body {
         @apply bg-deep-freeze text-white font-sans;
+        padding-bottom: calc(4rem + env(safe-area-inset-bottom)); /* For fixed bottom nav + safe area */
+    }
+}
+
+@layer utilities {
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
     }
 }
 
@@ -29,10 +36,13 @@
         background: linear-gradient(135deg, rgba(255, 69, 0, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%);
         box-shadow: 0 0 10px rgba(255, 69, 0, 0.1), inset 0 0 20px rgba(255, 69, 0, 0.05);
     }
-    .fire-crystal-btn:hover, .fire-crystal-btn.active {
+    .fire-crystal-btn:hover, .fire-crystal-btn.active, .fire-crystal-btn:active {
         @apply scale-105 border-orange-400 text-white;
         background: linear-gradient(135deg, #ff4500 0%, #ff8c00 100%);
         box-shadow: 0 0 20px rgba(255, 69, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.3);
         text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .fire-crystal-btn:active {
+        @apply scale-95; /* Press effect */
     }
 }
