@@ -49,6 +49,10 @@ function wos_survival_scripts() {
 
     // Snowstorm animation
     wp_enqueue_script( 'wos-survival-snowstorm', get_template_directory_uri() . '/assets/js/snowstorm.js', array(), WOS_SURVIVAL_VERSION, true );
+
+    // Gift Code Radar Styles
+    wp_enqueue_style( 'wos-survival-radar-style', get_template_directory_uri() . '/assets/css/gift-code-radar.css', array(), WOS_SURVIVAL_VERSION );
+
 }
 add_action( 'wp_enqueue_scripts', 'wos_survival_scripts' );
 
@@ -57,3 +61,4 @@ add_action( 'wp_enqueue_scripts', 'wos_survival_scripts' );
  */
 require get_template_directory() . '/inc/custom-post-types.php';
 require get_template_directory() . '/inc/custom-queries.php';
+require get_template_directory() . '/inc/api-endpoints.php';

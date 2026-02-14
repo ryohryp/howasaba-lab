@@ -1,0 +1,44 @@
+/* Radar Pulse Animation */
+@keyframes radar-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 69, 58, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(255, 69, 58, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 69, 58, 0);
+    }
+}
+
+/* Flare Glow for New Arrivals */
+.gift-code-card.new-arrival {
+    position: relative;
+    border: 2px solid #ff453a; /* Emergency Red */
+    background: linear-gradient(135deg, rgba(255, 69, 58, 0.1) 0%, rgba(20, 20, 30, 0.9) 100%);
+    box-shadow: 0 0 15px rgba(255, 69, 58, 0.5), inset 0 0 10px rgba(255, 69, 58, 0.2);
+    animation: radar-pulse 2s infinite;
+    overflow: hidden;
+}
+
+/* Flare Badge */
+.gift-code-card.new-arrival::before {
+    content: 'NEW DETECTED';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff453a;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    transform: rotate(15deg);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+/* Make the text glow slightly to simulate heat */
+.gift-code-card.new-arrival .gift-code-title {
+    color: #ffcccb;
+    text-shadow: 0 0 5px rgba(255, 69, 58, 0.8);
+}

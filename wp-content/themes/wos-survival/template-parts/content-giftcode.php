@@ -17,6 +17,13 @@ if ( $is_expired ) {
 } else {
     $card_class .= ' active-card';
 }
+
+// Check for new arrival (within 24 hours)
+$post_date = get_the_date( 'U' );
+$current_time = current_time( 'timestamp' );
+if ( ! $is_expired && ($current_time - $post_date) < 24 * 60 * 60 ) {
+    $card_class .= ' new-arrival';
+}
 ?>
 
 <div class="<?php echo esc_attr( $card_class ); ?>" style="position: relative;">
