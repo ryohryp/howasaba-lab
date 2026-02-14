@@ -153,6 +153,39 @@ acf_add_local_field_group(array(
             'rows' => 3,
             'new_lines' => 'br',
         ),
+        // Exclusive Gear
+        array(
+            'key' => 'field_exclusive_gear_details',
+            'label' => 'Exclusive Gear Details',
+            'name' => 'exclusive_gear_details',
+            'type' => 'textarea',
+            'instructions' => 'Details about the exclusive gear.',
+            'rows' => 3,
+            'new_lines' => 'br',
+        ),
+        array(
+            'key' => 'field_exclusive_gear_priority',
+            'label' => 'Exclusive Gear Priority',
+            'name' => 'exclusive_gear_priority',
+            'type' => 'select',
+            'choices' => array(
+                'Must Have' => 'Must Have (Lv 10+)',
+                'High' => 'High (Lv 5+)',
+                'Medium' => 'Medium',
+                'Low' => 'Low',
+            ),
+            'default_value' => 'Medium',
+        ),
+        // Team Recommendation
+        array(
+            'key' => 'field_team_recommendation',
+            'label' => 'Team Recommendation',
+            'name' => 'team_recommendation',
+            'type' => 'textarea',
+            'instructions' => 'Recommended Lineups or Synergies.',
+            'rows' => 3,
+            'new_lines' => 'br',
+        ),
 	),
 	'location' => array(
 		array(

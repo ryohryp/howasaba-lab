@@ -81,7 +81,28 @@ GitHub Actions を使用して Xserver へ自動デプロイされます。
 - **デプロイ (FTP)**:
     - **Source**: `./wp-content/themes/wos-survival/` (Build artifacts included)
     - **Target**: `/howasaba-code.com/public_html/wp-content/themes/wos-survival/`
+- **Target**: `/howasaba-code.com/public_html/wp-content/themes/wos-survival/`
     - **Note**: `local-dir` を指定してテーマディレクトリのみをアップロード。`vendor/` はGit管理外のためデプロイされません。
 
 ### 必要な Secrets (Deploy)
 - `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`
+
+## Tierリスト生成システム (Tier List Generator)
+
+英雄のTierリスト（日本語名・スキル詳細含む）を自動管理するシステムです。
+
+### 主要機能
+- **カスタムフィールド (ACF)**: `inc/acf-tier-list.php`
+    - `generation` (世代), `troop_type` (兵種), `overall_tier` (S+~C)
+    - `japanese_name` (日本語名), `skill_exploration_active` (探検スキル), `skill_expedition_1/2` (遠征スキル)
+- **英雄データ投入 (Seeder)**: `functions.php`
+    - 管理者権限でログインし、以下のURLを実行してデータを投入・更新します (Upsert)。
+    1. **基本英雄データ更新**: `/wp-admin/?seed_heroes=1`
+    2. **第6世代英雄データ更新**: `/wp-admin/?seed_gen6=1`
+    3. **第6世代スキルデータ更新**: `/wp-admin/?seed_gen6_skills=1`
+    4. **固定ページ生成**: `/wp-admin/?seed_pages=1` (スラッグ `/tier-list/` 生成)
+- **表示 (Shortcode & Template)**:
+    - リスト表示: `[wos_tier_list]` (`inc/shortcode-tier-list.php`)
+    - 詳細表示: `single-wos_hero.php` (日本語名、スキル詳細対応)
+- **管理画面拡張**:
+    - `inc/cpt-heroes.php`: 英雄一覧に「Japanese Name」列を追加 (Priority 999)。

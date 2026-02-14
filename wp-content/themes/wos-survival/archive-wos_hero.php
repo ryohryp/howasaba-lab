@@ -33,24 +33,7 @@ get_header();
     ) );
     ?>
 
-    <div x-data="{
-        search: '',
-        selectedGen: 'all',
-        selectedType: 'all',
-        
-        // Helper to check if a hero matches current filters
-        isVisible(el) {
-            const name = el.dataset.name.toLowerCase();
-            const gen = el.dataset.gen;
-            const type = el.dataset.type;
-            
-            const matchesSearch = name.includes(this.search.toLowerCase());
-            const matchesGen = this.selectedGen === 'all' || gen === this.selectedGen;
-            const matchesType = this.selectedType === 'all' || type === this.selectedType;
-            
-            return matchesSearch && matchesGen && matchesType;
-        }
-    }" class="w-full">
+    <div x-data="heroFilter" class="w-full">
 
         <header class="page-header mb-8 text-center">
             <h1 class="page-title mb-4 text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-ice-blue to-white drop-shadow-lg">
@@ -77,22 +60,22 @@ get_header();
             </div>
 
             <!-- Filters -->
-            <div class="flex flex-col gap-4 items-center">
+            <div class="flex flex-col gap-6 items-center">
                 <!-- Generation Filters -->
-                <div class="flex flex-wrap justify-center gap-2">
+                <div class="flex flex-wrap justify-center gap-3">
                     <button 
-                        @click="selectedGen = 'all'"
-                        :class="selectedGen === 'all' ? 'bg-fire-crystal text-white shadow-glow' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                        class="rounded-full px-4 py-1.5 text-sm transition-all duration-300"
+                        @click="setGen('all')"
+                        :class="selectedGen === 'all' ? 'active' : ''"
+                        class="fire-crystal-btn"
                     >
                         <?php _e( 'All Gens', 'wos-frost-fire' ); ?>
                     </button>
                     
                     <?php foreach ( $generations as $gen ) : ?>
                         <button 
-                            @click="selectedGen = '<?php echo esc_attr( $gen->slug ); ?>'"
-                            :class="selectedGen === '<?php echo esc_attr( $gen->slug ); ?>' ? 'bg-fire-crystal text-white shadow-glow' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                            class="rounded-full px-4 py-1.5 text-sm transition-all duration-300"
+                            @click="setGen('<?php echo esc_attr( $gen->slug ); ?>')"
+                            :class="selectedGen === '<?php echo esc_attr( $gen->slug ); ?>' ? 'active' : ''"
+                            class="fire-crystal-btn"
                         >
                             <?php echo esc_html( $gen->name ); ?>
                         </button>
@@ -100,20 +83,20 @@ get_header();
                 </div>
 
                 <!-- Type Filters -->
-                <div class="flex flex-wrap justify-center gap-2">
+                <div class="flex flex-wrap justify-center gap-3">
                     <button 
-                        @click="selectedType = 'all'"
-                        :class="selectedType === 'all' ? 'bg-ice-blue/80 text-black font-bold' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                        class="rounded-full px-4 py-1.5 text-sm transition-all duration-300"
+                        @click="setType('all')"
+                        :class="selectedType === 'all' ? 'bg-ice-blue/80 text-black font-bold shadow-lg shadow-ice-blue/30' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
+                        class="rounded-full px-5 py-2 text-sm transition-all duration-300 border border-white/10"
                     >
                         <?php _e( 'All Types', 'wos-frost-fire' ); ?>
                     </button>
                     
                     <?php foreach ( $types as $type ) : ?>
                         <button 
-                            @click="selectedType = '<?php echo esc_attr( $type->slug ); ?>'"
-                            :class="selectedType === '<?php echo esc_attr( $type->slug ); ?>' ? 'bg-ice-blue/80 text-black font-bold' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                            class="rounded-full px-4 py-1.5 text-sm transition-all duration-300"
+                            @click="setType('<?php echo esc_attr( $type->slug ); ?>')"
+                            :class="selectedType === '<?php echo esc_attr( $type->slug ); ?>' ? 'bg-ice-blue/80 text-black font-bold shadow-lg shadow-ice-blue/30' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
+                            class="rounded-full px-5 py-2 text-sm transition-all duration-300 border border-white/10"
                         >
                             <?php echo esc_html( $type->name ); ?>
                         </button>
