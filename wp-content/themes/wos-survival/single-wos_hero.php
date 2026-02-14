@@ -150,19 +150,42 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
             <!-- Skills Section (Flat Cards) -->
             <div class="grid md:grid-cols-2 gap-6">
-                <!-- Exploration Skill -->
+                <!-- Exploration Skills -->
                 <div class="flat-card p-6 md:p-8">
                     <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-3 border-b border-slate-700 pb-4">
-                        <span class="text-2xl">🧭</span> <?php _e( 'Exploration Skill (Active)', 'wos-frost-fire' ); ?>
+                        <span class="text-2xl">🧭</span> <?php _e( 'Exploration Skills', 'wos-frost-fire' ); ?>
                     </h3>
-                    <div class="text-slate-300 leading-relaxed text-lg">
+                    <div class="text-slate-300 leading-relaxed text-lg space-y-6">
                         <?php 
+                        // Active Skill
                         if ( $skill_exploration_active ) {
-                            echo wp_kses_post( $skill_exploration_active ); 
+                            echo '<div>';
+                            echo '<strong class="block text-slate-400 text-xs uppercase tracking-wider mb-2">' . __( 'Active Skill', 'wos-frost-fire' ) . '</strong>';
+                            echo wp_kses_post( $skill_exploration_active );
+                            echo '</div>';
                         } elseif ( $exploration_skill ) {
+                             // Fallback to old single field
                              echo wpautop( esc_html( $exploration_skill ) );
                         } else {
                             _e( 'No skill data available.', 'wos-frost-fire' );
+                        }
+
+                        // Passive Skills (New)
+                        $skill_exploration_passive_1 = get_post_meta( $hero_id, 'skill_exploration_passive_1', true );
+                        $skill_exploration_passive_2 = get_post_meta( $hero_id, 'skill_exploration_passive_2', true );
+
+                        if ( $skill_exploration_passive_1 ) {
+                            echo '<div>';
+                            echo '<strong class="block text-slate-400 text-xs uppercase tracking-wider mb-2">' . __( 'Passive Skill 1', 'wos-frost-fire' ) . '</strong>';
+                            echo wp_kses_post( $skill_exploration_passive_1 );
+                            echo '</div>';
+                        }
+
+                        if ( $skill_exploration_passive_2 ) {
+                            echo '<div>';
+                            echo '<strong class="block text-slate-400 text-xs uppercase tracking-wider mb-2">' . __( 'Passive Skill 2', 'wos-frost-fire' ) . '</strong>';
+                            echo wp_kses_post( $skill_exploration_passive_2 );
+                            echo '</div>';
                         }
                         ?>
                     </div>

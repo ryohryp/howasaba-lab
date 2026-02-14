@@ -417,9 +417,11 @@ function wos_seed_gen6_skills() {
 
     $skills_data = [
         'Wu Ming' => [
-            'skill_exploration_active' => '「不壊の壁」- 2秒間、自身の受ける全てのダメージを無効化する（無敵状態）。',
-            'skill_expedition_1'       => '「鉄壁の守護」- 防衛時、部隊の被ダメージを25%軽減する。',
-            'skill_expedition_2'       => '「反撃の狼煙」- 攻撃時、部隊の全ダメージを20%上昇させる。',
+            'skill_exploration_active'    => '「広域展開」- 長杖を高速で回し、風をも通さない障壁を作り出す。自身を2秒間無敵状態にする。その後、前方を横払いして、攻撃力100%の範囲ダメージを与える。<br>Lv.UP: 与範囲ダメージ上昇: 100%/110%/120%/130%/140%',
+            'skill_exploration_passive_1' => '「練気集中」- 雑念を取り除き、戦いに集中する。自身の攻撃力が8%、防御力が16%上昇する。4秒持続。<br>Lv.UP: 攻撃力上昇: 8%/12%/16%/20%/24%, 防御力上昇: 16%/24%/32%/40%/48%',
+            'skill_exploration_passive_2' => '「隔山打牛」- 深い内功により、無名の通常攻撃に貫通力が満ちる。通常攻撃する毎に、ランダムな敵に攻撃力20%のダメージを与える。<br>Lv.UP: 与ダメージ上昇: 20%/22%/24%/26%/28%',
+            'skill_expedition_1'          => '「鉄壁の守護」- 防衛時、部隊の被ダメージを25%軽減する。',
+            'skill_expedition_2'          => '「反撃の狼煙」- 攻撃時、部隊の全ダメージを20%上昇させる。',
         ],
         'Renee' => [
             'skill_exploration_active' => '「フレイムボレー」- 扇形範囲の敵に150%のダメージを与え、5秒間持続的な燃焼ダメージを付与。',
@@ -445,14 +447,27 @@ function wos_seed_gen6_skills() {
             return preg_replace('/(\d+(?:%|秒|sec|k|m)?)/i', '<span class="skill-value">$1</span>', $text);
         };
 
-        update_post_meta($page->ID, 'skill_exploration_active', $highlight_nums($data['skill_exploration_active']));
-        update_post_meta($page->ID, '_skill_exploration_active', 'field_skill_exploration_active');
+        if ( !empty($data['skill_exploration_active']) ) {
+            update_post_meta($page->ID, 'skill_exploration_active', $highlight_nums($data['skill_exploration_active']));
+            update_post_meta($page->ID, '_skill_exploration_active', 'field_skill_exploration_active');
+        }
 
-        update_post_meta($page->ID, 'skill_expedition_1', $highlight_nums($data['skill_expedition_1']));
-        update_post_meta($page->ID, '_skill_expedition_1', 'field_skill_expedition_1');
+        if ( !empty($data['skill_exploration_passive_1']) ) {
+            update_post_meta($page->ID, 'skill_exploration_passive_1', $highlight_nums($data['skill_exploration_passive_1']));
+        }
+        if ( !empty($data['skill_exploration_passive_2']) ) {
+            update_post_meta($page->ID, 'skill_exploration_passive_2', $highlight_nums($data['skill_exploration_passive_2']));
+        }
 
-        update_post_meta($page->ID, 'skill_expedition_2', $highlight_nums($data['skill_expedition_2']));
-        update_post_meta($page->ID, '_skill_expedition_2', 'field_skill_expedition_2');
+        if ( !empty($data['skill_expedition_1']) ) {
+            update_post_meta($page->ID, 'skill_expedition_1', $highlight_nums($data['skill_expedition_1']));
+            update_post_meta($page->ID, '_skill_expedition_1', 'field_skill_expedition_1');
+        }
+
+        if ( !empty($data['skill_expedition_2']) ) {
+            update_post_meta($page->ID, 'skill_expedition_2', $highlight_nums($data['skill_expedition_2']));
+            update_post_meta($page->ID, '_skill_expedition_2', 'field_skill_expedition_2');
+        }
 
         $count++;
     }

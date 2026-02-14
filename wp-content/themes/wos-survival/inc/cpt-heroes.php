@@ -146,21 +146,27 @@ class WoS_Hero_CPT {
         wp_nonce_field( 'wos_save_hero_data', 'wos_hero_meta_box_nonce' );
 
         $fields = [
-            'japanese_name'          => __( 'Japanese Name', WOS_TEXT_DOMAIN ),
-            'hero_unlock_day'        => __( 'Unlock Day (from server start)', WOS_TEXT_DOMAIN ),
-            'hero_source'            => __( 'Source (e.g. Lucky Wheel)', WOS_TEXT_DOMAIN ),
-            'hero_widget_name'       => __( 'Exclusive Widget Name', WOS_TEXT_DOMAIN ),
-            'hero_stats_atk'         => __( 'ATK (0-100)', WOS_TEXT_DOMAIN ),
-            'hero_stats_def'         => __( 'DEF (0-100)', WOS_TEXT_DOMAIN ),
-            'hero_stats_hp'          => __( 'HP (0-100)', WOS_TEXT_DOMAIN ),
-            'hero_expedition_skill'  => __( 'Expedition Skill (Description)', WOS_TEXT_DOMAIN ),
-            'hero_exploration_skill' => __( 'Exploration Skill (Description)', WOS_TEXT_DOMAIN ),
+            'japanese_name'              => __( 'Japanese Name', WOS_TEXT_DOMAIN ),
+            'hero_unlock_day'            => __( 'Unlock Day (from server start)', WOS_TEXT_DOMAIN ),
+            'hero_source'                => __( 'Source (e.g. Lucky Wheel)', WOS_TEXT_DOMAIN ),
+            'hero_widget_name'           => __( 'Exclusive Widget Name', WOS_TEXT_DOMAIN ),
+            'hero_stats_atk'             => __( 'ATK (0-100)', WOS_TEXT_DOMAIN ),
+            'hero_stats_def'             => __( 'DEF (0-100)', WOS_TEXT_DOMAIN ),
+            'hero_stats_hp'              => __( 'HP (0-100)', WOS_TEXT_DOMAIN ),
+            'skill_exploration_active'    => __( 'Exploration Skill (Active)', WOS_TEXT_DOMAIN ),
+            'skill_exploration_passive_1' => __( 'Exploration Skill (Passive 1)', WOS_TEXT_DOMAIN ),
+            'skill_exploration_passive_2' => __( 'Exploration Skill (Passive 2)', WOS_TEXT_DOMAIN ),
+            'skill_expedition_1'          => __( 'Expedition Skill 1', WOS_TEXT_DOMAIN ),
+            'skill_expedition_2'          => __( 'Expedition Skill 2', WOS_TEXT_DOMAIN ),
+            'hero_expedition_skill'      => __( 'Expedition Skill (Legacy)', WOS_TEXT_DOMAIN ),
+            'hero_exploration_skill'     => __( 'Exploration Skill (Legacy)', WOS_TEXT_DOMAIN ),
         ];
 
         $values = [];
         foreach ( $fields as $key => $label ) {
-            // japanese_name doesn't use underscore prefix in existing data
-            $meta_key = ($key === 'japanese_name') ? $key : '_' . $key;
+            // Keys that don't use underscore prefix in existing data
+             $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2' ];
+            $meta_key = in_array( $key, $no_underscore ) ? $key : '_' . $key;
             $values[ $key ] = get_post_meta( $post->ID, $meta_key, true );
         }
 
@@ -323,14 +329,20 @@ class WoS_Hero_CPT {
             'hero_stats_atk',
             'hero_stats_def',
             'hero_stats_hp',
-            'hero_expedition_skill',
-            'hero_exploration_skill',
+            'skill_exploration_active',
+            'skill_exploration_passive_1',
+            'skill_exploration_passive_2',
+            'skill_expedition_1',
+            'skill_expedition_2',
+            'hero_expedition_skill', // Legacy
+            'hero_exploration_skill', // Legacy
         ];
 
         foreach ( $fields as $field ) {
             if ( isset( $_POST[ $field ] ) ) {
-                // japanese_name doesn't use underscore prefix
-                $meta_key = ($field === 'japanese_name') ? $field : '_' . $field;
+                // Keys that don't use underscore prefix
+                $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2' ];
+                $meta_key = in_array( $field, $no_underscore ) ? $field : '_' . $field;
 
                 // Use sanitize_textarea_field for skills as they might be longer
                 if ( strpos($field, 'skill') !== false ) {
