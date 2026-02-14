@@ -499,3 +499,8 @@ function wos_filter_locale( $locale ) {
     return $locale;
 }
 add_filter( 'locale', 'wos_filter_locale' );
+
+/**
+ * Hide Admin Bar on Frontend
+ */
+add_filter( 'show_admin_bar', '__return_false' );
