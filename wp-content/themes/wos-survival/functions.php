@@ -81,6 +81,8 @@ function wos_frost_fire_scripts() {
 
     // Snowstorm animation
     wp_enqueue_script( 'wos-survival-snowstorm', get_template_directory_uri() . '/assets/js/snowstorm.js', array(), WOS_THEME_VERSION, true );
+    // Tier List Styles
+    wp_register_style( 'wos-tier-list-style', get_template_directory_uri() . '/assets/css/tier-list.css', array(), WOS_THEME_VERSION );
 }
 add_action( 'wp_enqueue_scripts', 'wos_frost_fire_scripts' );
 
@@ -93,6 +95,8 @@ require get_template_directory() . '/inc/cpt-gift-codes.php'; // New Gift Code C
 require get_template_directory() . '/inc/class-wos-hero-query.php';
 require_once get_template_directory() . '/inc/api-endpoints.php'; // New API Endpoints
 require get_template_directory() . '/inc/shortcode-gift-codes.php'; // New Shortcode
+require get_template_directory() . '/inc/acf-tier-list.php'; // Tier List ACF Fields
+require get_template_directory() . '/inc/shortcode-tier-list.php'; // Tier List Shortcode
 
 /**
  * Custom Template Tags for this theme.
@@ -156,6 +160,34 @@ function wos_seed_heroes() {
             update_post_meta($post_id, '_hero_stats_atk', $data['stats'][0]);
             update_post_meta($post_id, '_hero_stats_def', $data['stats'][1]);
             update_post_meta($post_id, '_hero_stats_hp', $data['stats'][2]);
+
+            // Set Tier List Meta (ACF / Fallback)
+            // Extract numeric gen
+            preg_match('/\d+/', $data['gen'], $matches);
+            $gen_num = $matches[0] ?? 1;
+            
+            update_post_meta($post_id, 'generation', $gen_num);
+            update_post_meta($post_id, '_generation', 'field_generation'); // ACF key
+            
+            update_post_meta($post_id, 'troop_type', $data['type']);
+            update_post_meta($post_id, '_troop_type', 'field_troop_type');
+
+            // Random Tier for demo if not set? Or deterministically set for these seed heroes
+            $tiers = ['S+', 'S', 'A', 'B', 'C'];
+            $tier = $tiers[array_rand($tiers)];
+            // Set specific tiers for specific heroes for better testing
+            if ($name === 'Jeronimo') $tier = 'S+';
+            if ($name === 'Natalia') $tier = 'S';
+            if ($name === 'Molly') $tier = 'A';
+            if ($name === 'Zinman') $tier = 'B';
+            
+            update_post_meta($post_id, 'overall_tier', $tier);
+            update_post_meta($post_id, '_overall_tier', 'field_overall_tier');
+
+            $roles = ['Rally', 'Defense', 'Arena'];
+            $hero_roles = [$roles[array_rand($roles)]];
+            update_post_meta($post_id, 'special_role', serialize($hero_roles)); // ACF stores array as serialized
+            update_post_meta($post_id, '_special_role', 'field_special_role');
         }
     }
     
