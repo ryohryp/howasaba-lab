@@ -28,9 +28,9 @@
         if ($latest_codes->have_posts()) : ?>
             <div class="grid gap-4 md:grid-cols-3">
                 <?php while ($latest_codes->have_posts()) : $latest_codes->the_post(); 
-                    $code = get_post_meta(get_the_ID(), 'gift_code_code', true);
-                    $rewards = get_post_meta(get_the_ID(), 'gift_code_rewards', true);
-                    $expires = get_post_meta(get_the_ID(), 'gift_code_expires', true);
+                    $code = get_post_meta(get_the_ID(), '_wos_code_string', true) ?: get_post_meta(get_the_ID(), 'code_string', true);
+                    $rewards = get_post_meta(get_the_ID(), '_wos_rewards', true) ?: get_post_meta(get_the_ID(), 'rewards', true);
+                    $expires = get_post_meta(get_the_ID(), '_wos_expiration_date', true) ?: get_post_meta(get_the_ID(), 'expiration_date', true);
                 ?>
                     <div class="flat-card p-6 flex flex-col justify-between border-l-4 border-l-fire-crystal">
                         <div>

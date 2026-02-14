@@ -42,6 +42,14 @@
     </footer><!-- #colophon -->
 </div><!-- #page -->
 
+<!-- Debug Info -->
+<div class="bg-black text-white p-2 text-center text-xs font-mono">
+    DEBUG: 
+    Heroes: <?php echo wp_count_posts('wos_hero')->publish; ?> | 
+    Events: <?php echo wp_count_posts('wos_event')->publish; ?> |
+    Gift Codes: <?php echo wp_count_posts('gift_code')->publish; ?>
+</div>
+
 <?php wp_footer(); ?>
 
 <!-- Mobile Menu Overlay -->
