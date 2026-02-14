@@ -10,8 +10,7 @@ RSS_URL = "https://www.reddit.com/r/whiteoutsurvival/new/.rss"
 
 # WordPress API
 WP_API_URL = os.environ.get("WP_API_URL")
-WP_USER = os.environ.get("WP_USER")
-WP_APP_PASSWORD = os.environ.get("WP_APP_PASSWORD")
+RADAR_SECRET_TOKEN = os.environ.get("RADAR_SECRET_TOKEN")
 
 # Expanded Ignore List (Common French/English words that look like codes)
 IGNORE_LIST = {
@@ -122,18 +121,20 @@ def submit_code_to_api(code, source_title, source_link):
         "status": "publish" 
     }
     
-    auth = (WP_USER, WP_APP_PASSWORD)
+    headers = {
+        'X-Radar-Token': RADAR_SECRET_TOKEN
+    }
     
     try:
         print(f"Submitting code: {code}...")
-        response = requests.post(WP_API_URL, json=payload, auth=auth)
+        response = requests.post(WP_API_URL, json=payload, headers=headers)
         
         if response.status_code == 201:
             print(f"SUCCESS: Code '{code}' registered.")
         elif response.status_code == 409:
             print(f"SKIPPED: Code '{code}' already exists (409).")
         elif response.status_code == 401:
-            print(f"AUTH ERROR (401): Check WP_USER/WP_APP_PASSWORD or .htaccess.")
+            print(f"AUTH ERROR (401): Check RADAR_SECRET_TOKEN.")
             print(f"Response: {response.text}")
         else:
             print(f"FAILED: Code '{code}' - Status: {response.status_code}")

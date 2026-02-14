@@ -16,29 +16,19 @@ function wos_register_gift_code_api_routes() {
 	register_rest_route( 'wos-radar/v1', '/add-code', array(
 		'methods'             => 'POST', // Only POST is allowed for creation
 		'callback'            => 'wos_handle_add_gift_code',
-		'permission_callback' => function () {
-			$user_id = get_current_user_id();
+		'permission_callback' => function ( WP_REST_Request $request ) {
+			$token = $request->get_header( 'x-radar-token' );
+			$secret = 'WosRadarSecret2026_Operation!';
 
-			// Case 1: WordPress hasn't received any auth credentials (likely Xserver stripping Authorization header)
-			if ( 0 === $user_id ) {
-				return new WP_Error( 
-					'auth_missing', 
-					'認証情報がWordPressに届いていません。Xserverの .htaccess に CGIPassAuth On が設定されているか確認してください。', 
-					array( 'status' => 401 ) 
-				);
+			if ( $token === $secret ) {
+				return true;
 			}
 
-			// Case 2: User is authenticated but lacks permission
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return new WP_Error( 
-					'role_error', 
-					'ユーザー（ID: ' . $user_id . '）はログインできていますが、投稿権限がありません。WP管理画面で権限グループを変更してください。', 
-					array( 'status' => 403 ) 
-				);
-			}
-
-			// Case 3: Authorized
-			return true;
+			return new WP_Error( 
+				'invalid_token', 
+				'レーダートークンが無効、または届いていません。', 
+				array( 'status' => 401 ) 
+			);
 		},
 		'args'                => array(
 			'code_string'     => array(
