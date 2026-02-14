@@ -92,6 +92,7 @@ require get_template_directory() . '/inc/cpt-events.php';
 require get_template_directory() . '/inc/cpt-gift-codes.php'; // New Gift Code CPT
 require get_template_directory() . '/inc/class-wos-hero-query.php';
 require_once get_template_directory() . '/inc/api-endpoints.php'; // New API Endpoints
+require get_template_directory() . '/inc/shortcode-gift-codes.php'; // New Shortcode
 
 /**
  * Custom Template Tags for this theme.
