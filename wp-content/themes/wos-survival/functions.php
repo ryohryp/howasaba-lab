@@ -61,4 +61,4 @@ add_action( 'wp_enqueue_scripts', 'wos_survival_scripts' );
  */
 require get_template_directory() . '/inc/custom-post-types.php';
 require get_template_directory() . '/inc/custom-queries.php';
-require get_template_directory() . '/inc/api-endpoints.php';
+require_once get_template_directory() . '/inc/api-endpoints.php';
