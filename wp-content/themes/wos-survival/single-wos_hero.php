@@ -99,7 +99,7 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                     </div>
 
                     <!-- Info Column -->
-                    <div class="col-span-2 p-8 md:p-12 flex flex-col justify-center">
+                    <div class="col-span-2 p-6 md:p-12 flex flex-col justify-center">
                         <div class="mb-4 flex flex-wrap gap-2">
                              <?php 
                                 $overall_tier = get_post_meta( $hero_id, 'overall_tier', true );
@@ -115,7 +115,7 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                              <span class="rounded bg-white/10 px-3 py-1 text-sm font-bold text-gray-300 border border-white/10"><?php echo esc_html( $type_name ); ?></span>
                         </div>
 
-                        <h1 class="mb-1 text-4xl md:text-6xl font-black text-white uppercase tracking-tight drop-shadow-lg">
+                        <h1 class="mb-2 text-3xl md:text-6xl font-black text-white uppercase tracking-tight drop-shadow-lg">
                             <?php the_title(); ?>
                         </h1>
                         <?php if ( $japanese_name ) : ?>

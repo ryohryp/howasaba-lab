@@ -79,8 +79,6 @@ function wos_frost_fire_scripts() {
     // Gift Code Radar Styles
     wp_enqueue_style( 'wos-survival-radar-style', get_template_directory_uri() . '/assets/css/gift-code-radar.css', array(), WOS_THEME_VERSION );
 
-    // Snowstorm animation
-    wp_enqueue_script( 'wos-survival-snowstorm', get_template_directory_uri() . '/assets/js/snowstorm.js', array(), WOS_THEME_VERSION, true );
     // Tier List Styles
     wp_register_style( 'wos-tier-list-style', get_template_directory_uri() . '/assets/css/tier-list.css', array(), WOS_THEME_VERSION );
 }

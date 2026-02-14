@@ -11,10 +11,9 @@ get_header();
 <main id="primary" class="site-main">
 
     <!-- Hero Section: COMMAND CENTER -->
-    <section class="relative min-h-screen flex flex-col justify-center overflow-hidden py-20">
+    <section class="relative min-h-[80vh] md:min-h-screen flex flex-col justify-center overflow-hidden py-12 md:py-20">
         <!-- Background Video/Image Placeholder -->
         <div class="absolute inset-0 z-0 bg-deep-freeze">
-            <div id="particles-js" class="absolute inset-0 opacity-20"></div>
             <!-- Gradient Overlay -->
             <div class="absolute inset-0 bg-gradient-to-t from-deep-freeze via-deep-freeze/80 to-transparent"></div>
         </div>

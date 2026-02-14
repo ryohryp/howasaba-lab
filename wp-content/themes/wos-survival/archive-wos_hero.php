@@ -62,11 +62,11 @@ get_header();
             <!-- Filters -->
             <div class="flex flex-col gap-6 items-center">
                 <!-- Generation Filters -->
-                <div class="flex flex-wrap justify-center gap-3">
+                <div class="flex flex-wrap justify-center gap-2">
                     <button 
                         @click="setGen('all')"
                         :class="selectedGen === 'all' ? 'active' : ''"
-                        class="fire-crystal-btn"
+                        class="fire-crystal-btn text-base py-3 px-5" 
                     >
                         <?php _e( 'All Gens', 'wos-frost-fire' ); ?>
                     </button>
@@ -75,7 +75,7 @@ get_header();
                         <button 
                             @click="setGen('<?php echo esc_attr( $gen->slug ); ?>')"
                             :class="selectedGen === '<?php echo esc_attr( $gen->slug ); ?>' ? 'active' : ''"
-                            class="fire-crystal-btn"
+                            class="fire-crystal-btn text-base py-3 px-5"
                         >
                             <?php echo esc_html( $gen->name ); ?>
                         </button>
@@ -83,11 +83,11 @@ get_header();
                 </div>
 
                 <!-- Type Filters -->
-                <div class="flex flex-wrap justify-center gap-3">
+                <div class="flex flex-wrap justify-center gap-2">
                     <button 
                         @click="setType('all')"
                         :class="selectedType === 'all' ? 'bg-ice-blue/80 text-black font-bold shadow-lg shadow-ice-blue/30' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                        class="rounded-full px-5 py-2 text-sm transition-all duration-300 border border-white/10"
+                        class="rounded-lg px-5 py-3 text-base transition-all duration-300 border border-white/10"
                     >
                         <?php _e( 'All Types', 'wos-frost-fire' ); ?>
                     </button>
@@ -96,7 +96,7 @@ get_header();
                         <button 
                             @click="setType('<?php echo esc_attr( $type->slug ); ?>')"
                             :class="selectedType === '<?php echo esc_attr( $type->slug ); ?>' ? 'bg-ice-blue/80 text-black font-bold shadow-lg shadow-ice-blue/30' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                            class="rounded-full px-5 py-2 text-sm transition-all duration-300 border border-white/10"
+                            class="rounded-lg px-5 py-3 text-base transition-all duration-300 border border-white/10"
                         >
                             <?php echo esc_html( $type->name ); ?>
                         </button>
@@ -112,7 +112,9 @@ get_header();
 
         <?php if ( $hero_query->have_posts() ) : ?>
 
-            <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 relative min-h-[200px]">
+            <!-- Mobile: 2 cols with smaller gap, Tablet: 3 cols, Desktop: 4/5 cols -->
+            <!-- Using gap-3 for mobile to save space -->
+            <div class="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 relative min-h-[200px]">
                 <?php
                 while ( $hero_query->have_posts() ) :
                     $hero_query->the_post();
