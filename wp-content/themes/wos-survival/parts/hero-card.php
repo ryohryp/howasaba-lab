@@ -24,51 +24,30 @@ if ($rarity_name === 'R') $rarity_class = 'text-blue-400';
 
 <article 
     id="post-<?php the_ID(); ?>" 
-    <?php post_class('relative group overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:shadow-lg hover:shadow-ice-blue/20'); ?>
+    <?php post_class('relative group overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30'); ?>
     x-show="isVisible($el)"
     x-transition:enter="transition ease-out duration-300"
     x-transition:enter-start="opacity-0 scale-90"
     x-transition:enter-end="opacity-100 scale-100"
-    data-name="<?php echo esc_attr( get_the_title() ); ?>"
-    data-gen="<?php echo esc_attr( isset($generation[0]) ? $generation[0]->slug : '' ); ?>"
-    data-type="<?php echo esc_attr( isset($type[0]) ? $type[0]->slug : '' ); ?>"
-    data-rarity="<?php echo esc_attr( isset($rarity[0]) ? $rarity[0]->slug : '' ); ?>"
 >
-    <a href="<?php the_permalink(); ?>" class="block h-full">
-        <div class="aspect-w-3 aspect-h-4 relative overflow-hidden rounded-t-xl">
-            <?php if ( has_post_thumbnail() ) : ?>
-                <?php the_post_thumbnail( 'medium', array( 'class' => 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-110' ) ); ?>
-            <?php else : ?>
-                <div class="flex h-full w-full items-center justify-center bg-midnight-navy/50 text-ice-blue/30">
-                    <span class="text-4xl">❄️</span>
-                </div>
-            <?php endif; ?>
-            
-            <!-- Generation Badge -->
-            <div class="absolute top-2 left-2 rounded-full bg-black/60 px-2 py-0.5 text-xs font-bold text-ice-blue backdrop-blur-sm">
-                <?php echo esc_html( $gen_name ); ?>
+    <a href="<?php the_permalink(); ?>" class="hero-card group block relative overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30"
+   data-gen="<?php echo esc_attr( $gen_slug ); ?>"
+   data-type="<?php echo esc_attr( $type_slug ); ?>">
+    
+    <!-- Hero Image Area (Top) -->
+    <div class="relative h-48 w-full overflow-hidden bg-slate-900">
+        <?php if ( has_post_thumbnail() ) : ?>
+            <?php the_post_thumbnail( 'medium', array( 'class' => 'h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110' ) ); ?>
+        <?php else : ?>
+            <div class="h-full w-full flex items-center justify-center bg-slate-800 text-slate-700">
+                <span class="text-4xl">?</span>
             </div>
-        </div>
-
-        <div class="p-4">
-            <h2 class="mb-1 text-xl font-bold text-white group-hover:text-ice-blue transition-colors">
-                <?php the_title(); ?>
-            </h2>
-            
-            <div class="flex flex-wrap gap-2 text-sm">
-                <?php if ($type_name): ?>
-                    <span class="inline-flex items-center gap-1 text-gray-300">
-                        <!-- Icon placeholder -->
-                        <span class="h-1.5 w-1.5 rounded-full bg-fire-crystal"></span>
-                        <?php echo esc_html( $type_name ); ?>
-                    </span>
-                <?php endif; ?>
-
-                <?php if ($rarity_name): ?>
-                    <span class="<?php echo esc_attr( $rarity_class ); ?> font-semibold">
-                        <?php echo esc_html( $rarity_name ); ?>
-                    </span>
-                <?php endif; ?>
+        <?php endif; ?>
+        
+        <!-- Gen Badge (Top Left) -->
+        <div class="absolute top-2 left-2">
+            <span class="inline-block px-2 py-1 bg-slate-900/90 text-ice-blue text-xs font-bold rounded border border-white/10 shadow-sm backdrop-blur-none">
+                <?php echo esc_html( $gen_name ); ?>
             </div>
         </div>
         

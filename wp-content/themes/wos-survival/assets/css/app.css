@@ -5,7 +5,7 @@
 /* Custom Base Styles */
 @layer base {
     body {
-        @apply bg-deep-freeze text-white font-sans;
+        @apply bg-slate-900 text-slate-50 font-sans;
         padding-bottom: calc(4rem + env(safe-area-inset-bottom)); /* For fixed bottom nav + safe area */
     }
 }
@@ -16,33 +16,46 @@
     }
 }
 
-/* Glassmorphism Utilities */
+/* Flat Modern Utilities */
 @layer components {
     .glass-panel {
-        @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-lg;
+        /* Renamed concept, keeping class for compatibility but changing style */
+        @apply bg-slate-800 border-none shadow-lg rounded-xl;
+        /* Optional: Add a subtle highlight border for depth without glass effect */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    
+    .flat-card {
+        @apply bg-slate-800 rounded-xl shadow-lg border overflow-hidden transition-all duration-300;
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+    .flat-card:hover {
+        @apply transform -translate-y-1 shadow-xl;
+        border-color: rgba(56, 189, 248, 0.3); /* Hover border color (Ice) */
     }
 
     .glass-btn {
-        @apply px-6 py-2 rounded-full font-bold uppercase tracking-wider transition-all duration-300 bg-gradient-to-r from-ice-blue/20 to-deep-freeze/40 border border-white/30 backdrop-blur-sm hover:bg-white/20 hover:scale-105 hover:shadow-lg hover:shadow-ice-blue/30;
+        /* Converted to Flat Button */
+        @apply px-6 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-200 bg-slate-700 text-white border border-transparent hover:bg-slate-600 active:scale-95;
     }
 
     .glass-text {
-        @apply bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60;
+        /* Flatten text, simply white or high contrast */
+        @apply text-white font-black tracking-tight;
     }
 
-    /* Fire Crystal Button Effect */
+    /* Fire Crystal Button Effect - Updated to Flat Vivid */
     .fire-crystal-btn {
-        @apply relative overflow-hidden px-4 py-2 rounded-lg font-bold text-sm uppercase tracking-wider text-white transition-all duration-300 border border-orange-500/30;
-        background: linear-gradient(135deg, rgba(255, 69, 0, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%);
-        box-shadow: 0 0 10px rgba(255, 69, 0, 0.1), inset 0 0 20px rgba(255, 69, 0, 0.05);
+        @apply relative overflow-hidden px-5 py-3 rounded-lg font-bold text-sm uppercase tracking-wider text-white transition-all duration-200 border-none;
+        background-color: #f97316; /* Orange 500 */
+        box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.3), 0 2px 4px -1px rgba(249, 115, 22, 0.06);
     }
-    .fire-crystal-btn:hover, .fire-crystal-btn.active, .fire-crystal-btn:active {
-        @apply scale-105 border-orange-400 text-white;
-        background: linear-gradient(135deg, #ff4500 0%, #ff8c00 100%);
-        box-shadow: 0 0 20px rgba(255, 69, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.3);
-        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    .fire-crystal-btn:hover {
+        @apply bg-orange-500 transform -translate-y-0.5;
+        box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.4), 0 4px 6px -2px rgba(249, 115, 22, 0.1);
     }
     .fire-crystal-btn:active {
-        @apply scale-95; /* Press effect */
+        @apply transform translate-y-0 scale-95;
+        box-shadow: none;
     }
 }

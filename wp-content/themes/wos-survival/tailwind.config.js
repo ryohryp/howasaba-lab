@@ -10,10 +10,11 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                'ice-blue': '#e0f7fa',
-                'deep-freeze': '#1a237e',
-                'fire-crystal': '#ff3d00',
-                'midnight-navy': '#0d1b2a', // Added based on "Midnight Navy" mention
+                'deep-freeze': '#0f172a', // Slate 900
+                'midnight-navy': '#1e293b', // Slate 800
+                'ice-blue': '#38bdf8', // Sky 400
+                'fire-crystal': '#f97316', // Orange 500
+                'frost-white': '#f1f5f9', // Slate 100
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],

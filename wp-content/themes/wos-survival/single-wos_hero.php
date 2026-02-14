@@ -77,84 +77,85 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
         <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
             
-            <!-- Hero Header / Banner -->
-            <div class="relative mb-8 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-gradient-to-br from-deep-freeze to-midnight-navy">
+            <!-- Hero Header / Banner (Flat Version) -->
+            <div class="relative mb-8 rounded-xl overflow-hidden shadow-lg bg-slate-800">
                 <style>
                     /* Custom styles for this template */
                     .skill-value {
-                        color: #fbbf24; /* Amber-400 */
+                        color: #f97316; /* Orange-500 */
                         font-weight: bold;
                     }
                     .text-jp-name {
                         font-family: "Noto Sans JP", sans-serif;
                     }
                 </style>
-                <div class="grid md:grid-cols-3 gap-0">
+                <div class="grid md:grid-cols-12 gap-0">
                     <!-- Image Column -->
-                    <div class="relative h-96 md:h-auto bg-black/20">
+                    <div class="md:col-span-5 relative h-96 md:h-[500px] bg-slate-900">
                          <?php if ( has_post_thumbnail() ) : ?>
                             <?php the_post_thumbnail( 'large', array( 'class' => 'h-full w-full object-cover object-top' ) ); ?>
-                            <div class="absolute inset-0 bg-gradient-to-t from-deep-freeze to-transparent md:bg-gradient-to-r"></div>
+                             <!-- Gradient for mobile text readability if needed, or removal for solid feel. Using subtle vignette. -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent md:bg-none opacity-80 md:hidden"></div>
                         <?php endif; ?>
                     </div>
 
                     <!-- Info Column -->
-                    <div class="col-span-2 p-6 md:p-12 flex flex-col justify-center">
-                        <div class="mb-4 flex flex-wrap gap-2">
+                    <div class="md:col-span-7 p-6 md:p-10 flex flex-col justify-center bg-slate-800">
+                        <div class="mb-6 flex flex-wrap gap-2 items-center">
                              <?php 
                                 $overall_tier = get_post_meta( $hero_id, 'overall_tier', true );
-                                $tier_color = 'bg-gray-500';
-                                if ($overall_tier === 'S+' || $overall_tier === 'S') $tier_color = 'bg-gradient-to-r from-yellow-400 to-orange-500';
-                                if ($overall_tier === 'A') $tier_color = 'bg-purple-500';
-                                if ($overall_tier === 'B') $tier_color = 'bg-blue-500';
+                                $tier_bg = 'bg-gray-600';
+                                if ($overall_tier === 'S+' || $overall_tier === 'S') $tier_bg = 'bg-orange-500';
+                                if ($overall_tier === 'A') $tier_bg = 'bg-purple-600';
+                                if ($overall_tier === 'B') $tier_bg = 'bg-blue-600';
                              ?>
                              <?php if($overall_tier): ?>
-                                <span class="rounded <?php echo $tier_color; ?> px-3 py-1 text-sm font-bold text-white shadow-lg shadow-fire-crystal/20 border border-white/20">Tier <?php echo esc_html( $overall_tier ); ?></span>
+                                <span class="rounded-lg <?php echo $tier_bg; ?> px-4 py-1.5 text-lg font-black text-white shadow-md">Tier <?php echo esc_html( $overall_tier ); ?></span>
                              <?php endif; ?>
-                             <span class="rounded bg-white/10 px-3 py-1 text-sm font-bold text-ice-blue border border-white/10"><?php echo esc_html( $gen_name ); ?></span>
-                             <span class="rounded bg-white/10 px-3 py-1 text-sm font-bold text-gray-300 border border-white/10"><?php echo esc_html( $type_name ); ?></span>
+                             <span class="rounded-lg bg-slate-700 px-3 py-1 text-sm font-bold text-ice-blue border border-slate-600"><?php echo esc_html( $gen_name ); ?></span>
+                             <span class="rounded-lg bg-slate-700 px-3 py-1 text-sm font-bold text-gray-300 border border-slate-600"><?php echo esc_html( $type_name ); ?></span>
                         </div>
 
-                        <h1 class="mb-2 text-3xl md:text-6xl font-black text-white uppercase tracking-tight drop-shadow-lg">
+                        <h1 class="mb-2 text-4xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none">
                             <?php the_title(); ?>
                         </h1>
                         <?php if ( $japanese_name ) : ?>
-                            <h2 class="mb-4 text-2xl md:text-3xl font-bold text-gray-400 text-jp-name">
+                            <h2 class="mb-6 text-2xl md:text-3xl font-bold text-slate-400 text-jp-name tracking-widest pl-1">
                                 <?php echo esc_html( $japanese_name ); ?>
                             </h2>
                         <?php endif; ?>
 
-                        <div class="prose prose-invert max-w-none mb-8 text-gray-300">
+                        <div class="prose prose-invert prose-lg max-w-none mb-10 text-slate-300 font-light leading-relaxed">
                             <?php the_content(); ?>
                         </div>
 
-                        <!-- Quick Stats Grid -->
-                        <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-6">
-                            <div class="text-center">
-                                <div class="text-xs uppercase tracking-wider text-gray-500"><?php _e( 'Attack', 'wos-frost-fire' ); ?></div>
-                                <div class="text-2xl font-bold text-white"><?php echo esc_html( $stats_attack ?: 'N/A' ); ?></div>
+                        <!-- Quick Stats Grid (Flat Blocks) -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-center bg-slate-700/50 rounded-lg p-4 border border-slate-700">
+                                <div class="text-xs uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Attack', 'wos-frost-fire' ); ?></div>
+                                <div class="text-2xl font-black text-white font-mono"><?php echo esc_html( $stats_attack ?: '-' ); ?></div>
                             </div>
-                            <div class="text-center border-l border-white/10">
-                                <div class="text-xs uppercase tracking-wider text-gray-500"><?php _e( 'Defense', 'wos-frost-fire' ); ?></div>
-                                <div class="text-2xl font-bold text-white"><?php echo esc_html( $stats_defense ?: 'N/A' ); ?></div>
+                            <div class="text-center bg-slate-700/50 rounded-lg p-4 border border-slate-700">
+                                <div class="text-xs uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Defense', 'wos-frost-fire' ); ?></div>
+                                <div class="text-2xl font-black text-white font-mono"><?php echo esc_html( $stats_defense ?: '-' ); ?></div>
                             </div>
-                            <div class="text-center border-l border-white/10">
-                                <div class="text-xs uppercase tracking-wider text-gray-500"><?php _e( 'Health', 'wos-frost-fire' ); ?></div>
-                                <div class="text-2xl font-bold text-white"><?php echo esc_html( $stats_health ?: 'N/A' ); ?></div>
+                            <div class="text-center bg-slate-700/50 rounded-lg p-4 border border-slate-700">
+                                <div class="text-xs uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Health', 'wos-frost-fire' ); ?></div>
+                                <div class="text-2xl font-black text-white font-mono"><?php echo esc_html( $stats_health ?: '-' ); ?></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Skills Section using Glassmorphism -->
-            <div class="grid md:grid-cols-2 gap-8">
+            <!-- Skills Section (Flat Cards) -->
+            <div class="grid md:grid-cols-2 gap-6">
                 <!-- Exploration Skill -->
-                <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>🧭</span> <?php _e( 'Exploration Skill (Active)', 'wos-frost-fire' ); ?>
+                <div class="flat-card p-6 md:p-8">
+                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-3 border-b border-slate-700 pb-4">
+                        <span class="text-2xl">🧭</span> <?php _e( 'Exploration Skill (Active)', 'wos-frost-fire' ); ?>
                     </h3>
-                    <div class="text-gray-300 leading-relaxed">
+                    <div class="text-slate-300 leading-relaxed text-lg">
                         <?php 
                         if ( $skill_exploration_active ) {
                             echo wp_kses_post( $skill_exploration_active ); 
@@ -168,22 +169,22 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 </div>
 
                 <!-- Expedition Skills -->
-                <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>⚔️</span> <?php _e( 'Expedition Skills', 'wos-frost-fire' ); ?>
+                <div class="flat-card p-6 md:p-8">
+                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-3 border-b border-slate-700 pb-4">
+                        <span class="text-2xl">⚔️</span> <?php _e( 'Expedition Skills', 'wos-frost-fire' ); ?>
                     </h3>
-                    <div class="text-gray-300 leading-relaxed space-y-4">
+                    <div class="text-slate-300 leading-relaxed space-y-6">
                         <?php if ( $skill_expedition_1 || $skill_expedition_2 ) : ?>
                             <?php if ( $skill_expedition_1 ) : ?>
                                 <div>
-                                    <strong class="block text-gray-200 text-sm mb-1"><?php _e( 'Skill 1', 'wos-frost-fire' ); ?></strong>
-                                    <?php echo wp_kses_post( $skill_expedition_1 ); ?>
+                                    <strong class="block text-slate-400 text-xs uppercase tracking-wider mb-2"><?php _e( 'Skill 1', 'wos-frost-fire' ); ?></strong>
+                                    <div class="text-lg"><?php echo wp_kses_post( $skill_expedition_1 ); ?></div>
                                 </div>
                             <?php endif; ?>
                             <?php if ( $skill_expedition_2 ) : ?>
                                 <div>
-                                    <strong class="block text-gray-200 text-sm mb-1"><?php _e( 'Skill 2', 'wos-frost-fire' ); ?></strong>
-                                    <?php echo wp_kses_post( $skill_expedition_2 ); ?>
+                                    <strong class="block text-slate-400 text-xs uppercase tracking-wider mb-2"><?php _e( 'Skill 2', 'wos-frost-fire' ); ?></strong>
+                                    <div class="text-lg"><?php echo wp_kses_post( $skill_expedition_2 ); ?></div>
                                 </div>
                             <?php endif; ?>
                         <?php elseif ( $expedition_skill ) : ?>
@@ -205,21 +206,21 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 
                 if ( $gear_details || $widget_name ) : 
                 ?>
-                <div class="mt-8 rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>🛡️</span> <?php _e( 'Exclusive Gear', 'wos-frost-fire' ); ?>
+                <div class="mt-6 flat-card p-6 md:p-8">
+                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-3 border-b border-slate-700 pb-4">
+                        <span class="text-2xl">🛡️</span> <?php _e( 'Exclusive Gear', 'wos-frost-fire' ); ?>
                         <?php if($widget_name): ?>
-                            <span class="text-white text-base font-normal ml-2">- <?php echo esc_html($widget_name); ?></span>
+                            <span class="text-white text-base font-normal ml-auto bg-slate-700 px-3 py-1 rounded"><?php echo esc_html($widget_name); ?></span>
                         <?php endif; ?>
                     </h3>
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <div class="md:col-span-2 text-gray-300 leading-relaxed">
+                    <div class="grid md:grid-cols-12 gap-8">
+                        <div class="md:col-span-8 text-slate-300 leading-relaxed text-lg">
                             <?php echo wp_kses_post( wpautop($gear_details) ); ?>
                         </div>
                         <?php if($gear_priority): ?>
-                        <div class="border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
-                            <div class="text-sm text-gray-400 uppercase tracking-widest mb-1"><?php _e( 'Priority', 'wos-frost-fire' ); ?></div>
-                            <div class="inline-block px-3 py-1 rounded bg-gradient-to-r from-fire-crystal/80 to-red-600/80 text-white font-bold shadow-lg">
+                        <div class="md:col-span-4 flex flex-col justify-center items-center bg-slate-900/50 rounded-lg p-6 border border-slate-700/50">
+                            <div class="text-xs text-slate-400 uppercase tracking-widest mb-3"><?php _e( 'Priority', 'wos-frost-fire' ); ?></div>
+                            <div class="inline-block px-6 py-2 rounded-full bg-fire-crystal text-white font-black shadow-lg text-xl transform hover:scale-105 transition-transform">
                                 <?php echo esc_html($gear_priority); ?>
                             </div>
                         </div>
@@ -233,11 +234,11 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 $team_rec = get_post_meta( $hero_id, 'team_recommendation', true );
                 if ( $team_rec ) : 
                 ?>
-                <div class="mt-8 rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>🤝</span> <?php _e( 'Recommended Formation', 'wos-frost-fire' ); ?>
+                <div class="mt-6 flat-card p-6 md:p-8">
+                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-3 border-b border-slate-700 pb-4">
+                        <span class="text-2xl">🤝</span> <?php _e( 'Recommended Formation', 'wos-frost-fire' ); ?>
                     </h3>
-                    <div class="text-gray-300 leading-relaxed">
+                    <div class="text-slate-300 leading-relaxed text-lg">
                         <?php echo wp_kses_post( wpautop($team_rec) ); ?>
                     </div>
                 </div>

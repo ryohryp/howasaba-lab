@@ -10,33 +10,45 @@ get_header();
 
 <main id="primary" class="site-main">
 
-    <!-- Hero Section: COMMAND CENTER -->
-    <section class="relative min-h-[80vh] md:min-h-screen flex flex-col justify-center overflow-hidden py-12 md:py-20">
-        <!-- Background Video/Image Placeholder -->
-        <div class="absolute inset-0 z-0 bg-deep-freeze">
-            <!-- Gradient Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-deep-freeze via-deep-freeze/80 to-transparent"></div>
+    <!-- Hero Section (Flat) -->
+    <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900 pt-20 pb-20">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0 opacity-40 mix-blend-overlay">
+            <?php 
+            $hero_bg = get_theme_mod( 'wos_hero_bg', get_template_directory_uri() . '/assets/images/hero-bg.jpg' );
+            ?>
+            <img src="<?php echo esc_url( $hero_bg ); ?>" alt="Background" class="w-full h-full object-cover">
         </div>
-
+        
         <!-- Content -->
-        <div class="relative z-10 container mx-auto px-4 space-y-12">
-            
-            <!-- Header -->
-            <div class="text-center space-y-4" x-data="{ show: false }" x-init="setTimeout(() => show = true, 100)">
-                <h1 
-                    class="text-4xl md:text-6xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-ice-blue to-blue-400 opacity-0 transition-all duration-700 transform translate-y-5"
-                    :class="{ 'opacity-100 translate-y-0': show }"
-                >
-                    COMMAND CENTER
-                </h1>
-                <p 
-                    class="text-blue-200/60 text-lg max-w-2xl mx-auto opacity-0 transition-opacity duration-700 delay-200"
-                    :class="{ 'opacity-100': show }"
-                >
-                    <?php _e( 'Hub for Whiteout Survival analysis, tools, and strategy intel.', 'wos-frost-fire' ); ?>
-                </p>
+        <div class="relative z-10 container mx-auto px-4 text-center">
+            <div class="inline-block mb-6 px-4 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-ice-blue text-sm font-bold tracking-widest uppercase shadow-lg backdrop-blur-sm">
+                <?php _e( 'Frost & Fire', 'wos-frost-fire' ); ?>
             </div>
+            <h1 class="mb-6 text-5xl md:text-7xl font-black text-white uppercase tracking-tighter drop-shadow-2xl leading-none">
+                Survive the <span class="text-ice-blue">Whiteout</span><br>
+                Conquer the <span class="text-fire-crystal">Cold</span>
+            </h1>
+            <p class="mb-10 text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto font-light">
+                <?php _e( 'The ultimate database and strategy guide for Whiteout Survival.', 'wos-frost-fire' ); ?>
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="<?php echo get_post_type_archive_link('wos_hero'); ?>" class="fire-crystal-btn text-lg px-8 py-4">
+                    <?php _e( 'Find Heroes', 'wos-frost-fire' ); ?>
+                </a>
+                <a href="<?php echo home_url('/guide'); ?>" class="px-8 py-4 rounded-lg font-bold text-white bg-slate-700 hover:bg-slate-600 transition-colors border border-slate-600">
+                    <?php _e( 'Read Guides', 'wos-frost-fire' ); ?>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Bottom Fade to Solid Color -->
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent"></div>
+    </section>
 
+    <!-- Command Center / Dynamic Sections -->
+    <div class="container mx-auto px-4 py-16 space-y-24">
             <!-- Features Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Tool -->

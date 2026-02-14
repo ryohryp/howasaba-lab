@@ -65,8 +65,8 @@ get_header();
                 <div class="flex flex-wrap justify-center gap-2">
                     <button 
                         @click="setGen('all')"
-                        :class="selectedGen === 'all' ? 'active' : ''"
-                        class="fire-crystal-btn text-base py-3 px-5" 
+                        :class="selectedGen === 'all' ? 'bg-orange-500 text-white shadow-lg' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'"
+                        class="rounded-lg px-6 py-3 font-bold transition-all duration-200 border border-transparent active:scale-95" 
                     >
                         <?php _e( 'All Gens', 'wos-frost-fire' ); ?>
                     </button>
@@ -74,8 +74,8 @@ get_header();
                     <?php foreach ( $generations as $gen ) : ?>
                         <button 
                             @click="setGen('<?php echo esc_attr( $gen->slug ); ?>')"
-                            :class="selectedGen === '<?php echo esc_attr( $gen->slug ); ?>' ? 'active' : ''"
-                            class="fire-crystal-btn text-base py-3 px-5"
+                            :class="selectedGen === '<?php echo esc_attr( $gen->slug ); ?>' ? 'bg-orange-500 text-white shadow-lg' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'"
+                            class="rounded-lg px-6 py-3 font-bold transition-all duration-200 border border-transparent active:scale-95"
                         >
                             <?php echo esc_html( $gen->name ); ?>
                         </button>
@@ -86,8 +86,8 @@ get_header();
                 <div class="flex flex-wrap justify-center gap-2">
                     <button 
                         @click="setType('all')"
-                        :class="selectedType === 'all' ? 'bg-ice-blue/80 text-black font-bold shadow-lg shadow-ice-blue/30' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                        class="rounded-lg px-5 py-3 text-base transition-all duration-300 border border-white/10"
+                        :class="selectedType === 'all' ? 'bg-ice-blue text-slate-900 shadow-lg' : 'bg-slate-800 text-gray-400 hover:text-white border-slate-700 hover:bg-slate-700'"
+                        class="rounded-lg px-5 py-2 text-sm font-bold border transition-all duration-200 active:scale-95"
                     >
                         <?php _e( 'All Types', 'wos-frost-fire' ); ?>
                     </button>
@@ -95,8 +95,8 @@ get_header();
                     <?php foreach ( $types as $type ) : ?>
                         <button 
                             @click="setType('<?php echo esc_attr( $type->slug ); ?>')"
-                            :class="selectedType === '<?php echo esc_attr( $type->slug ); ?>' ? 'bg-ice-blue/80 text-black font-bold shadow-lg shadow-ice-blue/30' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                            class="rounded-lg px-5 py-3 text-base transition-all duration-300 border border-white/10"
+                            :class="selectedType === '<?php echo esc_attr( $type->slug ); ?>' ? 'bg-ice-blue text-slate-900 shadow-lg' : 'bg-slate-800 text-gray-400 hover:text-white border-slate-700 hover:bg-slate-700'"
+                            class="rounded-lg px-5 py-2 text-sm font-bold border transition-all duration-200 active:scale-95"
                         >
                             <?php echo esc_html( $type->name ); ?>
                         </button>
