@@ -14,11 +14,8 @@ $gen_name = !empty($generation) && !is_wp_error($generation) ? $generation[0]->n
 $type_name = !empty($type) && !is_wp_error($type) ? $type[0]->name : '';
 $rarity_name = !empty($rarity) && !is_wp_error($rarity) ? $rarity[0]->name : '';
 
-// Rarity color logic (simplified)
-$rarity_class = 'text-gray-200';
-if ($rarity_name === 'SSR') $rarity_class = 'text-yellow-400';
-if ($rarity_name === 'SR') $rarity_class = 'text-purple-400';
-if ($rarity_name === 'R') $rarity_class = 'text-blue-400';
+// Check if filtering is enabled (default: false)
+$use_filtering = $args['use_filtering'] ?? false;
 
 // Define slugs for data attributes
 $gen_slug = !empty($generation) && !is_wp_error($generation) ? $generation[0]->slug : '';
@@ -29,10 +26,12 @@ $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
 <article 
     id="post-<?php the_ID(); ?>" 
     <?php post_class('relative group overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30'); ?>
-    x-show="isVisible($el)"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0 scale-90"
-    x-transition:enter-end="opacity-100 scale-100"
+    <?php if ( $use_filtering ) : ?>
+        x-show="isVisible($el)"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-90"
+        x-transition:enter-end="opacity-100 scale-100"
+    <?php endif; ?>
 >
     <a href="<?php the_permalink(); ?>" class="hero-card group block relative overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30"
        data-gen="<?php echo esc_attr( $gen_slug ); ?>"

@@ -118,7 +118,7 @@ get_header();
                 <?php
                 while ( $hero_query->have_posts() ) :
                     $hero_query->the_post();
-                    get_template_part( 'parts/hero-card' );
+                    get_template_part( 'parts/hero-card', null, ['use_filtering' => true] );
                 endwhile;
                 wp_reset_postdata();
                 ?>
