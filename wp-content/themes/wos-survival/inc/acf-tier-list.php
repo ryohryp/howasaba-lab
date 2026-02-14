@@ -106,26 +106,53 @@ acf_add_local_field_group(array(
 			'label' => 'Special Role',
 			'name' => 'special_role',
 			'type' => 'checkbox',
-			'instructions' => 'Select special roles for this hero',
+			'instructions' => 'Select the Special Roles',
 			'required' => 0,
 			'conditional_logic' => 0,
 			'wrapper' => array(
-				'width' => '25',
+				'width' => '50',
 				'class' => '',
 				'id' => '',
 			),
 			'choices' => array(
-				'Rally' => 'Rally', // 集結
-				'Defense' => 'Defense', // 防衛
-				'Arena' => 'Arena', // 競技場
+				'Rally' => 'Rally',
+				'Defense' => 'Defense',
+				'Arena' => 'Arena',
 			),
 			'allow_custom' => 0,
 			'default_value' => array(
 			),
-			'layout' => 'horizontal', // or vertical
+			'layout' => 'horizontal',
 			'toggle' => 0,
 			'return_format' => 'value',
+			'save_custom' => 0,
 		),
+        // Skills
+        array(
+            'key' => 'field_skill_exploration_active',
+            'label' => 'Exploration Skill (Active)',
+            'name' => 'skill_exploration_active',
+            'type' => 'textarea',
+            'instructions' => 'Example: <span class="skill-value">20%</span> damage boost.',
+            'rows' => 3,
+            'new_lines' => 'br', // Auto BR
+        ),
+        array(
+            'key' => 'field_skill_expedition_1',
+            'label' => 'Expedition Skill 1',
+            'name' => 'skill_expedition_1',
+            'type' => 'textarea',
+            'rows' => 3,
+            'new_lines' => 'br',
+        ),
+        array(
+            'key' => 'field_skill_expedition_2',
+            'label' => 'Expedition Skill 2',
+            'name' => 'skill_expedition_2',
+            'type' => 'textarea',
+            'rows' => 3,
+            'new_lines' => 'br',
+        ),
 	),
 	'location' => array(
 		array(

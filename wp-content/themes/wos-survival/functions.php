@@ -420,3 +420,60 @@ function wos_seed_gen6_heroes() {
     });
 }
 add_action('init', 'wos_seed_gen6_heroes');
+
+/**
+ * Seed Gen 6 Skills (Upsert)
+ */
+function wos_seed_gen6_skills() {
+    // Run if user has capability and triggered via GET param
+    if ( ! current_user_can('manage_options') || ! isset($_GET['seed_gen6_skills']) ) {
+        return;
+    }
+
+    $skills_data = [
+        'Wu Ming' => [
+            'skill_exploration_active' => '「不壊の壁」- 2秒間、自身の受ける全てのダメージを無効化する（無敵状態）。',
+            'skill_expedition_1'       => '「鉄壁の守護」- 防衛時、部隊の被ダメージを25%軽減する。',
+            'skill_expedition_2'       => '「反撃の狼煙」- 攻撃時、部隊の全ダメージを20%上昇させる。',
+        ],
+        'Renee' => [
+            'skill_exploration_active' => '「フレイムボレー」- 扇形範囲の敵に150%のダメージを与え、5秒間持続的な燃焼ダメージを付与。',
+            'skill_expedition_1'       => '「焦土作戦」- 敵部隊の被ダメージを15%上昇させる。',
+            'skill_expedition_2'       => '「情熱の鼓舞」- 槍兵の攻撃力を20%上昇させる。',
+        ],
+        'Wayne' => [
+            'skill_exploration_active' => '「影抜き」- 最も遠くにいる敵（通常は後衛）に瞬間移動し、200%のダメージを与える。',
+            'skill_expedition_1'       => '「急襲」- 敵の弓兵部隊に対するダメージが25%上昇する。',
+            'skill_expedition_2'       => '「精密射撃」- 部隊のクリティカル率を15%上昇させる。',
+        ],
+    ];
+
+    $count = 0;
+    foreach ($skills_data as $name => $data) {
+        $page = get_page_by_title($name, OBJECT, 'wos_hero');
+        if (! $page) continue;
+
+        // Helper to wrap numbers in span class="skill-value"
+        $highlight_nums = function($text) {
+            // Regex to match numbers with optional % or Sec/秒 suffix
+            // e.g. 2秒, 25%, 150%
+            return preg_replace('/(\d+(?:%|秒|sec|k|m)?)/i', '<span class="skill-value">$1</span>', $text);
+        };
+
+        update_post_meta($page->ID, 'skill_exploration_active', $highlight_nums($data['skill_exploration_active']));
+        update_post_meta($page->ID, '_skill_exploration_active', 'field_skill_exploration_active');
+
+        update_post_meta($page->ID, 'skill_expedition_1', $highlight_nums($data['skill_expedition_1']));
+        update_post_meta($page->ID, '_skill_expedition_1', 'field_skill_expedition_1');
+
+        update_post_meta($page->ID, 'skill_expedition_2', $highlight_nums($data['skill_expedition_2']));
+        update_post_meta($page->ID, '_skill_expedition_2', 'field_skill_expedition_2');
+
+        $count++;
+    }
+
+    add_action('admin_notices', function() use ($count) {
+        echo '<div class="notice notice-success"><p>Gen 6 Skills Updated for ' . $count . ' Heroes!</p></div>';
+    });
+}
+add_action('init', 'wos_seed_gen6_skills');
