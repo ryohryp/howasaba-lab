@@ -35,10 +35,22 @@ C:\tools\php\php.exe vendor/bin/phpunit
 ## プロジェクト構造 (Project Structure)
 
 - **Root**: `i:\04_develop\howasaba-lab`
-- **Theme Root (Local)**: `wp-content/themes/wos-frost-fire`
-- **Theme Root (Server)**: `wp-content/themes/wos-furnace-core` (Deploy Target)
+- **Active Theme**: `wos-survival`
+- **Theme Path (Local)**: `wp-content/themes/wos-survival`
+- **Deploy Target (Server)**: `/howasaba-code.com/public_html/wp-content/themes/wos-survival`
 - **Tests**: `tests/`
 - **Vendor**: `vendor/`
+
+## API エンドポイント (Custom REST API)
+
+ギフトコード自動登録などのためにカスタムREST APIを実装しています。
+
+- **Namespace**: `wos-radar/v1`
+- **Base URL**: `/wp-json/wos-radar/v1`
+- **Endpoints**:
+    - `POST /add-code`: ギフトコードの登録
+        - Required Caps: `edit_posts` (Application Passwords recommended)
+        - Params: `code_string`, `rewards`, `expiration_date`
 
 ## 開発ガイドライン (Development Guidelines)
 
@@ -52,18 +64,18 @@ C:\tools\php\php.exe vendor/bin/phpunit
 
 ### ワークフロー概要 (`.github/workflows/deploy.yml`)
 - **トリガー**: `main` ブランチへのプッシュ
-- **ビルド**:
-    1. Node.js (v18) をセットアップ
-    2. `npm ci` でフロントエンド依存関係をインストール
-    3. `npm run build` でアセット（CSS/JS）をビルド
 - **デプロイ**:
     - `SamKirkland/FTP-Deploy-Action` を使用して FTP でファイルを同期
-    - **同期先**: `/howasaba-code.com/public_html/wp-content/themes/wos-furnace-core/`
-    - **除外**: `.git`, `node_modules`, `src` などの開発用ファイル
+    - **Local Source**: `./wp-content/themes/wos-survival/` (テーマ配下のみアップロード)
+    - **Remote Target**: `/howasaba-code.com/public_html/wp-content/themes/wos-survival/` (FTP Root相対パス)
+    - **除外**: `.git`, `node_modules` など
+
+### 重要な注意点 (Deploy Pitfalls)
+- **FTP Root**: XserverのFTPアカウントはホームディレクトリ直下ではなく `/home/[user]/` がルートになることがあるため、絶対パス `/home/...` で指定すると二重ネストの原因になります。必ず `ftp-cmd ls` 等でルートを確認し、ルートからの相対パスで指定してください。
+- **Directory Nesting**: `local-dir` を指定しない場合、リポジトリのルートから構造ごとアップロードされるため、サーバー側で深い階層（`.../theme/wp-content/themes/theme/...`）が作られてしまいます。必ず `local-dir` でアップロード元を限定してください。
 
 ### 必要な Secrets
 GitHub リポジトリの Settings > Secrets and variables > Actions に以下を設定する必要があります：
 - `FTP_SERVER`: `sv16627.xserver.jp`
 - `FTP_USERNAME`: `ryohryp@howasaba-code.com`
 - `FTP_PASSWORD`: (GitHub Secrets に設定してください)
-

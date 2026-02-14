@@ -1,63 +1,11 @@
 <?php
 /**
- * Register Custom Post Types and Taxonomies
+ * Register Gift Code Custom Post Type
  *
  * @package WOS_Survival
  */
 
-function wos_survival_register_cpts() {
-    /**
-     * Hero CPT
-     */
-    $hero_labels = array(
-        'name'               => _x( 'Heroes', 'post type general name', 'wos-survival' ),
-        'singular_name'      => _x( 'Hero', 'post type singular name', 'wos-survival' ),
-        'menu_name'          => _x( 'Heroes', 'admin menu', 'wos-survival' ),
-        'name_admin_bar'     => _x( 'Hero', 'add new on admin bar', 'wos-survival' ),
-        'add_new'            => _x( 'Add New', 'hero', 'wos-survival' ),
-        'add_new_item'       => __( 'Add New Hero', 'wos-survival' ),
-        'new_item'           => __( 'New Hero', 'wos-survival' ),
-        'edit_item'          => __( 'Edit Hero', 'wos-survival' ),
-        'view_item'          => __( 'View Hero', 'wos-survival' ),
-        'all_items'          => __( 'All Heroes', 'wos-survival' ),
-        'search_items'       => __( 'Search Heroes', 'wos-survival' ),
-    );
-
-    register_post_type( 'hero', array(
-        'labels'             => $hero_labels,
-        'public'             => true,
-        'publicly_queryable' => true,
-        'show_ui'            => true,
-        'show_in_menu'       => true,
-        'query_var'          => true,
-        'rewrite'            => array( 'slug' => 'hero' ),
-        'capability_type'    => 'post',
-        'has_archive'        => true,
-        'hierarchical'       => false,
-        'menu_position'      => 5,
-        'menu_icon'          => 'dashicons-shield',
-        'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
-        'show_in_rest'       => true,
-    ) );
-
-    /**
-     * Event CPT
-     */
-    $event_labels = array(
-        'name'          => _x( 'Events', 'post type general name', 'wos-survival' ),
-        'singular_name' => _x( 'Event', 'post type singular name', 'wos-survival' ),
-        'menu_name'     => _x( 'Events', 'admin menu', 'wos-survival' ),
-        'menu_icon'     => 'dashicons-calendar-alt',
-    );
-
-    register_post_type( 'event', array(
-        'labels'        => $event_labels,
-        'public'        => true,
-        'show_ui'       => true,
-        'supports'      => array( 'title', 'editor', 'thumbnail' ),
-        'show_in_rest'  => true,
-    ) );
-
+function wos_survival_register_gift_code_cpt() {
     /**
      * Gift Code CPT
      */
@@ -76,29 +24,7 @@ function wos_survival_register_cpts() {
         'show_in_rest'  => true,
     ) );
 }
-add_action( 'init', 'wos_survival_register_cpts' );
-
-/**
- * Register Taxonomies
- */
-function wos_survival_register_taxonomies() {
-    // Generation
-    register_taxonomy( 'generation', 'hero', array(
-        'label'        => __( 'Generation', 'wos-survival' ),
-        'rewrite'      => array( 'slug' => 'generation' ),
-        'hierarchical' => true,
-        'show_in_rest' => true,
-    ) );
-
-    // Troop Type
-    register_taxonomy( 'troop_type', 'hero', array(
-        'label'        => __( 'Troop Type', 'wos-survival' ),
-        'rewrite'      => array( 'slug' => 'troop-type' ),
-        'hierarchical' => true,
-        'show_in_rest' => true,
-    ) );
-}
-add_action( 'init', 'wos_survival_register_taxonomies' );
+add_action( 'init', 'wos_survival_register_gift_code_cpt' );
 
 /**
  * Custom Fields for Gift Code
@@ -153,6 +79,24 @@ function wos_survival_save_gift_code_data( $post_id ) {
 
     if ( isset( $_POST['wos_code_string'] ) ) {
         update_post_meta( $post_id, '_wos_code_string', sanitize_text_field( $_POST['wos_code_string'] ) );
+        
+        // API duplication check relies on 'code_string' key (without underscore) in some contexts, 
+        // ensuring compatibility by saving both or standardizing.
+        // The API implementation uses 'code_string' (no underscore) in meta_query check but saves '_wos_code_string' in meta_input.
+        // Let's align on what the API uses.
+        // API implementation:
+        // Check: key='code_string', value=$code
+        // Save: '_wos_code_string' => $code
+        // This seems inconsistent in the API code I wrote earlier. 
+        // Checking API code...
+        // API check uses 'code_string'. API save uses 'code_string' (no underscore) in meta_input for the duplicate check key?
+        // Wait, looking at API code I wrote in step 25/39:
+        // Check: key => 'code_string'
+        // Save: 'code_string' => $code_string (in meta_input)
+        // AND '_wos_code_string' => $code_string
+        
+        // So we should save 'code_string' as well to match API duplicate check logic if we want manual edits to be catchy.
+        update_post_meta( $post_id, 'code_string', sanitize_text_field( $_POST['wos_code_string'] ) );
     }
     if ( isset( $_POST['wos_rewards'] ) ) {
         update_post_meta( $post_id, '_wos_rewards', sanitize_textarea_field( $_POST['wos_rewards'] ) );
