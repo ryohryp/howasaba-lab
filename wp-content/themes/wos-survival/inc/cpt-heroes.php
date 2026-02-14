@@ -187,13 +187,84 @@ class WoS_Hero_CPT {
     /**
      * Save Meta Box Data
      */
+    /**
+     * Add Quick Edit Field
+     */
+    public function display_quick_edit_custom_box( $column_name, $post_type ) {
+        if ( 'japanese_name' !== $column_name || 'wos_hero' !== $post_type ) {
+            return;
+        }
+        wp_nonce_field( 'wos_save_hero_quick_edit', 'wos_hero_quick_edit_nonce' );
+        ?>
+        <fieldset class="inline-edit-col-left">
+            <div class="inline-edit-col">
+                <label>
+                    <span class="title"><?php _e( 'Japanese Name', WOS_TEXT_DOMAIN ); ?></span>
+                    <span class="input-text-wrap">
+                        <input type="text" name="japanese_name" class="text" value="">
+                    </span>
+                </label>
+            </div>
+        </fieldset>
+        <?php
+    }
+
+    /**
+     * Quick Edit Javascript
+     */
+    public function quick_edit_javascript() {
+        global $current_screen;
+        if ( 'wos_hero' !== $current_screen->post_type ) {
+            return;
+        }
+        ?>
+        <script>
+        jQuery(document).ready(function($){
+            // Copy the instance of the edit function
+            var $wp_inline_edit = inlineEditPost.edit;
+            // Overwrite
+            inlineEditPost.edit = function( id ) {
+                // Run original
+                $wp_inline_edit.apply( this, arguments );
+                
+                // Get Post ID
+                var $post_id = 0;
+                if ( typeof( id ) == 'object' ) {
+                    $post_id = parseInt( this.getId( id ) );
+                }
+
+                if ( $post_id > 0 ) {
+                    // Define rows
+                    var $edit_row = $( '#edit-' + $post_id );
+                    var $post_row = $( '#post-' + $post_id );
+                    
+                    // Get data
+                    var $jp_name = $post_row.find( '.wos_hero_japanese_name_value' ).text();
+                    
+                    // Populate
+                    $edit_row.find( 'input[name="japanese_name"]' ).val( $jp_name );
+                }
+            };
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Save Meta Box Data (Handling both Edit Screen and Quick Edit)
+     */
     public function save_meta_box_data( $post_id ) {
-        if ( ! isset( $_POST['wos_hero_meta_box_nonce'] ) ) {
+        // 1. Check if it's a Quick Edit Save
+        $is_quick_edit = isset( $_POST['wos_hero_quick_edit_nonce'] ) && wp_verify_nonce( $_POST['wos_hero_quick_edit_nonce'], 'wos_save_hero_quick_edit' );
+        
+        // 2. Check if it's a Full Edit Save
+        $is_full_edit = isset( $_POST['wos_hero_meta_box_nonce'] ) && wp_verify_nonce( $_POST['wos_hero_meta_box_nonce'], 'wos_save_hero_data' );
+
+        // If neither, return
+        if ( ! $is_quick_edit && ! $is_full_edit ) {
             return;
         }
-        if ( ! wp_verify_nonce( $_POST['wos_hero_meta_box_nonce'], 'wos_save_hero_data' ) ) {
-            return;
-        }
+
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
             return;
         }
@@ -256,5 +327,7 @@ add_action( 'manage_wos_hero_posts_custom_column', function($column, $post_id) {
     if ($column === 'japanese_name') {
         $jp_name = get_post_meta($post_id, 'japanese_name', true);
         echo esc_html($jp_name);
+        // Hidden field for Quick Edit JS to grab
+        echo '<span class="hidden wos_hero_japanese_name_value" style="display:none;">' . esc_attr($jp_name) . '</span>';
     }
 }, 10, 2 );
