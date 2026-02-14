@@ -18,9 +18,16 @@ CODE_PATTERN = r'\b([A-Z0-9]{4,12})\b' # Example: WOS2024, GIFT123
 IGNORE_LIST = {"REDDIT", "POST", "GAME", "STATE", "SVS", "GEN", "FC", "S1", "S2", "S3", "S4", "S5", "S6"}
 
 def fetch_reddit_posts():
-    headers = {'User-Agent': 'WOS-Gift-Radar/1.0'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 WosRadarBot/1.0'
+    }
     try:
         response = requests.get(SOURCE_URL, headers=headers)
+        
+        if response.status_code != 200:
+            print(f"Error fetching Reddit posts: Status {response.status_code}")
+            print(f"Response text: {response.text[:500]}")  # Print start of error response
+            
         response.raise_for_status()
         data = response.json()
         posts = []
