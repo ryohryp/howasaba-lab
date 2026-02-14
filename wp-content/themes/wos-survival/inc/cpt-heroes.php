@@ -169,7 +169,25 @@ class WoS_Hero_CPT {
             .wos-meta-row:last-child { border-bottom: none; }
             .wos-meta-row label { display: block; font-weight: bold; margin-bottom: 5px; }
             .wos-meta-row input[type="text"], .wos-meta-row input[type="number"] { width: 100%; max-width: 400px; }
+            .wos-image-search-link { display: inline-block; margin-bottom: 10px; font-weight: bold; text-decoration: none; color: #0073aa; }
+            .wos-image-search-link:hover { color: #005177; }
         </style>';
+
+        // --- Image Helpers ---
+        // Google Image Search Link
+        $search_query = urlencode( 'Whiteout Survival ' . get_the_title( $post->ID ) . ' icon' );
+        echo '<div class="wos-meta-row" style="background: #f0f6fc; border-left: 4px solid #72aee6; padding: 10px;">';
+        echo '<a href="https://www.google.com/search?tbm=isch&q=' . $search_query . '" target="_blank" class="wos-image-search-link">';
+        echo '<span class="dashicons dashicons-search" style="vertical-align: text-bottom;"></span> ' . __( 'Search Hero Image on Google', WOS_TEXT_DOMAIN );
+        echo '</a>';
+        
+        // Sideload Input
+        echo '<div style="margin-top: 5px;">';
+        echo '<label for="hero_sideload_image_url" style="display:inline-block; margin-right:10px;">' . __( 'Set Featured Image from URL:', WOS_TEXT_DOMAIN ) . '</label>';
+        echo '<input type="text" id="hero_sideload_image_url" name="hero_sideload_image_url" value="" placeholder="https://example.com/image.png" style="width: 100%; max-width: 500px;" />';
+        echo '<p class="description">' . __( 'Paste an image URL here and save to automatically download and set it as the Featured Image.', WOS_TEXT_DOMAIN ) . '</p>';
+        echo '</div>';
+        echo '</div>';
 
         foreach ( $fields as $key => $label ) {
             $type = ( strpos( $key, 'stats' ) !== false || strpos( $key, 'day' ) !== false ) ? 'number' : 'text';
@@ -272,6 +290,29 @@ class WoS_Hero_CPT {
         }
         if ( ! current_user_can( 'edit_post', $post_id ) ) {
             return;
+        }
+
+        // --- Handle Image Sideload (Full Edit Only) ---
+        if ( $is_full_edit && ! empty( $_POST['hero_sideload_image_url'] ) ) {
+            $image_url = esc_url_raw( $_POST['hero_sideload_image_url'] );
+            
+            // Check if it's a valid URL
+            if ( filter_var( $image_url, FILTER_VALIDATE_URL ) ) {
+                require_once( ABSPATH . 'wp-admin/includes/media.php' );
+                require_once( ABSPATH . 'wp-admin/includes/file.php' );
+                require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+                // Sideload image
+                $desc = "Hero Image for Post $post_id";
+                $img_id = media_sideload_image( $image_url, $post_id, $desc, 'id' );
+
+                if ( ! is_wp_error( $img_id ) ) {
+                    // Set as featured image
+                    set_post_thumbnail( $post_id, $img_id );
+                }
+                // We do NOT save the URL to a meta field because we processed it.
+                // The input field will be empty on reload.
+            }
         }
 
         $fields = [
