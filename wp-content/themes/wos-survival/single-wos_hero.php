@@ -131,15 +131,15 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                         <!-- Quick Stats Grid -->
                         <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-6">
                             <div class="text-center">
-                                <div class="text-xs uppercase tracking-wider text-gray-500">Attack</div>
+                                <div class="text-xs uppercase tracking-wider text-gray-500"><?php _e( 'Attack', 'wos-frost-fire' ); ?></div>
                                 <div class="text-2xl font-bold text-white"><?php echo esc_html( $stats_attack ?: 'N/A' ); ?></div>
                             </div>
                             <div class="text-center border-l border-white/10">
-                                <div class="text-xs uppercase tracking-wider text-gray-500">Defense</div>
+                                <div class="text-xs uppercase tracking-wider text-gray-500"><?php _e( 'Defense', 'wos-frost-fire' ); ?></div>
                                 <div class="text-2xl font-bold text-white"><?php echo esc_html( $stats_defense ?: 'N/A' ); ?></div>
                             </div>
                             <div class="text-center border-l border-white/10">
-                                <div class="text-xs uppercase tracking-wider text-gray-500">Health</div>
+                                <div class="text-xs uppercase tracking-wider text-gray-500"><?php _e( 'Health', 'wos-frost-fire' ); ?></div>
                                 <div class="text-2xl font-bold text-white"><?php echo esc_html( $stats_health ?: 'N/A' ); ?></div>
                             </div>
                         </div>
@@ -152,7 +152,7 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 <!-- Exploration Skill -->
                 <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                     <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>🧭</span> Exploration Skill (Active)
+                        <span>🧭</span> <?php _e( 'Exploration Skill (Active)', 'wos-frost-fire' ); ?>
                     </h3>
                     <div class="text-gray-300 leading-relaxed">
                         <?php 
@@ -161,7 +161,7 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                         } elseif ( $exploration_skill ) {
                              echo wpautop( esc_html( $exploration_skill ) );
                         } else {
-                            echo 'No skill data available.';
+                            _e( 'No skill data available.', 'wos-frost-fire' );
                         }
                         ?>
                     </div>
@@ -170,26 +170,26 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 <!-- Expedition Skills -->
                 <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                     <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>⚔️</span> Expedition Skills
+                        <span>⚔️</span> <?php _e( 'Expedition Skills', 'wos-frost-fire' ); ?>
                     </h3>
                     <div class="text-gray-300 leading-relaxed space-y-4">
                         <?php if ( $skill_expedition_1 || $skill_expedition_2 ) : ?>
                             <?php if ( $skill_expedition_1 ) : ?>
                                 <div>
-                                    <strong class="block text-gray-200 text-sm mb-1">Skill 1</strong>
+                                    <strong class="block text-gray-200 text-sm mb-1"><?php _e( 'Skill 1', 'wos-frost-fire' ); ?></strong>
                                     <?php echo wp_kses_post( $skill_expedition_1 ); ?>
                                 </div>
                             <?php endif; ?>
                             <?php if ( $skill_expedition_2 ) : ?>
                                 <div>
-                                    <strong class="block text-gray-200 text-sm mb-1">Skill 2</strong>
+                                    <strong class="block text-gray-200 text-sm mb-1"><?php _e( 'Skill 2', 'wos-frost-fire' ); ?></strong>
                                     <?php echo wp_kses_post( $skill_expedition_2 ); ?>
                                 </div>
                             <?php endif; ?>
                         <?php elseif ( $expedition_skill ) : ?>
                              <?php echo wpautop( esc_html( $expedition_skill ) ); ?>
                         <?php else : ?>
-                            No skill data available.
+                            <?php _e( 'No skill data available.', 'wos-frost-fire' ); ?>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -207,7 +207,7 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 ?>
                 <div class="mt-8 rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                     <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>🛡️</span> Exclusive Gear
+                        <span>🛡️</span> <?php _e( 'Exclusive Gear', 'wos-frost-fire' ); ?>
                         <?php if($widget_name): ?>
                             <span class="text-white text-base font-normal ml-2">- <?php echo esc_html($widget_name); ?></span>
                         <?php endif; ?>
@@ -218,7 +218,7 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                         </div>
                         <?php if($gear_priority): ?>
                         <div class="border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
-                            <div class="text-sm text-gray-400 uppercase tracking-widest mb-1">Priority</div>
+                            <div class="text-sm text-gray-400 uppercase tracking-widest mb-1"><?php _e( 'Priority', 'wos-frost-fire' ); ?></div>
                             <div class="inline-block px-3 py-1 rounded bg-gradient-to-r from-fire-crystal/80 to-red-600/80 text-white font-bold shadow-lg">
                                 <?php echo esc_html($gear_priority); ?>
                             </div>
@@ -235,7 +235,7 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 ?>
                 <div class="mt-8 rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                     <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>🤝</span> Recommended Formation
+                        <span>🤝</span> <?php _e( 'Recommended Formation', 'wos-frost-fire' ); ?>
                     </h3>
                     <div class="text-gray-300 leading-relaxed">
                         <?php echo wp_kses_post( wpautop($team_rec) ); ?>

@@ -33,7 +33,7 @@
                 ?>
             </div><!-- .site-branding -->
 
-            <nav id="site-navigation" class="main-navigation">
+            <nav id="site-navigation" class="main-navigation flex items-center gap-6">
                 <!-- Mobile menu button could go here with Alpine.js -->
                 <?php
                 wp_nav_menu(
@@ -45,6 +45,13 @@
                     )
                 );
                 ?>
+                
+                <!-- Desktop Language Switcher -->
+                <div class="hidden md:flex items-center gap-2 border-l border-white/10 pl-6">
+                    <a href="<?php echo esc_url( wos_get_language_url('ja') ); ?>" class="text-xs font-bold <?php echo get_locale() === 'ja' ? 'text-ice-blue' : 'text-gray-500 hover:text-white'; ?>">JP</a>
+                    <span class="text-gray-700">/</span>
+                    <a href="<?php echo esc_url( wos_get_language_url('en') ); ?>" class="text-xs font-bold <?php echo get_locale() !== 'ja' ? 'text-ice-blue' : 'text-gray-500 hover:text-white'; ?>">EN</a>
+                </div>
             </nav><!-- #site-navigation -->
         </div>
 	</header><!-- #masthead -->

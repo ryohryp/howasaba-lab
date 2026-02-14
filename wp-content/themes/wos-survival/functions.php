@@ -50,6 +50,9 @@ function wos_frost_fire_setup() {
             'script',
         ]
     );
+
+    // Load theme textdomain.
+    load_theme_textdomain( WOS_TEXT_DOMAIN, get_template_directory() . '/languages' );
 }
 add_action( 'after_setup_theme', 'wos_frost_fire_setup' );
 
@@ -453,3 +456,46 @@ function wos_seed_gen6_skills() {
     });
 }
 add_action('init', 'wos_seed_gen6_skills');
+
+/**
+ * Language Switcher Helper
+ */
+function wos_get_language_url( $lang ) {
+    return add_query_arg( 'lang', $lang );
+}
+
+/**
+ * Handle Language Setting
+ */
+function wos_handle_language_setting() {
+    if ( isset( $_GET['lang'] ) ) {
+        $lang = sanitize_text_field( $_GET['lang'] );
+        if ( in_array( $lang, ['ja', 'en'] ) ) {
+            setcookie( 'wos_lang', $lang, time() + 365 * 24 * 60 * 60, '/' );
+            $_COOKIE['wos_lang'] = $lang; // Update current request
+        }
+    }
+}
+add_action( 'init', 'wos_handle_language_setting' );
+
+/**
+ * Filter Locale based on Cookie/Param
+ */
+function wos_filter_locale( $locale ) {
+    if ( isset( $_GET['lang'] ) ) {
+        $lang = sanitize_text_field( $_GET['lang'] );
+    } elseif ( isset( $_COOKIE['wos_lang'] ) ) {
+        $lang = sanitize_text_field( $_COOKIE['wos_lang'] );
+    } else {
+        return $locale;
+    }
+
+    if ( $lang === 'ja' ) {
+        return 'ja';
+    } elseif ( $lang === 'en' ) {
+        return 'en_US';
+    }
+
+    return $locale;
+}
+add_filter( 'locale', 'wos_filter_locale' );

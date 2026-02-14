@@ -83,8 +83,20 @@
         <a href="<?php echo get_post_type_archive_link('wos_hero'); ?>" class="block py-2 text-gray-300 hover:text-white border-b border-white/5"><?php _e('Heroes Database', 'wos-frost-fire'); ?></a>
         <a href="<?php echo get_post_type_archive_link('wos_event'); ?>" class="block py-2 text-gray-300 hover:text-white border-b border-white/5"><?php _e('Event Calendar', 'wos-frost-fire'); ?></a>
         <a href="<?php echo get_post_type_archive_link('gift_code'); ?>" class="block py-2 text-gray-300 hover:text-white border-b border-white/5"><?php _e('Gift Codes', 'wos-frost-fire'); ?></a>
-        <!-- Add more links as needed -->
     </nav>
+    
+    <!-- Language Switcher -->
+    <div class="mt-8">
+        <h3 class="text-xs font-bold text-gray-500 mb-2 uppercase"><?php _e('Language', 'wos-frost-fire'); ?></h3>
+        <div class="flex gap-4">
+            <a href="<?php echo esc_url( wos_get_language_url('ja') ); ?>" class="text-sm px-3 py-1 rounded border border-white/10 <?php echo get_locale() === 'ja' ? 'bg-ice-blue text-black font-bold' : 'text-gray-400 hover:text-white'; ?>">
+                JP
+            </a>
+            <a href="<?php echo esc_url( wos_get_language_url('en') ); ?>" class="text-sm px-3 py-1 rounded border border-white/10 <?php echo get_locale() !== 'ja' ? 'bg-ice-blue text-black font-bold' : 'text-gray-400 hover:text-white'; ?>">
+                EN
+            </a>
+        </div>
+    </div>
     
     <div class="mt-8 pt-8 border-t border-white/10">
         <p class="text-xs text-gray-500 text-center">&copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?></p>
