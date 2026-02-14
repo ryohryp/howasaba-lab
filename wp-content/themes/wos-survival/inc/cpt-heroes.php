@@ -234,3 +234,28 @@ function wos_get_hero_stats( $post_id ) {
 }
 
 new WoS_Hero_CPT();
+
+/**
+ * Add Japanese Name Column to Admin List
+ */
+add_filter( 'manage_wos_hero_posts_columns', function($columns) {
+    $new_columns = [];
+    foreach($columns as $key => $value) {
+        $new_columns[$key] = $value;
+        if ($key === 'title') {
+            $new_columns['japanese_name'] = __( 'Japanese Name', WOS_TEXT_DOMAIN );
+        }
+    }
+    // If loop fails or no title, just append
+    if ( ! isset($new_columns['japanese_name']) ) {
+        $new_columns['japanese_name'] = __( 'Japanese Name', WOS_TEXT_DOMAIN );
+    }
+    return $new_columns;
+});
+
+add_action( 'manage_wos_hero_posts_custom_column', function($column, $post_id) {
+    if ($column === 'japanese_name') {
+        $jp_name = get_post_meta($post_id, 'japanese_name', true);
+        echo esc_html($jp_name);
+    }
+}, 10, 2 );
