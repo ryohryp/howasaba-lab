@@ -61,4 +61,9 @@ add_action( 'wp_enqueue_scripts', 'wos_survival_scripts' );
  */
 require get_template_directory() . '/inc/custom-post-types.php';
 require get_template_directory() . '/inc/custom-queries.php';
-require_once get_template_directory() . '/inc/api-endpoints.php';
+$api_endpoints_path = get_template_directory() . '/inc/api-endpoints.php';
+if ( file_exists( $api_endpoints_path ) ) {
+    require_once $api_endpoints_path;
+} else {
+    error_log( 'WOS Radar Error: api-endpoints.php not found at ' . $api_endpoints_path );
+}
