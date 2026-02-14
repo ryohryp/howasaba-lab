@@ -23,13 +23,6 @@
             'posts_per_page' => 3,
             'orderby'        => 'date',
             'order'          => 'DESC',
-            'meta_query'     => [
-                [
-                    'key'     => 'gift_code_status',
-                    'value'   => 'active',
-                    'compare' => '='
-                ]
-            ]
         ]);
         
         if ($latest_codes->have_posts()) : ?>
@@ -80,9 +73,8 @@
         $featured_heroes = new WP_Query([
             'post_type'      => 'wos_hero',
             'posts_per_page' => 4,
-            'meta_key'       => 'overall_tier',
-            'orderby'        => 'meta_value',
-            'order'          => 'ASC',
+            'orderby'        => 'date',
+            'order'          => 'DESC',
         ]);
         
         if ($featured_heroes->have_posts()) : ?>
@@ -108,9 +100,8 @@
         $events = new WP_Query([
             'post_type'      => 'wos_event',
             'posts_per_page' => 3,
-            'orderby'        => 'meta_value',
-            'meta_key'       => 'event_start_date',
-            'order'          => 'ASC',
+            'orderby'        => 'date',
+            'order'          => 'DESC',
         ]);
         
         if ($events->have_posts()) : ?>
