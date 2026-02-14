@@ -22,7 +22,7 @@ add_action( 'init', 'wos_register_gift_code_shortcode' );
  */
 function wos_gift_code_list_callback( $atts ) {
 	$atts = shortcode_atts( array(
-		'limit' => 10,
+		'limit' => 20, // Increased default as requested
 	), $atts, 'wos_gift_codes' );
 
 	// Enqueue styles and scripts ONLY when shortcode is used
@@ -41,7 +41,8 @@ function wos_gift_code_list_callback( $atts ) {
 	$query = new WP_Query( $args );
 
 	if ( ! $query->have_posts() ) {
-		return '<p>現在、利用可能なギフトコードはありません。</p>';
+		// Updated message as requested
+		return '<p class="wos-no-codes">現在、有効なギフトコードは検知されていません。</p>';
 	}
 
 	ob_start();
@@ -52,9 +53,8 @@ function wos_gift_code_list_callback( $atts ) {
 			$query->the_post();
 			$post_id = get_the_ID();
             
-            // Meta Data
-            // Support both key formats (API uses 'code_string', manual save uses '_wos_code_string')
-            // Priority: _wos_code_string (Manual) -> code_string (API)
+            // Meta Data Retrieve
+            // Check _wos_code_string (Manual/Old) then code_string (API/New)
 			$code = get_post_meta( $post_id, '_wos_code_string', true );
             if ( empty( $code ) ) {
                 $code = get_post_meta( $post_id, 'code_string', true );
@@ -70,6 +70,10 @@ function wos_gift_code_list_callback( $atts ) {
                 $expiration = get_post_meta( $post_id, 'expiration_date', true );
             }
 
+            // Skip if no code string is found
+            if ( empty( $code ) ) {
+                continue;
+            }
 
 			// Logic for classes
 			$is_new = false;
