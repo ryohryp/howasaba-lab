@@ -85,6 +85,39 @@ get_header();
                 ?>
             </div>
 
+            <!-- Strategy Guides Section -->
+            <section class="mb-16">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
+                        <span class="w-1.5 h-8 bg-emerald-500 rounded-sm"></span>
+                        <?php _e( 'Strategy Guides', 'wos-frost-fire' ); ?>
+                    </h2>
+                    <a href="<?php echo home_url('/guide'); ?>" class="text-sm font-bold text-emerald-400 hover:text-white transition-colors flex items-center gap-1">
+                        <?php _e( 'View All', 'wos-frost-fire' ); ?> <span class="text-lg">→</span>
+                    </a>
+                </div>
+
+                <?php
+                $guides_query = new WP_Query([
+                    'post_type'      => 'post',
+                    'posts_per_page' => 3,
+                    'orderby'        => 'date',
+                    'order'          => 'DESC',
+                ]);
+
+                if ( $guides_query->have_posts() ) : ?>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <?php while ( $guides_query->have_posts() ) : $guides_query->the_post(); ?>
+                            <?php get_template_part( 'parts/article-card' ); ?>
+                        <?php endwhile; wp_reset_postdata(); ?>
+                    </div>
+                <?php else : ?>
+                    <div class="text-center py-12 border border-dashed border-slate-700 rounded-xl bg-slate-800/50">
+                        <p class="text-gray-400"><?php _e( 'No guides available yet.', 'wos-frost-fire' ); ?></p>
+                    </div>
+                <?php endif; ?>
+            </section>
+
             <!-- Latest Info Section -->
             <?php get_template_part( 'parts/section-latest-intel' ); ?>
         </div>
