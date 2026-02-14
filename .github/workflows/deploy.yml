@@ -28,7 +28,7 @@ jobs:
           port: 21
           # Path to your theme on the server
           # Example: /home/your-id/your-domain.com/public_html/wp-content/themes/wos-survival/
-          server-dir: ${{ secrets.FTP_TARGET_DIR }}
+          server-dir: /wp-content/themes/wos-survival/
           # Exclude files
           exclude: |
             **/.git*
