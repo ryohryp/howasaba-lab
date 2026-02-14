@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function wos_register_gift_code_api_routes_debug() {
     register_rest_route( 'wos-radar/v1', '/add-code', array(
-        'methods'             => WP_REST_Server::ALL, // GET, POST, etc.
+        'methods'             => array( 'GET', 'POST' ), // GET, POST, etc.
         'callback'            => 'wos_handle_gift_code_debug',
         'permission_callback' => '__return_true',     // Bypass auth completely
     ) );
