@@ -12,8 +12,18 @@ $hero_id = get_the_ID();
 $stats_attack = get_post_meta( $hero_id, '_hero_stats_atk', true );
 $stats_defense = get_post_meta( $hero_id, '_hero_stats_def', true );
 $stats_health = get_post_meta( $hero_id, '_hero_stats_hp', true );
+
+// Old Skills (Fallback)
 $expedition_skill = get_post_meta( $hero_id, '_hero_expedition_skill', true );
 $exploration_skill = get_post_meta( $hero_id, '_hero_exploration_skill', true );
+
+// New Skills (Gen 6+)
+$skill_exploration_active = get_post_meta( $hero_id, 'skill_exploration_active', true );
+$skill_expedition_1 = get_post_meta( $hero_id, 'skill_expedition_1', true );
+$skill_expedition_2 = get_post_meta( $hero_id, 'skill_expedition_2', true );
+
+// Japanese Name
+$japanese_name = get_post_meta( $hero_id, 'japanese_name', true );
 
 // Terms
 $generation = get_the_terms( $hero_id, 'hero_generation' );
@@ -22,12 +32,17 @@ $rarity = get_the_terms( $hero_id, 'hero_rarity' );
 $gen_name = !empty($generation) ? $generation[0]->name : 'Unknown Gen';
 $type_name = !empty($type) ? $type[0]->name : 'Unknown Type';
 $rarity_name = !empty($rarity) ? $rarity[0]->name : 'Common';
+// ... (JSON-LD part skipped for brevity in replace, effectively keeping it same if I target correctly)
+?>
 
-// Construct JSON-LD
+<script type="application/ld+json">
+<?php
+// Re-construct JSON-LD to include JP name if needed, but not strictly required.
 $json_ld = [
     "@context" => "https://schema.org",
     "@type" => "GameCharacter",
     "name" => get_the_title(),
+    "alternateName" => $japanese_name, // Add JP name
     "image" => get_the_post_thumbnail_url( $hero_id, 'full' ),
     "description" => get_the_excerpt(),
     "gameItem" => [
@@ -52,10 +67,8 @@ $json_ld = [
         ]
     ]
 ];
+echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES); 
 ?>
-
-<script type="application/ld+json">
-<?php echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES); ?>
 </script>
 
 <main id="primary" class="site-main container mx-auto px-4 py-8">
@@ -66,6 +79,16 @@ $json_ld = [
             
             <!-- Hero Header / Banner -->
             <div class="relative mb-8 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-gradient-to-br from-deep-freeze to-midnight-navy">
+                <style>
+                    /* Custom styles for this template */
+                    .skill-value {
+                        color: #fbbf24; /* Amber-400 */
+                        font-weight: bold;
+                    }
+                    .text-jp-name {
+                        font-family: "Noto Sans JP", sans-serif;
+                    }
+                </style>
                 <div class="grid md:grid-cols-3 gap-0">
                     <!-- Image Column -->
                     <div class="relative h-96 md:h-auto bg-black/20">
@@ -83,9 +106,14 @@ $json_ld = [
                              <span class="rounded bg-white/10 px-3 py-1 text-sm font-bold text-gray-300 border border-white/10"><?php echo esc_html( $type_name ); ?></span>
                         </div>
 
-                        <h1 class="mb-4 text-4xl md:text-6xl font-black text-white uppercase tracking-tight drop-shadow-lg">
+                        <h1 class="mb-1 text-4xl md:text-6xl font-black text-white uppercase tracking-tight drop-shadow-lg">
                             <?php the_title(); ?>
                         </h1>
+                        <?php if ( $japanese_name ) : ?>
+                            <h2 class="mb-4 text-2xl md:text-3xl font-bold text-gray-400 text-jp-name">
+                                <?php echo esc_html( $japanese_name ); ?>
+                            </h2>
+                        <?php endif; ?>
 
                         <div class="prose prose-invert max-w-none mb-8 text-gray-300">
                             <?php the_content(); ?>
@@ -112,23 +140,48 @@ $json_ld = [
 
             <!-- Skills Section using Glassmorphism -->
             <div class="grid md:grid-cols-2 gap-8">
-                <!-- Expedition Skill -->
-                <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>⚔️</span> Expedition Skill
-                    </h3>
-                    <div class="text-gray-300 leading-relaxed">
-                        <?php echo wpautop( esc_html( $expedition_skill ?: 'No skill data available.' ) ); ?>
-                    </div>
-                </div>
-
                 <!-- Exploration Skill -->
                 <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                     <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
-                        <span>🧭</span> Exploration Skill
+                        <span>🧭</span> Exploration Skill (Active)
                     </h3>
                     <div class="text-gray-300 leading-relaxed">
-                        <?php echo wpautop( esc_html( $exploration_skill ?: 'No skill data available.' ) ); ?>
+                        <?php 
+                        if ( $skill_exploration_active ) {
+                            echo wp_kses_post( $skill_exploration_active ); 
+                        } elseif ( $exploration_skill ) {
+                             echo wpautop( esc_html( $exploration_skill ) );
+                        } else {
+                            echo 'No skill data available.';
+                        }
+                        ?>
+                    </div>
+                </div>
+
+                <!-- Expedition Skills -->
+                <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+                    <h3 class="mb-4 text-xl font-bold text-ice-blue flex items-center gap-2">
+                        <span>⚔️</span> Expedition Skills
+                    </h3>
+                    <div class="text-gray-300 leading-relaxed space-y-4">
+                        <?php if ( $skill_expedition_1 || $skill_expedition_2 ) : ?>
+                            <?php if ( $skill_expedition_1 ) : ?>
+                                <div>
+                                    <strong class="block text-gray-200 text-sm mb-1">Skill 1</strong>
+                                    <?php echo wp_kses_post( $skill_expedition_1 ); ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ( $skill_expedition_2 ) : ?>
+                                <div>
+                                    <strong class="block text-gray-200 text-sm mb-1">Skill 2</strong>
+                                    <?php echo wp_kses_post( $skill_expedition_2 ); ?>
+                                </div>
+                            <?php endif; ?>
+                        <?php elseif ( $expedition_skill ) : ?>
+                             <?php echo wpautop( esc_html( $expedition_skill ) ); ?>
+                        <?php else : ?>
+                            No skill data available.
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
