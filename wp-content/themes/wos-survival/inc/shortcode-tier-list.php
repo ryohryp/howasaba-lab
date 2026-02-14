@@ -4,10 +4,19 @@
  * Attributes:
  * - gen: int (optional) - Max generation to display.
  */
+/**
+ * Shortcode: [hero_tier_list] or [wos_tier_list]
+ * Attributes:
+ * - generation (or gen): int (optional) - Generation number to display (e.g. 6).
+ */
 function wos_shortcode_tier_list( $atts ) {
     $atts = shortcode_atts( array(
-        'gen' => '', // Empty means all
-    ), $atts, 'wos_tier_list' );
+        'generation' => '', // Primary attribute
+        'gen'        => '', // Alias/Legacy
+    ), $atts, 'hero_tier_list' );
+
+    // Normalize generation
+    $generation_num = ! empty( $atts['generation'] ) ? $atts['generation'] : $atts['gen'];
 
     // Enqueue styles
     wp_enqueue_style( 'wos-tier-list-style' );
@@ -21,12 +30,14 @@ function wos_shortcode_tier_list( $atts ) {
     );
 
     // Filter by Generation if provided
-    if ( ! empty( $atts['gen'] ) ) {
-        // Assuming 'generation' is stored as a number in post_meta by ACF
+    if ( ! empty( $generation_num ) ) {
+        // Assuming 'generation' is stored as a number/string in post_meta by ACF
+        // We handle both meta key 'generation' and potentially 'hero_generation' taxonomy if complex,
+        // but let's stick to meta per requirements.
         $args['meta_query'][] = array(
             'key'     => 'generation',
-            'value'   => intval( $atts['gen'] ),
-            'compare' => '<=',
+            'value'   => intval( $generation_num ),
+            'compare' => '=', // Strict equality for specific generation
             'type'    => 'NUMERIC',
         );
     }
@@ -34,7 +45,8 @@ function wos_shortcode_tier_list( $atts ) {
     $query = new WP_Query( $args );
     
     if ( ! $query->have_posts() ) {
-        return '<p>No heroes found.</p>';
+        // Fallback or empty message
+        return '<div class="wos-tier-list-empty"><p>No heroes found for Gen ' . esc_html( $generation_num ) . '.</p></div>';
     }
 
     // Grouping & Sorting Data
@@ -43,14 +55,15 @@ function wos_shortcode_tier_list( $atts ) {
         'S'  => [],
         'A'  => [],
         'B'  => [],
-        'C'  => [], // Add more if needed
+        'C'  => [], 
     );
 
-    // Troop Type Priority for Sorting: Infantry=1, Lancer=2, Marksman=3
+    // Troop Type Priority: Shield=1, Spear=2, Bow=3
+    // Map internal types (Infantry, Lancer, Marksman)
     $troop_priority = array(
-        'Infantry' => 1,
-        'Lancer'   => 2,
-        'Marksman' => 3,
+        'Infantry' => 1, // Shield
+        'Lancer'   => 2, // Spear
+        'Marksman' => 3, // Bow
     );
 
     while ( $query->have_posts() ) {
@@ -58,28 +71,31 @@ function wos_shortcode_tier_list( $atts ) {
         $hero_id = get_the_ID();
         
         // Retrieve ACF fields
-        // Use get_field if ACF is active, otherwise fallback to get_post_meta
         $tier = function_exists('get_field') ? get_field( 'overall_tier', $hero_id ) : get_post_meta($hero_id, 'overall_tier', true);
         $gen  = function_exists('get_field') ? get_field( 'generation', $hero_id ) : get_post_meta($hero_id, 'generation', true);
         $type = function_exists('get_field') ? get_field( 'troop_type', $hero_id ) : get_post_meta($hero_id, 'troop_type', true);
         $jp_name = function_exists('get_field') ? get_field( 'japanese_name', $hero_id ) : get_post_meta($hero_id, 'japanese_name', true);
         $roles = function_exists('get_field') ? get_field( 'special_role', $hero_id ) : get_post_meta($hero_id, 'special_role', true);
         $roles = is_array($roles) ? $roles : [];
+        // Handle serialized if raw meta
+        if ( is_string($roles) && is_serialized($roles) ) {
+            $roles = unserialize($roles);
+        }
 
-        // Normalize Tier Key (handle potential case sensitivity or spaces)
+        // Normalize Tier Key
         $tier_key = strtoupper( trim( $tier ) );
         if ( ! array_key_exists( $tier_key, $heroes_by_tier ) ) {
-            // If Tier is undefined (e.g. empty), maybe put in 'C' or skip
-            // For now, let's create a partial bucket or skip
-            // $heroes_by_tier[$tier_key] = []; // Uncomment to allow dynamic tiers
-            continue; 
+            // Check for minor variations? e.g. "S PLUS" -> "S+"
+            // For now, simple mapping
+             if ( $tier_key === 'S PLUS' ) $tier_key = 'S+';
+             else continue; // Skip unknown tiers
         }
 
         $hero_data = array(
             'id'    => $hero_id,
             'name'  => get_the_title(),
             'jp'    => $jp_name,
-            'thumb' => get_the_post_thumbnail_url( $hero_id, 'thumbnail' ), // Use medium or thumbnail
+            'thumb' => get_the_post_thumbnail_url( $hero_id, 'thumbnail' ),
             'gen'   => $gen,
             'type'  => $type,
             'roles' => $roles,
@@ -97,8 +113,6 @@ function wos_shortcode_tier_list( $atts ) {
             $pB = $troop_priority[ $b['type'] ] ?? 99;
             
             if ( $pA === $pB ) {
-                // Secondary sort by Generation (High to Low? Low to High?) 
-                // Let's say Higher Gen first
                 return $b['gen'] - $a['gen'];
             }
             return $pA - $pB;
@@ -114,7 +128,13 @@ function wos_shortcode_tier_list( $atts ) {
             if ( empty( $group_heroes ) ) continue;
             
             // Determine row style class based on Tier
-            $row_class = 'tier-row-' . strtolower( str_replace( '+', '-plus', $tier_name ) );
+            $tier_clean = strtolower( str_replace( '+', '-plus', $tier_name ) );
+            $row_class = 'tier-row-' . $tier_clean;
+            
+            // Add 'fire-crystal-glow' for S+
+            if ( $tier_name === 'S+' ) {
+                $row_class .= ' fire-crystal-glow';
+            }
             ?>
             <div class="wos-tier-row <?php echo esc_attr( $row_class ); ?>">
                 <div class="wos-tier-label">
@@ -124,32 +144,36 @@ function wos_shortcode_tier_list( $atts ) {
                     <?php foreach ( $group_heroes as $hero ) : 
                         $type_class = 'type-' . strtolower( $hero['type'] );
                         ?>
-                        <a href="<?php echo esc_url( $hero['link'] ); ?>" class="wos-hero-card <?php echo esc_attr( $type_class ); ?>">
-                            <div class="hero-card-inner">
-                                <div class="hero-image-wrapper">
-                                    <?php if ( $hero['thumb'] ) : ?>
-                                        <img src="<?php echo esc_url( $hero['thumb'] ); ?>" alt="<?php echo esc_attr( $hero['name'] ); ?>" class="hero-thumb">
-                                    <?php else : ?>
-                                        <div class="hero-thumb-placeholder"></div>
-                                    <?php endif; ?>
-                                    <span class="hero-gen-badge">Gen <?php echo esc_html( $hero['gen'] ); ?></span>
-                                    <span class="hero-type-icon icon-<?php echo esc_attr( strtolower( $hero['type'] ) ); ?>"></span>
-                                </div>
-                                <div class="hero-info">
-                                    <span class="hero-name"><?php echo esc_html( $hero['name'] ); ?></span>
-                                    <?php if ( ! empty( $hero['jp'] ) ) : ?>
-                                        <span class="hero-name-jp"><?php echo esc_html( $hero['jp'] ); ?></span>
-                                    <?php endif; ?>
-                                    <?php if ( ! empty( $hero['roles'] ) ) : ?>
-                                        <div class="hero-roles">
-                                            <?php foreach ( $hero['roles'] as $role ) : ?>
-                                                <span class="role-pill"><?php echo esc_html( $role ); ?></span>
-                                            <?php endforeach; ?>
+                        <div class="wos-hero-card-wrapper">
+                            <a href="<?php echo esc_url( $hero['link'] ); ?>" class="wos-hero-card <?php echo esc_attr( $type_class ); ?>">
+                                <div class="hero-card-inner">
+                                    <div class="hero-image-wrapper">
+                                        <?php if ( $hero['thumb'] ) : ?>
+                                            <img src="<?php echo esc_url( $hero['thumb'] ); ?>" alt="<?php echo esc_attr( $hero['name'] ); ?>" class="hero-thumb">
+                                        <?php else : ?>
+                                            <div class="hero-thumb-placeholder"></div>
+                                        <?php endif; ?>
+                                        <div class="hero-badges">
+                                            <span class="hero-gen-badge">G<?php echo esc_html( $hero['gen'] ); ?></span>
                                         </div>
-                                    <?php endif; ?>
+                                        <span class="hero-type-icon icon-<?php echo esc_attr( strtolower( $hero['type'] ) ); ?>"></span>
+                                    </div>
+                                    <div class="hero-info">
+                                        <span class="hero-name"><?php echo esc_html( $hero['name'] ); ?></span>
+                                        <?php if ( ! empty( $hero['jp'] ) ) : ?>
+                                            <span class="hero-name-jp"><?php echo esc_html( $hero['jp'] ); ?></span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                            <?php if ( ! empty( $hero['roles'] ) ) : ?>
+                                <div class="hero-roles-below">
+                                    <?php foreach ( $hero['roles'] as $role ) : ?>
+                                        <span class="role-pill-tiny"><?php echo esc_html( $role ); ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -159,3 +183,4 @@ function wos_shortcode_tier_list( $atts ) {
     return ob_get_clean();
 }
 add_shortcode( 'wos_tier_list', 'wos_shortcode_tier_list' );
+add_shortcode( 'hero_tier_list', 'wos_shortcode_tier_list' );
