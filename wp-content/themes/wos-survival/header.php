@@ -11,8 +11,8 @@
 <body <?php body_class('bg-deep-freeze text-white font-sans antialiased selection:bg-fire-crystal selection:text-white'); ?>>
 <?php wp_body_open(); ?>
 
-<!-- Snow Overlay -->
-<?php get_template_part( 'parts/snow-overlay' ); ?>
+<!-- Snow Overlay Removed -->
+<?php // get_template_part( 'parts/snow-overlay' ); ?>
 
 <div id="page" class="site relative z-10 flex min-h-screen flex-col">
 	<a class="skip-link screen-reader-text focus:top-5 focus:left-5 focus:z-[100] focus:bg-white focus:text-black focus:p-4 absolute top-[-100px]" href="#primary"><?php esc_html_e( 'Skip to content', 'wos-frost-fire' ); ?></a>
