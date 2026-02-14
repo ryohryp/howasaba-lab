@@ -18,6 +18,11 @@ description: Development workflow and environment details for Howasaba Lab WordP
 - **Wrapper Script**: `C:\tools\composer.bat`
 - **Usage**: Run `C:\tools\composer.bat` for all composer commands.
 
+### Python (Automation Scripts)
+- **Scripts**: `scripts/`
+- **Dependencies**: `requirements.txt`
+- **Usage**: `python scripts/fetch_gift_codes.py` (Env vars required)
+
 ## テスト実行 (Running Tests)
 
 このプロジェクトでは PHPUnit を使用しています。環境変数 PATH に PHP が含まれていないため、以下のコマンドを使用してください。
@@ -36,6 +41,7 @@ C:\tools\php\php.exe vendor/bin/phpunit
 - **Theme Path (Local)**: `wp-content/themes/wos-survival`
 - **Deploy Target (Server)**: `/howasaba-code.com/public_html/wp-content/themes/wos-survival`
 - **Tests**: `tests/`
+- **Automation Scripts**: `scripts/`
 
 ## API エンドポイント (Custom REST API)
 
@@ -45,7 +51,21 @@ C:\tools\php\php.exe vendor/bin/phpunit
 - **Endpoints**:
     - `POST /add-code`: ギフトコードの登録
         - Params: `code_string`, `rewards`, `expiration_date`
-        - Note: 疎通確認用にGETリクエストも許可（固定メッセージ返却）している場合があります。
+        - Auth: `edit_posts` capability required
+
+## 自動化パイプライン (Automation Pipeline)
+
+ギフトコードの収集と登録を自動化するパイプラインが稼働しています。
+
+### 構成要素
+- **Script**: `scripts/fetch_gift_codes.py` (Reddit等からコードを収集しAPIへPOST)
+- **Workflow**: `.github/workflows/giftcode-radar.yml` (6時間ごとに実行)
+
+### 必要な Secrets
+GitHub Actionsでスクリプトを実行するために、以下のSecretsが必要です。
+- `WP_API_URL`: APIエンドポイント (e.g. `https://.../wp-json/wos-radar/v1/add-code`)
+- `WP_USER`: WordPressユーザー名
+- `WP_APP_PASSWORD`: Application Password
 
 ## デプロイ (CI/CD)
 
@@ -60,7 +80,7 @@ GitHub Actions を使用して Xserver へ自動デプロイされます。
 - **デプロイ (FTP)**:
     - **Source**: `./wp-content/themes/wos-survival/` (Build artifacts included)
     - **Target**: `/howasaba-code.com/public_html/wp-content/themes/wos-survival/`
-    - **Note**: `local-dir` を指定してテーマディレクトリのみをアップロードし、構造の意図しないネストを防いでいます。
+    - **Note**: `local-dir` を指定してテーマディレクトリのみをアップロード。`vendor/` はGit管理外のためデプロイされません。
 
-### 必要な Secrets
+### 必要な Secrets (Deploy)
 - `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`
