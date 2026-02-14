@@ -17,7 +17,7 @@ get_header();
             <?php 
             $hero_bg = get_theme_mod( 'wos_hero_bg', get_template_directory_uri() . '/assets/images/hero-bg.jpg' );
             ?>
-            <img src="<?php echo esc_url( $hero_bg ); ?>" alt="Background" class="w-full h-full object-cover">
+            <div class="w-full h-full bg-cover bg-center" style="background-image: url('<?php echo esc_url( $hero_bg ); ?>'); background-color: #0f172a;"></div>
         </div>
         
         <!-- Content -->
