@@ -3,7 +3,6 @@ import requests
 import feedparser
 import re
 import time
-from collections import namedtuple
 
 # Configuration
 # Reddit RSS Feed (New posts)
@@ -25,9 +24,6 @@ IGNORE_LIST = {
     "POLL", "EVENT", "BATTLE", "FIGHT", "WAR", "KILL", "SCORE", "RANK", "BEST",
     "GOOD", "LUCK", "HELP", "NEED", "WANT", "LOOK", "FIND", "OPEN", "CLOSE"
 }
-
-# Define a simple class to mimic feedparser entry for dummy data
-DummyEntry = namedtuple('DummyEntry', ['title', 'summary', 'link'])
 
 def fetch_reddit_rss():
     """
@@ -63,58 +59,50 @@ def extract_potential_codes(text):
     """
     Enhanced extraction logic:
     1. Only process text containing 'code' or 'gift'.
-    2. Extract 5-15 char uppercase strings.
+    2. Extract 5-15 char alphanumeric strings (Upper + Lower).
     3. Filter out IGNORE_LIST.
-    4. Categorize:
-       - High Confidence: Contains BOTH letters and numbers.
-       - Context Check: Pure letters require 'code'/'gift' nearby.
+    4. Validate:
+       - If contains digit: High Confidence (e.g. WOS2024, Vday2026).
+       - If ALL UPPER without digit: Needs context (e.g. HAPPYWEEKEND).
+       - If Mixed Case without digit: Skip (e.g. Hello, Code).
     """
     # 1. Broad filter: skip if no keywords found
     text_lower = text.lower()
     if "code" not in text_lower and "gift" not in text_lower:
-        print(f"  -> Skipped: No 'code'/'gift' keywords found in text.") # DEBUG LOG
         return []
 
-    # Regex for potential candidates: 5-15 alphanumeric uppercase
-    candidates = re.findall(r'\b[A-Z0-9]{5,15}\b', text)
+    # Regex for potential candidates: 5-15 alphanumeric (broad match)
+    candidates = re.findall(r'\b[A-Za-z0-9]{5,15}\b', text)
     valid_codes = set()
     
-    if not candidates:
-        print(f"  -> Skipped: No uppercase alphanumeric candidates found.") # DEBUG LOG
-
     for cand in candidates:
-        if cand in IGNORE_LIST: 
+        if cand.upper() in IGNORE_LIST: 
             continue
             
-        # Rule 2: Validation Logic
         has_digit = any(c.isdigit() for c in cand)
-        has_letter = any(c.isalpha() for c in cand)
+        is_all_upper = cand.isupper()
         
-        # A. High Confidence: Mixed Alphanumeric (e.g. WOS2024)
-        if has_digit and has_letter:
-            valid_codes.add(cand)
+        # Rule A: Contains digit -> Validate as code (e.g. Vday2026, wos2024)
+        if has_digit:
+            valid_codes.add(cand.upper()) # Normalize to uppercase
             continue
             
-        # B. Context Check: Pure Alpha (e.g. HAPPYWEEKEND)
-        # Check context: looking for "code", "gift", "key" before the candidate
-        # Simple proximity check: Is a keyword within 30 chars before the match?
-        try:
-            # Find the position of the candidate in the text
-            # Note: This is a simple `find`, might match wrong instance if duplicate words exist,
-            # but acceptable for a quick heuristic.
-            idx = text.find(cand) 
-            if idx > 0:
-                start_context = max(0, idx - 40)
-                context_snippet = text[start_context:idx].lower()
-                
-                # Check for strong indicator keywords
-                indicators = ["code", "gift", "cdk", "key", "redeem"]
-                if any(ind in context_snippet for ind in indicators):
-                    valid_codes.add(cand)
-                else:
-                    print(f"  -> Skipped candidate '{cand}': Pure alpha without context keywords.") # DEBUG LOG
-        except Exception:
-            pass # Skip if context check fails
+        # Rule B: Digit-less -> Must be ALL UPPER + Context Check (e.g. HAPPYWEEKEND)
+        # Note: This automatically skips "Hello" (Mixed case, no digit)
+        if is_all_upper:
+            # Check context: looking for indicator keywords nearby
+            try:
+                idx = text.find(cand) 
+                if idx > 0:
+                    start_context = max(0, idx - 40)
+                    context_snippet = text[start_context:idx].lower()
+                    
+                    # Check for strong indicator keywords
+                    indicators = ["code", "gift", "cdk", "key", "redeem"]
+                    if any(ind in context_snippet for ind in indicators):
+                        valid_codes.add(cand.upper())
+            except Exception:
+                pass
 
     return list(valid_codes)
 
@@ -124,7 +112,7 @@ def submit_code_to_api(code, source_title, source_link):
     """
     if not WP_API_URL:
         # For local testing, just print
-        print(f"[DRY RUN] Would submit: {code}")
+        # print(f"[DRY RUN] Would submit: {code}")
         return
 
     payload = {
@@ -155,32 +143,16 @@ def submit_code_to_api(code, source_title, source_link):
         print(f"Network Error submitting '{code}': {e}")
 
 def main():
-    print("--- WOS Gift Code Radar (Test Mode) Started ---")
+    print("--- WOS Gift Code Radar (Production) Started ---")
     
     if not WP_API_URL:
         print("WARNING: WP_API_URL environment variable is missing.")
     
     entries = fetch_reddit_rss()
     
-    # ---------------- TEST DATA INJECTION ----------------
-    print("\n--- Injecting Dummy Test Data ---")
-    dummy_data = DummyEntry(
-        title='[New Code] New Gift Code Released!', 
-        summary='Hey guys, use this new code: WOS2024TEST for free gems! Enjoy.',
-        link='http://example.com/test-post'
-    )
-    # Convert feedparser entries to list if it's not already mutable, though it usually is
-    if isinstance(entries, list):
-        entries.insert(0, dummy_data)
-    else:
-        # feedparser.FeedParserDict mimics list but might restrict insertion
-        entries = [dummy_data] + list(entries)
-    print("--- Dummy Data Injected ---\n")
-    # -----------------------------------------------------
-
     processed_codes = set()
     
-    for i, entry in enumerate(entries):
+    for entry in entries:
         title = entry.title
         # Handle summary/content safely
         content = ""
@@ -189,8 +161,6 @@ def main():
         elif hasattr(entry, 'description'):
             content = entry.description
             
-        print(f"Processing Entry #{i+1}: {title[:60]}...") # Progress log
-
         # Combine text for search
         full_text = f"{title} {content}"
         
@@ -200,13 +170,8 @@ def main():
         # Extract codes with new logic
         codes = extract_potential_codes(clean_text)
         
-        if not codes:
-            # Only print if no codes found (skip reason already printed inside function)
-            pass 
-        
         for code in codes:
             if code in processed_codes:
-                print(f"  -> Duplicate skipped: {code}")
                 continue
 
             submit_code_to_api(code, title, entry.link)
@@ -216,7 +181,7 @@ def main():
             if WP_API_URL:
                 time.sleep(1)
 
-    print("\n--- Radar Scan Completed ---")
+    print("--- Radar Scan Completed ---")
 
 if __name__ == "__main__":
     main()
