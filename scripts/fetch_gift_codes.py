@@ -13,14 +13,13 @@ WP_API_URL = os.environ.get("WP_API_URL")
 WP_USER = os.environ.get("WP_USER")
 WP_APP_PASSWORD = os.environ.get("WP_APP_PASSWORD")
 
-# Gift Code Pattern (Simple Regex)
-# Captures 4-12 alphanumeric characters, uppercase
-CODE_PATTERN = r'\b([A-Z0-9]{4,12})\b'
-
-# Filter out common false positives
+# Expanded Ignore List (Common French/English words that look like codes)
 IGNORE_LIST = {
     "REDDIT", "POST", "GAME", "STATE", "SVS", "GEN", "FC", 
-    "S1", "S2", "S3", "S4", "S5", "S6", "UTC", "PST", "EST", "KEY", "NEW"
+    "S1", "S2", "S3", "S4", "S5", "S6", "UTC", "PST", "EST", "KEY", "NEW", 
+    "CODE", "GIFT", "RETOUR", "MOMENT", "COPIER", "MERCI", "SALUT", "BONJOUR", 
+    "HELLO", "THANKS", "PLEASE", "SHARE", "FOUND", "TODAY", "DAILY", "WEEKLY",
+    "SERVER", "REGION", "UPDATE", "PATCH", "NOTE", "LINK", "HTTP", "HTTPS"
 }
 
 def fetch_reddit_rss():
@@ -55,32 +54,70 @@ def fetch_reddit_rss():
 
 def extract_potential_codes(text):
     """
-    Extracts potential gift codes from text using regex and an ignore list.
+    Enhanced extraction logic:
+    1. Only process text containing 'code' or 'gift'.
+    2. Extract 5-15 char uppercase strings.
+    3. Filter out IGNORE_LIST.
+    4. Categorize:
+       - High Confidence: Contains BOTH letters and numbers.
+       - Context Check: Pure letters require 'code'/'gift' nearby.
     """
-    matches = re.findall(CODE_PATTERN, text)
-    valid_codes = []
-    for code in matches:
-        upper_code = code.upper()
-        # Basic validation:
-        # 1. Not in IGNORE_LIST
-        # 2. Not purely digits (usually post IDs or counts)
-        # 3. Must contain at least one digit (most WOS codes have numbers, e.g. WOS2024) - OPTIONAL heuristic
-        if upper_code not in IGNORE_LIST and not upper_code.isdigit():
-             valid_codes.append(upper_code)
-    return valid_codes
+    # 1. Broad filter: skip if no keywords found
+    text_lower = text.lower()
+    if "code" not in text_lower and "gift" not in text_lower:
+        return []
+
+    # Regex for potential candidates: 5-15 alphanumeric uppercase
+    candidates = re.findall(r'\b[A-Z0-9]{5,15}\b', text)
+    valid_codes = set()
+    
+    for cand in candidates:
+        if cand in IGNORE_LIST: 
+            continue
+            
+        # Rule 2: Validation Logic
+        has_digit = any(c.isdigit() for c in cand)
+        has_letter = any(c.isalpha() for c in cand)
+        
+        # A. High Confidence: Mixed Alphanumeric (e.g. WOS2024)
+        if has_digit and has_letter:
+            valid_codes.add(cand)
+            continue
+            
+        # B. Context Check: Pure Alpha (e.g. HAPPYWEEKEND)
+        # Check context: looking for "code", "gift", "key" before the candidate
+        # Simple proximity check: Is a keyword within 30 chars before the match?
+        try:
+            # Find the position of the candidate in the text
+            # Note: This is a simple `find`, might match wrong instance if duplicate words exist,
+            # but acceptable for a quick heuristic.
+            idx = text.find(cand) 
+            if idx > 0:
+                start_context = max(0, idx - 40)
+                context_snippet = text[start_context:idx].lower()
+                
+                # Check for strong indicator keywords
+                indicators = ["code", "gift", "cdk", "key", "redeem"]
+                if any(ind in context_snippet for ind in indicators):
+                    valid_codes.add(cand)
+        except Exception:
+            pass # Skip if context check fails
+
+    return list(valid_codes)
 
 def submit_code_to_api(code, source_title, source_link):
     """
     Submits the extracted code to the WordPress REST API.
     """
     if not WP_API_URL:
-        print("WP_API_URL is not set. Skipping API submission.")
+        # For local testing, just print
+        # print(f"[DRY RUN] Would submit: {code}")
         return
 
     payload = {
         "code_string": code,
         "rewards": f"Found via Reddit RSS: {source_title[:50]}...",
-        "source_link": source_link, # If your API supports saving the source URL
+        "source_link": source_link,
         "status": "publish" 
     }
     
@@ -92,16 +129,20 @@ def submit_code_to_api(code, source_title, source_link):
         
         if response.status_code == 201:
             print(f"SUCCESS: Code '{code}' registered.")
-        elif response.status_code == 409: # Conflict often means duplicate
+        elif response.status_code == 409:
             print(f"SKIPPED: Code '{code}' already exists (409).")
+        elif response.status_code == 401:
+            print(f"AUTH ERROR (401): Check WP_USER/WP_APP_PASSWORD or .htaccess.")
+            print(f"Response: {response.text}")
         else:
-            print(f"FAILED: Code '{code}' - Status: {response.status_code}, Response: {response.text}")
+            print(f"FAILED: Code '{code}' - Status: {response.status_code}")
+            print(f"Response: {response.text[:200]}") # Truncate long error HTML
             
     except Exception as e:
         print(f"Network Error submitting '{code}': {e}")
 
 def main():
-    print("--- WOS Gift Code Radar (RSS Mode) Started ---")
+    print("--- WOS Gift Code Radar (Enhanced) Started ---")
     
     if not WP_API_URL:
         print("WARNING: WP_API_URL environment variable is missing.")
@@ -111,32 +152,33 @@ def main():
     processed_codes = set()
     
     for entry in entries:
-        # Combine title and summary/content for search
-        # content is essentially 'summary' in RSS 2.0 or 'content' in Atom
+        title = entry.title
+        # Handle summary/content safely
         content = ""
         if hasattr(entry, 'summary'):
             content = entry.summary
         elif hasattr(entry, 'description'):
             content = entry.description
             
-        full_text = f"{entry.title} {content}"
+        # Combine text for search
+        full_text = f"{title} {content}"
         
-        # Remove HTML tags from content for cleaner regex matching (rudimentary)
+        # Clean HTML tags very roughly
         clean_text = re.sub('<[^<]+?>', ' ', full_text)
         
+        # Extract codes with new logic
         codes = extract_potential_codes(clean_text)
         
         for code in codes:
             if code in processed_codes:
                 continue
-            
-            # Additional heuristic to reduce noise
-            if len(code) < 4: 
-                continue
 
-            submit_code_to_api(code, entry.title, entry.link)
+            submit_code_to_api(code, title, entry.link)
             processed_codes.add(code)
-            time.sleep(1) # Be gentle to the API
+            
+            # Rate limit slightly
+            if WP_API_URL:
+                time.sleep(1)
 
     print("--- Radar Scan Completed ---")
 
