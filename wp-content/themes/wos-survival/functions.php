@@ -111,29 +111,9 @@ require get_template_directory() . '/inc/shortcode-tier-list.php'; // Tier List 
  * Seed Hero Data (Development Helper)
  */
 function wos_seed_heroes() {
-[
-    {
-        "StartLine": 115,
-        "EndLine": 117,
-        "TargetContent": "    // Only run if admin and triggered via specific GET param (e.g. ?seed_heroes=1)\n    if ( ! is_admin() || ! isset($_GET['seed_heroes']) ) {\n        return;",
-        "ReplacementContent": "    // Run if user has capability and triggered via GET param\n    if ( ! current_user_can('manage_options') || ! isset($_GET['seed_heroes']) ) {\n        return;",
-        "AllowMultiple": false
-    },
-    {
-        "StartLine": 205,
-        "EndLine": 207,
-        "TargetContent": "    // Only run if admin and triggered via specific GET param (e.g. ?seed_events=1)\n    if ( ! is_admin() || ! isset($_GET['seed_events']) ) {\n        return;",
-        "ReplacementContent": "    // Run if user has capability and triggered via GET param\n    if ( ! current_user_can('manage_options') || ! isset($_GET['seed_events']) ) {\n        return;",
-        "AllowMultiple": false
-    },
-    {
-        "StartLine": 260,
-        "EndLine": 262,
-        "TargetContent": "    // Only run if admin and triggered via specific GET param (e.g. ?seed_pages=1)\n    if ( ! is_admin() || ! isset($_GET['seed_pages']) ) {\n        return;",
-        "ReplacementContent": "    // Run if user has capability and triggered via GET param\n    if ( ! current_user_can('manage_options') || ! isset($_GET['seed_pages']) ) {\n        return;",
-        "AllowMultiple": false
-    }
-]
+    // Run if user has capability and triggered via GET param
+    if ( ! current_user_can('manage_options') || ! isset($_GET['seed_heroes']) ) {
+        return;
     }
 
     $heroes_data = [
@@ -222,8 +202,8 @@ add_action('init', 'wos_seed_heroes');
  * Seed Event Data (Development Helper)
  */
 function wos_seed_events() {
-    // Only run if admin and triggered via specific GET param (e.g. ?seed_events=1)
-    if ( ! is_admin() || ! isset($_GET['seed_events']) ) {
+    // Run if user has capability and triggered via GET param
+    if ( ! current_user_can('manage_options') || ! isset($_GET['seed_events']) ) {
         return;
     }
 
@@ -277,8 +257,8 @@ add_action('init', 'wos_seed_events');
  * Seed Pages (Development Helper)
  */
 function wos_seed_pages() {
-    // Only run if admin and triggered via specific GET param (e.g. ?seed_pages=1)
-    if ( ! is_admin() || ! isset($_GET['seed_pages']) ) {
+    // Run if user has capability and triggered via GET param
+    if ( ! current_user_can('manage_options') || ! isset($_GET['seed_pages']) ) {
         return;
     }
 
