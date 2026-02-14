@@ -144,6 +144,7 @@ class WoS_Hero_CPT {
         wp_nonce_field( 'wos_save_hero_data', 'wos_hero_meta_box_nonce' );
 
         $fields = [
+            'japanese_name'          => __( 'Japanese Name', WOS_TEXT_DOMAIN ),
             'hero_unlock_day'        => __( 'Unlock Day (from server start)', WOS_TEXT_DOMAIN ),
             'hero_source'            => __( 'Source (e.g. Lucky Wheel)', WOS_TEXT_DOMAIN ),
             'hero_widget_name'       => __( 'Exclusive Widget Name', WOS_TEXT_DOMAIN ),
@@ -156,7 +157,9 @@ class WoS_Hero_CPT {
 
         $values = [];
         foreach ( $fields as $key => $label ) {
-            $values[ $key ] = get_post_meta( $post->ID, '_' . $key, true );
+            // japanese_name doesn't use underscore prefix in existing data
+            $meta_key = ($key === 'japanese_name') ? $key : '_' . $key;
+            $values[ $key ] = get_post_meta( $post->ID, $meta_key, true );
         }
 
         echo '<style>
@@ -199,6 +202,7 @@ class WoS_Hero_CPT {
         }
 
         $fields = [
+            'japanese_name',
             'hero_unlock_day',
             'hero_source',
             'hero_widget_name',
@@ -211,11 +215,14 @@ class WoS_Hero_CPT {
 
         foreach ( $fields as $field ) {
             if ( isset( $_POST[ $field ] ) ) {
+                // japanese_name doesn't use underscore prefix
+                $meta_key = ($field === 'japanese_name') ? $field : '_' . $field;
+
                 // Use sanitize_textarea_field for skills as they might be longer
                 if ( strpos($field, 'skill') !== false ) {
-                    update_post_meta( $post_id, '_' . $field, sanitize_textarea_field( $_POST[ $field ] ) );
+                    update_post_meta( $post_id, $meta_key, sanitize_textarea_field( $_POST[ $field ] ) );
                 } else {
-                    update_post_meta( $post_id, '_' . $field, sanitize_text_field( $_POST[ $field ] ) );
+                    update_post_meta( $post_id, $meta_key, sanitize_text_field( $_POST[ $field ] ) );
                 }
             }
         }
