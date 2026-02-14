@@ -165,3 +165,138 @@ function wos_handle_add_gift_code( WP_REST_Request $request ) {
         'code'    => $code_string,
 	), 201 );
 }
+
+/**
+ * Register REST API routes for post updates
+ */
+function wos_register_post_update_routes() {
+    register_rest_route( 'wos-radar/v1', '/update-post', array(
+        'methods'             => 'POST',
+        'callback'            => 'wos_handle_update_post',
+        'permission_callback' => function ( WP_REST_Request $request ) {
+            $token = $request->get_header( 'x-radar-token' );
+            // TODO: Move secret to wp-config.php or options for better security
+            $secret = 'WosRadarSecret2026_Operation!'; 
+
+            if ( $token === $secret ) {
+                return true;
+            }
+
+            return new WP_Error( 
+                'invalid_token', 
+                'Auth Token Invalid', 
+                array( 'status' => 401 ) 
+            );
+        },
+        'args'                => array(
+            'slug'            => array(
+                'required'          => true,
+                'validate_callback' => function( $param, $request, $key ) {
+                    return is_string( $param ) && ! empty( $param );
+                },
+                'sanitize_callback' => 'sanitize_title',
+            ),
+            'content'         => array(
+                'required'          => false, // Content might not always change
+                'validate_callback' => function( $param, $request, $key ) {
+                    return is_string( $param );
+                },
+                // Intentionally NOT using sanitize_text_field to allow HTML tags
+                // We rely on the authentication header for security here
+            ),
+            'title'           => array(
+                'required'          => false,
+                'validate_callback' => function( $param, $request, $key ) {
+                    return is_string( $param );
+                },
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+             'meta'            => array(
+                'required'          => false,
+                'validate_callback' => function( $param, $request, $key ) {
+                    return is_array( $param );
+                },
+            ),
+        ),
+    ) );
+}
+add_action( 'rest_api_init', 'wos_register_post_update_routes' );
+
+/**
+ * Handle POST request to update a post
+ *
+ * @param WP_REST_Request $request The request object.
+ * @return WP_REST_Response The response object.
+ */
+function wos_handle_update_post( WP_REST_Request $request ) {
+    $slug    = $request->get_param( 'slug' );
+    $content = $request->get_param( 'content' );
+    $title   = $request->get_param( 'title' );
+    $meta    = $request->get_param( 'meta' );
+
+    // 1. Find the post by slug
+    $args = array(
+        'name'        => $slug,
+        'post_type'   => 'post', // Adjust if custom post type needed
+        'post_status' => 'any',
+        'numberposts' => 1,
+    );
+    
+    // Check custom post types if needed, e.g. wos_hero
+    // For now assuming standard 'post' or we can make post_type a parameter
+    $posts = get_posts( $args );
+    
+    if ( ! $posts ) {
+         // Try checking pages or custom post types if not found in posts
+         $args['post_type'] = array('post', 'page', 'wos_hero', 'wos_event');
+         $posts = get_posts( $args );
+    }
+
+    if ( ! $posts ) {
+        return new WP_REST_Response( array(
+            'code'    => 'post_not_found',
+            'message' => '指定されたSlugの記事が見つかりません: ' . $slug,
+            'data'    => array( 'status' => 404 ),
+        ), 404 );
+    }
+
+    $post_id = $posts[0]->ID;
+    $post_data = array(
+        'ID' => $post_id,
+    );
+
+    if ( ! empty( $content ) ) {
+        // Allow specific HTML tags for our theme
+        // Ideally we trust the authenticated source, but let's be careful or just raw update
+        // Since we are authenticated with a secret token, we can assume it's safe to update content directly
+        $post_data['post_content'] = $content;
+    }
+
+    if ( ! empty( $title ) ) {
+        $post_data['post_title'] = $title;
+    }
+
+    // Update the post
+    $updated_post_id = wp_update_post( $post_data, true );
+
+    if ( is_wp_error( $updated_post_id ) ) {
+        return new WP_REST_Response( array(
+            'code'    => 'update_failed',
+            'message' => $updated_post_id->get_error_message(),
+            'data'    => array( 'status' => 500 ),
+        ), 500 );
+    }
+
+    // Update Meta Data
+    if ( ! empty( $meta ) && is_array( $meta ) ) {
+        foreach ( $meta as $key => $value ) {
+            update_post_meta( $post_id, $key, $value );
+        }
+    }
+
+    return new WP_REST_Response( array(
+        'message' => '記事が更新されました',
+        'post_id' => $post_id,
+        'slug'    => $slug,
+    ), 200 );
+}
