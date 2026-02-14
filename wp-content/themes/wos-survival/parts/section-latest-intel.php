@@ -78,7 +78,7 @@
         ]);
         
         if ($featured_heroes->have_posts()) : ?>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6" x-data="{ isVisible: () => true }">
                 <?php while ($featured_heroes->have_posts()) : $featured_heroes->the_post(); ?>
                     <?php get_template_part('parts/hero-card'); ?>
                 <?php endwhile; wp_reset_postdata(); ?>
