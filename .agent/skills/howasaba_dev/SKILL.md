@@ -38,6 +38,7 @@ C:\tools\php\php.exe vendor/bin/phpunit
 
 - **Root**: `i:\04_develop\howasaba-lab`
 - **Active Theme**: `wos-survival`
+- **Domain**: `howasaba-code.com`
 - **Theme Path (Local)**: `wp-content/themes/wos-survival`
 - **Deploy Target (Server)**: `/howasaba-code.com/public_html/wp-content/themes/wos-survival`
 - **Tests**: `tests/`
