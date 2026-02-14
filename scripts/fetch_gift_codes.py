@@ -3,6 +3,7 @@ import requests
 import feedparser
 import re
 import time
+from collections import namedtuple
 
 # Configuration
 # Reddit RSS Feed (New posts)
@@ -19,8 +20,14 @@ IGNORE_LIST = {
     "S1", "S2", "S3", "S4", "S5", "S6", "UTC", "PST", "EST", "KEY", "NEW", 
     "CODE", "GIFT", "RETOUR", "MOMENT", "COPIER", "MERCI", "SALUT", "BONJOUR", 
     "HELLO", "THANKS", "PLEASE", "SHARE", "FOUND", "TODAY", "DAILY", "WEEKLY",
-    "SERVER", "REGION", "UPDATE", "PATCH", "NOTE", "LINK", "HTTP", "HTTPS"
+    "SERVER", "REGION", "UPDATE", "PATCH", "NOTE", "LINK", "HTTP", "HTTPS",
+    "JOIN", "ALLY", "ALLIANCE", "RECRUIT", "GROUP", "CHAT", "DISCORD", "VOTE",
+    "POLL", "EVENT", "BATTLE", "FIGHT", "WAR", "KILL", "SCORE", "RANK", "BEST",
+    "GOOD", "LUCK", "HELP", "NEED", "WANT", "LOOK", "FIND", "OPEN", "CLOSE"
 }
+
+# Define a simple class to mimic feedparser entry for dummy data
+DummyEntry = namedtuple('DummyEntry', ['title', 'summary', 'link'])
 
 def fetch_reddit_rss():
     """
@@ -65,12 +72,16 @@ def extract_potential_codes(text):
     # 1. Broad filter: skip if no keywords found
     text_lower = text.lower()
     if "code" not in text_lower and "gift" not in text_lower:
+        print(f"  -> Skipped: No 'code'/'gift' keywords found in text.") # DEBUG LOG
         return []
 
     # Regex for potential candidates: 5-15 alphanumeric uppercase
     candidates = re.findall(r'\b[A-Z0-9]{5,15}\b', text)
     valid_codes = set()
     
+    if not candidates:
+        print(f"  -> Skipped: No uppercase alphanumeric candidates found.") # DEBUG LOG
+
     for cand in candidates:
         if cand in IGNORE_LIST: 
             continue
@@ -100,6 +111,8 @@ def extract_potential_codes(text):
                 indicators = ["code", "gift", "cdk", "key", "redeem"]
                 if any(ind in context_snippet for ind in indicators):
                     valid_codes.add(cand)
+                else:
+                    print(f"  -> Skipped candidate '{cand}': Pure alpha without context keywords.") # DEBUG LOG
         except Exception:
             pass # Skip if context check fails
 
@@ -111,7 +124,7 @@ def submit_code_to_api(code, source_title, source_link):
     """
     if not WP_API_URL:
         # For local testing, just print
-        # print(f"[DRY RUN] Would submit: {code}")
+        print(f"[DRY RUN] Would submit: {code}")
         return
 
     payload = {
@@ -142,16 +155,32 @@ def submit_code_to_api(code, source_title, source_link):
         print(f"Network Error submitting '{code}': {e}")
 
 def main():
-    print("--- WOS Gift Code Radar (Enhanced) Started ---")
+    print("--- WOS Gift Code Radar (Test Mode) Started ---")
     
     if not WP_API_URL:
         print("WARNING: WP_API_URL environment variable is missing.")
     
     entries = fetch_reddit_rss()
     
+    # ---------------- TEST DATA INJECTION ----------------
+    print("\n--- Injecting Dummy Test Data ---")
+    dummy_data = DummyEntry(
+        title='[New Code] New Gift Code Released!', 
+        summary='Hey guys, use this new code: WOS2024TEST for free gems! Enjoy.',
+        link='http://example.com/test-post'
+    )
+    # Convert feedparser entries to list if it's not already mutable, though it usually is
+    if isinstance(entries, list):
+        entries.insert(0, dummy_data)
+    else:
+        # feedparser.FeedParserDict mimics list but might restrict insertion
+        entries = [dummy_data] + list(entries)
+    print("--- Dummy Data Injected ---\n")
+    # -----------------------------------------------------
+
     processed_codes = set()
     
-    for entry in entries:
+    for i, entry in enumerate(entries):
         title = entry.title
         # Handle summary/content safely
         content = ""
@@ -160,6 +189,8 @@ def main():
         elif hasattr(entry, 'description'):
             content = entry.description
             
+        print(f"Processing Entry #{i+1}: {title[:60]}...") # Progress log
+
         # Combine text for search
         full_text = f"{title} {content}"
         
@@ -169,8 +200,13 @@ def main():
         # Extract codes with new logic
         codes = extract_potential_codes(clean_text)
         
+        if not codes:
+            # Only print if no codes found (skip reason already printed inside function)
+            pass 
+        
         for code in codes:
             if code in processed_codes:
+                print(f"  -> Duplicate skipped: {code}")
                 continue
 
             submit_code_to_api(code, title, entry.link)
@@ -180,7 +216,7 @@ def main():
             if WP_API_URL:
                 time.sleep(1)
 
-    print("--- Radar Scan Completed ---")
+    print("\n--- Radar Scan Completed ---")
 
 if __name__ == "__main__":
     main()
