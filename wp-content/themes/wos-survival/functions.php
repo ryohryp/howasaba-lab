@@ -65,13 +65,13 @@ require get_template_directory() . '/inc/class-vite-asset-loader.php';
 function wos_frost_fire_scripts() {
     $vite = new Vite_Asset_Loader();
 
-    // Enqueue Alpine.js (External)
-    wp_enqueue_script( 'alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js', [], '3.x.x', true );
+    // Enqueue Alpine.js (External) - REMOVED: Bundled in app.js
+    // wp_enqueue_script( 'alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js', [], '3.x.x', true );
 
     // Enqueue App entry point (handled by manifest/vite)
     // Note: 'assets/js/app.js' imports the CSS in main app usually, 
     // but checks in loader will handle CSS extraction in production.
-    $vite->enqueue( 'wos-frost-fire-app', 'assets/js/app.js', ['alpine-js'] );
+    $vite->enqueue( 'wos-frost-fire-app', 'assets/js/app.js', [] );
     
     // Explicitly enqueue CSS if it's a separate entry or solely for fallback
     // In standard Vite + plugin setup, JS entry imports CSS. 
