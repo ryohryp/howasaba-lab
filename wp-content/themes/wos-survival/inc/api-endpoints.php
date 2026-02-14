@@ -17,9 +17,28 @@ function wos_register_gift_code_api_routes() {
 		'methods'             => 'POST', // Only POST is allowed for creation
 		'callback'            => 'wos_handle_add_gift_code',
 		'permission_callback' => function () {
-            // Requires authentication (Application Passwords or Cookie)
-            // User must have capability to edit posts
-			return current_user_can( 'edit_posts' );
+			$user_id = get_current_user_id();
+
+			// Case 1: WordPress hasn't received any auth credentials (likely Xserver stripping Authorization header)
+			if ( 0 === $user_id ) {
+				return new WP_Error( 
+					'auth_missing', 
+					'認証情報がWordPressに届いていません。Xserverの .htaccess に CGIPassAuth On が設定されているか確認してください。', 
+					array( 'status' => 401 ) 
+				);
+			}
+
+			// Case 2: User is authenticated but lacks permission
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				return new WP_Error( 
+					'role_error', 
+					'ユーザー（ID: ' . $user_id . '）はログインできていますが、投稿権限がありません。WP管理画面で権限グループを変更してください。', 
+					array( 'status' => 403 ) 
+				);
+			}
+
+			// Case 3: Authorized
+			return true;
 		},
 		'args'                => array(
 			'code_string'     => array(
