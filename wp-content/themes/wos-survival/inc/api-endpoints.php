@@ -103,12 +103,28 @@ function wos_handle_add_gift_code( WP_REST_Request $request ) {
 	$query = new WP_Query( $args );
 
 	if ( $query->have_posts() ) {
+        // Return 200 OK (not error) so GitHub Actions doesn't fail
 		return new WP_REST_Response( array(
 			'code'    => 'gift_code_exists',
-			'message' => '既に登録済みのコードです',
-			'data'    => array( 'status' => 409, 'existing_id' => $query->posts[0]->ID ),
-		), 409 );
+			'message' => '既に登録済みのコードです (Skipped)',
+			'data'    => array( 'status' => 200, 'existing_id' => $query->posts[0]->ID ),
+		), 200 );
 	}
+
+    // Check by title as well for extra safety
+    $existing_post_by_title = get_page_by_title( 'ギフトコード: ' . $code_string, OBJECT, 'gift_code' );
+    if ( $existing_post_by_title ) {
+        return new WP_REST_Response( array(
+			'code'    => 'gift_code_exists_title',
+			'message' => '既に登録済みのコードです (Skipped by Title)',
+			'data'    => array( 'status' => 200, 'existing_id' => $existing_post_by_title->ID ),
+		), 200 );
+    }
+
+    // Default Expiration: 30 days from now if not provided
+    if ( empty( $expiry ) ) {
+        $expiry = date( 'Y-m-d', strtotime( '+30 days' ) );
+    }
 
 	// 2. Create new post
 	$post_title = 'ギフトコード: ' . $code_string;

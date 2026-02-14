@@ -131,6 +131,8 @@ def submit_code_to_api(code, source_title, source_link):
         
         if response.status_code == 201:
             print(f"SUCCESS: Code '{code}' registered.")
+        elif response.status_code == 200:
+             print(f"SKIPPED: Code '{code}' already exists (200 OK).")
         elif response.status_code == 409:
             print(f"SKIPPED: Code '{code}' already exists (409).")
         elif response.status_code == 401:

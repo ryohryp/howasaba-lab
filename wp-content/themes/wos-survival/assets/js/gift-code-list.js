@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const copyButtons = document.querySelectorAll('.wos-copy-btn');
 
     copyButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', function (e) {
             e.preventDefault();
             const code = this.getAttribute('data-code');
             const originalText = this.textContent;
@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
             navigator.clipboard.writeText(code).then(() => {
                 // Visual feedback
                 this.textContent = 'Copied!';
-                this.classList.add('copied');
+                this.classList.add('copy-success');
 
                 // Revert after 2 seconds
                 setTimeout(() => {
                     this.textContent = originalText;
-                    this.classList.remove('copied');
+                    this.classList.remove('copy-success');
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
