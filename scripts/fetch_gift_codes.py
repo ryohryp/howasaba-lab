@@ -1,73 +1,103 @@
 import os
 import requests
-import json
+import re
 import time
 
 # Configuration
+# Reddit API (Public JSON endpoint)
+SOURCE_URL = "https://www.reddit.com/r/whiteoutsurvival/hot.json?limit=10"
+# WordPress API
 WP_API_URL = os.environ.get("WP_API_URL")
 WP_USER = os.environ.get("WP_USER")
 WP_APP_PASSWORD = os.environ.get("WP_APP_PASSWORD")
 
-# Mock data for demonstration (Replace with actual scraping logic later)
-# In production, this would fetch from Discord/Reddit and parse with LLM
-MOCK_GIFT_CODES = [
-    {
-        "code": "WOS2024FEB",
-        "rewards": "Gem x100, Speedup 1h x5",
-        "expiry": "2026-02-28"
-    },
-    {
-        "code": "SURVIVAL777",
-        "rewards": "Gem x500",
-        "expiry": "2026-03-15"
-    }
-]
+# Gift Code Pattern (Simple Regex for Demo)
+# Adjust pattern as needed. e.g. WOS followed by digits, or general uppercase alphanumeric
+CODE_PATTERN = r'\b([A-Z0-9]{4,12})\b' # Example: WOS2024, GIFT123
+# Filter out common words that match the pattern (False Positives)
+IGNORE_LIST = {"REDDIT", "POST", "GAME", "STATE", "SVS", "GEN", "FC", "S1", "S2", "S3", "S4", "S5", "S6"}
 
-def fetch_gift_codes_from_source():
-    """
-    Fetches gift codes from external sources.
-    Currently returns mock data.
-    """
-    print("Fetching gift codes from sources...")
-    # TODO: Implement scraping from Discord/Reddit
-    # TODO: Implement LLM parsing
-    return MOCK_GIFT_CODES
-
-def post_gift_code_to_wp(gift_code):
-    """
-    Posts a single gift code to the WordPress REST API.
-    """
-    url = f"{WP_API_URL}/wos/v1/gift-code"
-    auth = (WP_USER, WP_APP_PASSWORD)
-    
-    payload = {
-        "code": gift_code["code"],
-        "rewards": gift_code.get("rewards", ""),
-        "expiry": gift_code.get("expiry", "")
-    }
-
+def fetch_reddit_posts():
+    headers = {'User-Agent': 'WOS-Gift-Radar/1.0'}
     try:
-        response = requests.post(url, json=payload, auth=auth)
+        response = requests.get(SOURCE_URL, headers=headers)
         response.raise_for_status()
-        
-        result = response.json()
-        print(f"Result for {gift_code['code']}: {result.get('message', 'No message')}")
-        
-    except requests.exceptions.RequestException as e:
-        print(f"Error posting {gift_code['code']}: {e}")
-        if hasattr(e, 'response') and e.response is not None:
-            print(f"Response content: {e.response.text}")
+        data = response.json()
+        posts = []
+        for child in data['data']['children']:
+            post = child['data']
+            posts.append({
+                'title': post['title'],
+                'selftext': post.get('selftext', '')
+            })
+        return posts
+    except Exception as e:
+        print(f"Error fetching Reddit posts: {e}")
+        return []
 
-def main():
-    if not WP_API_URL or not WP_USER or not WP_APP_PASSWORD:
-        print("Error: Environment variables WP_API_URL, WP_USER, WP_APP_PASSWORD must be set.")
+def extract_potential_codes(text):
+    matches = re.findall(CODE_PATTERN, text)
+    valid_codes = []
+    for code in matches:
+        if code.upper() not in IGNORE_LIST and not code.isdigit(): # Ignore pure numbers
+             valid_codes.append(code.upper())
+    return valid_codes
+
+def submit_code_to_api(code, source_context):
+    if not WP_API_URL:
+        print("WP_API_URL is not set. Skipping API submission.")
         return
 
-    codes = fetch_gift_codes_from_source()
+    payload = {
+        "code_string": code,
+        "rewards": f"Found in: {source_context[:30]}...", # Brief context
+        "status": "publish" # or 'pending' if you want manual review
+    }
     
-    for code_data in codes:
-        print(f"Processing code: {code_data['code']}")
-        post_gift_code_to_wp(code_data)
+    auth = (WP_USER, WP_APP_PASSWORD)
+    
+    try:
+        print(f"Submitting code: {code}...")
+        response = requests.post(WP_API_URL, json=payload, auth=auth)
+        
+        if response.status_code == 201:
+            print(f"SUCCESS: Code '{code}' registered.")
+        elif response.status_code == 409:
+            print(f"SKIPPED: Code '{code}' already exists.")
+        else:
+            print(f"FAILED: Code '{code}' - Status: {response.status_code}, Response: {response.text}")
+            
+    except Exception as e:
+        print(f"Network Error submitting '{code}': {e}")
+
+def main():
+    print("--- WOS Gift Code Radar Started ---")
+    
+    if not WP_API_URL:
+        print("WARNING: WP_API_URL environment variable is missing.")
+    
+    posts = fetch_reddit_posts()
+    print(f"Fetched {len(posts)} posts from Reddit.")
+    
+    processed_codes = set()
+    
+    for post in posts:
+        text = post['title'] + " " + post['selftext']
+        codes = extract_potential_codes(text)
+        
+        for code in codes:
+            if code in processed_codes:
+                continue
+            
+            # Additional heuristic: length check or prefix check if known
+            if len(code) < 5: 
+                continue
+
+            submit_code_to_api(code, post['title'])
+            processed_codes.add(code)
+            time.sleep(1) # Be gentle to the API
+
+    print("--- Radar Scan Completed ---")
 
 if __name__ == "__main__":
     main()
