@@ -6,6 +6,25 @@ acf_add_local_field_group(array(
 	'title' => 'Hero Tier Details',
 	'fields' => array(
 		array(
+			'key' => 'field_japanese_name',
+			'label' => 'Japanese Name',
+			'name' => 'japanese_name',
+			'type' => 'text',
+			'instructions' => 'Enter the Hero\'s Japanese Name',
+			'required' => 0,
+			'conditional_logic' => 0,
+			'wrapper' => array(
+				'width' => '100',
+				'class' => '',
+				'id' => '',
+			),
+			'default_value' => '',
+			'placeholder' => 'e.g. ジェロニモ',
+			'prepend' => '',
+			'append' => '',
+			'maxlength' => '',
+		),
+		array(
 			'key' => 'field_generation',
 			'label' => 'Generation',
 			'name' => 'generation',

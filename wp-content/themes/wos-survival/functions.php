@@ -118,18 +118,50 @@ function wos_seed_heroes() {
 
     $heroes_data = [
         // Gen 1
-        'Jeronimo' => ['gen' => 'Gen 1', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [85, 90, 80], 'day' => 1],
-        'Natalia'  => ['gen' => 'Gen 1', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [88, 85, 82], 'day' => 1],
-        'Molly'    => ['gen' => 'Gen 1', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [92, 70, 75], 'day' => 1],
-        'Zinman'   => ['gen' => 'Gen 1', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [80, 75, 78], 'day' => 1],
-        // Gen 2
-        'Flint'    => ['gen' => 'Gen 2', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [88, 95, 90], 'day' => 45],
-        'Philly'   => ['gen' => 'Gen 2', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [94, 72, 78], 'day' => 45],
-        'Alonso'   => ['gen' => 'Gen 2', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [95, 65, 70], 'day' => 45],
-        // Gen 11
-        'Rufus'    => ['gen' => 'Gen 11', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [98, 70, 75], 'day' => 600],
-        'Lloyd'    => ['gen' => 'Gen 11', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [96, 75, 80], 'day' => 600],
-        'Eleonora' => ['gen' => 'Gen 11', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [92, 95, 95], 'day' => 600],
+[
+    {
+        "StartLine": 121,
+        "EndLine": 132,
+        "TargetContent": "        'Jeronimo' => ['gen' => 'Gen 1', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [85, 90, 80], 'day' => 1],\n        'Natalia'  => ['gen' => 'Gen 1', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [88, 85, 82], 'day' => 1],\n        'Molly'    => ['gen' => 'Gen 1', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [92, 70, 75], 'day' => 1],\n        'Zinman'   => ['gen' => 'Gen 1', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [80, 75, 78], 'day' => 1],\n        // Gen 2\n        'Flint'    => ['gen' => 'Gen 2', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [88, 95, 90], 'day' => 45],\n        'Philly'   => ['gen' => 'Gen 2', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [94, 72, 78], 'day' => 45],\n        'Alonso'   => ['gen' => 'Gen 2', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [95, 65, 70], 'day' => 45],\n        // Gen 11\n        'Rufus'    => ['gen' => 'Gen 11', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [98, 70, 75], 'day' => 600],\n        'Lloyd'    => ['gen' => 'Gen 11', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [96, 75, 80], 'day' => 600],\n        'Eleonora' => ['gen' => 'Gen 11', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [92, 95, 95], 'day' => 600],",
+        "ReplacementContent": "        'Jeronimo' => ['jp' => 'ジェロニモ', 'gen' => 'Gen 1', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [85, 90, 80], 'day' => 1],\n        'Natalia'  => ['jp' => 'ナタリア',   'gen' => 'Gen 1', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [88, 85, 82], 'day' => 1],\n        'Molly'    => ['jp' => 'モリー',     'gen' => 'Gen 1', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [92, 70, 75], 'day' => 1],\n        'Zinman'   => ['jp' => 'ジンマン',   'gen' => 'Gen 1', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [80, 75, 78], 'day' => 1],\n        // Gen 2\n        'Flint'    => ['jp' => 'フリント',   'gen' => 'Gen 2', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [88, 95, 90], 'day' => 45],\n        'Philly'   => ['jp' => 'フィリー',   'gen' => 'Gen 2', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [94, 72, 78], 'day' => 45],\n        'Alonso'   => ['jp' => 'アロンソ',   'gen' => 'Gen 2', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [95, 65, 70], 'day' => 45],\n        // Gen 11\n        'Rufus'    => ['jp' => 'ルーファス', 'gen' => 'Gen 11', 'type' => 'Marksman', 'rarity' => 'SSR', 'stats' => [98, 70, 75], 'day' => 600],\n        'Lloyd'    => ['jp' => 'ロイド',     'gen' => 'Gen 11', 'type' => 'Lancer',   'rarity' => 'SSR', 'stats' => [96, 75, 80], 'day' => 600],\n        'Eleonora' => ['jp' => 'エレオノーラ', 'gen' => 'Gen 11', 'type' => 'Infantry', 'rarity' => 'SSR', 'stats' => [92, 95, 95], 'day' => 600],",
+        "AllowMultiple": false
+    },
+    {
+        "StartLine": 191,
+        "EndLine": 191,
+        "TargetContent": "            update_post_meta($post_id, '_special_role', 'field_special_role');",
+        "ReplacementContent": "            update_post_meta($post_id, '_special_role', 'field_special_role');\n\n            // Japanese Name\n            update_post_meta($post_id, 'japanese_name', $data['jp']);\n            update_post_meta($post_id, '_japanese_name', 'field_japanese_name');",
+        "AllowMultiple": false
+    },
+    {
+        "StartLine": 311,
+        "EndLine": 313,
+        "TargetContent": "        'Wu Ming' => [\n            'generation'   => 6,\n            'troop_type'   => 'Infantry',",
+        "ReplacementContent": "        'Wu Ming' => [\n            'jp'           => '無名',\n            'generation'   => 6,\n            'troop_type'   => 'Infantry',",
+        "AllowMultiple": false
+    },
+    {
+        "StartLine": 319,
+        "EndLine": 321,
+        "TargetContent": "        'Renee' => [\n            'generation'   => 6,\n            'troop_type'   => 'Lancer',",
+        "ReplacementContent": "        'Renee' => [\n            'jp'           => 'レネ',\n            'generation'   => 6,\n            'troop_type'   => 'Lancer',",
+        "AllowMultiple": false
+    },
+    {
+        "StartLine": 327,
+        "EndLine": 329,
+        "TargetContent": "        'Wayne' => [\n            'generation'   => 6,\n            'troop_type'   => 'Marksman', // 弓兵",
+        "ReplacementContent": "        'Wayne' => [\n            'jp'           => 'ウェイン',\n            'generation'   => 6,\n            'troop_type'   => 'Marksman', // 弓兵",
+        "AllowMultiple": false
+    },
+    {
+        "StartLine": 371,
+        "EndLine": 371,
+        "TargetContent": "            update_post_meta($post_id, '_special_role', 'field_special_role');",
+        "ReplacementContent": "            update_post_meta($post_id, '_special_role', 'field_special_role');\n\n            update_post_meta($post_id, 'japanese_name', $data['jp']);\n            update_post_meta($post_id, '_japanese_name', 'field_japanese_name');",
+        "AllowMultiple": false
+    }
+]
     ];
 
     foreach ($heroes_data as $name => $data) {

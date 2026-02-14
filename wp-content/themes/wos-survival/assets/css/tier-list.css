@@ -113,7 +113,7 @@
 --------------------------------------------------------- */
 .wos-hero-card {
     width: 100px;
-    height: 140px; /* Adjusted height */
+    min-height: 155px; /* Increased height for JP name */
     position: relative;
     border-radius: 8px;
     overflow: hidden;
@@ -129,7 +129,7 @@
     .wos-hero-card {
         width: calc(50% - 10px); /* 2 per row approx */
         height: auto;
-        aspect-ratio: 3/4;
+        aspect-ratio: 3/5;
     }
 }
 
@@ -206,14 +206,14 @@
 
 /* Helper classes for type background colors/accents on card bottom */
 .hero-info {
-    height: 45px;
-    padding: 5px;
+    padding: 8px 5px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     background: rgba(0,0,0,0.8);
     border-top: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
 }
 
 /* Type Accents */
@@ -231,13 +231,27 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
+    line-height: 1.2;
+}
+
+.hero-name-jp {
+    color: #cbd5e1;
+    font-size: 0.7rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    margin-top: 1px;
+    line-height: 1.2;
 }
 
 .hero-roles {
     display: flex;
     gap: 2px;
-    margin-top: 2px;
+    margin-top: 4px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .role-pill {
@@ -247,6 +261,7 @@
     background: rgba(255,255,255,0.2);
     color: #ccc;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 /* Icons (using generic shapes or assumptions if no assets) */

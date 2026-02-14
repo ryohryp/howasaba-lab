@@ -62,6 +62,7 @@ function wos_shortcode_tier_list( $atts ) {
         $tier = function_exists('get_field') ? get_field( 'overall_tier', $hero_id ) : get_post_meta($hero_id, 'overall_tier', true);
         $gen  = function_exists('get_field') ? get_field( 'generation', $hero_id ) : get_post_meta($hero_id, 'generation', true);
         $type = function_exists('get_field') ? get_field( 'troop_type', $hero_id ) : get_post_meta($hero_id, 'troop_type', true);
+        $jp_name = function_exists('get_field') ? get_field( 'japanese_name', $hero_id ) : get_post_meta($hero_id, 'japanese_name', true);
         $roles = function_exists('get_field') ? get_field( 'special_role', $hero_id ) : get_post_meta($hero_id, 'special_role', true);
         $roles = is_array($roles) ? $roles : [];
 
@@ -77,6 +78,7 @@ function wos_shortcode_tier_list( $atts ) {
         $hero_data = array(
             'id'    => $hero_id,
             'name'  => get_the_title(),
+            'jp'    => $jp_name,
             'thumb' => get_the_post_thumbnail_url( $hero_id, 'thumbnail' ), // Use medium or thumbnail
             'gen'   => $gen,
             'type'  => $type,
@@ -135,6 +137,9 @@ function wos_shortcode_tier_list( $atts ) {
                                 </div>
                                 <div class="hero-info">
                                     <span class="hero-name"><?php echo esc_html( $hero['name'] ); ?></span>
+                                    <?php if ( ! empty( $hero['jp'] ) ) : ?>
+                                        <span class="hero-name-jp"><?php echo esc_html( $hero['jp'] ); ?></span>
+                                    <?php endif; ?>
                                     <?php if ( ! empty( $hero['roles'] ) ) : ?>
                                         <div class="hero-roles">
                                             <?php foreach ( $hero['roles'] as $role ) : ?>
