@@ -26,6 +26,9 @@ $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
 <article 
     id="post-<?php the_ID(); ?>" 
     <?php post_class('relative group overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30'); ?>
+    data-name="<?php the_title(); ?>"
+    data-gen="<?php echo esc_attr( $gen_slug ); ?>"
+    data-type="<?php echo esc_attr( $type_slug ); ?>"
     <?php if ( $use_filtering ) : ?>
         x-show="isVisible($el)"
         x-transition:enter="transition ease-out duration-300"
@@ -33,9 +36,7 @@ $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
         x-transition:enter-end="opacity-100 scale-100"
     <?php endif; ?>
 >
-    <a href="<?php the_permalink(); ?>" class="hero-card group block relative overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30"
-       data-gen="<?php echo esc_attr( $gen_slug ); ?>"
-       data-type="<?php echo esc_attr( $type_slug ); ?>">
+    <a href="<?php the_permalink(); ?>" class="hero-card group block relative overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30">
     
         <!-- Hero Image Area (Top) -->
         <div class="relative h-48 w-full overflow-hidden bg-slate-900">

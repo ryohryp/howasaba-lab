@@ -16,9 +16,10 @@ document.addEventListener('alpine:init', () => {
         },
 
         isVisible(el) {
-            if (!el.dataset.name) return true;
+            // If no data attributes, show by default (safer fallback)
+            if (!el.dataset.name && !el.dataset.gen && !el.dataset.type) return true;
 
-            const name = el.dataset.name.toLowerCase();
+            const name = el.dataset.name ? el.dataset.name.toLowerCase() : '';
             const gen = el.dataset.gen;
             const type = el.dataset.type;
 
