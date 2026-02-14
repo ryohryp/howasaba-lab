@@ -252,3 +252,51 @@ function wos_seed_events() {
     });
 }
 add_action('init', 'wos_seed_events');
+
+/**
+ * Seed Pages (Development Helper)
+ */
+function wos_seed_pages() {
+    // Only run if admin and triggered via specific GET param (e.g. ?seed_pages=1)
+    if ( ! is_admin() || ! isset($_GET['seed_pages']) ) {
+        return;
+    }
+
+    $pages_data = [
+        '最強英雄Tierリスト' => [
+            'content' => '<!-- wp:paragraph -->
+<p>ホワイトアウト・サバイバルの全世代・英雄Tierリストです。最強の英雄を見つけて、戦略を有利に進めましょう。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:shortcode -->
+[wos_tier_list]
+<!-- /wp:shortcode -->',
+            'slug'    => 'tier-list',
+        ],
+    ];
+
+    foreach ($pages_data as $title => $data) {
+        $existing = get_page_by_path($data['slug'], OBJECT, 'page');
+        
+        $post_data = array(
+            'post_title'    => $title,
+            'post_content'  => $data['content'],
+            'post_status'   => 'publish',
+            'post_type'     => 'page',
+            'post_name'     => $data['slug'],
+        );
+
+        if ($existing) {
+            $post_data['ID'] = $existing->ID;
+            wp_update_post($post_data);
+        } else {
+            wp_insert_post($post_data);
+        }
+    }
+    
+    // Add admin notice
+    add_action('admin_notices', function() {
+        echo '<div class="notice notice-success"><p>Pages Seeded Successfully (Theme: WoS Frost & Fire)!</p></div>';
+    });
+}
+add_action('init', 'wos_seed_pages');
