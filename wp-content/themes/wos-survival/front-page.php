@@ -88,7 +88,7 @@ get_header();
             <!-- Latest Info Section -->
             <?php get_template_part( 'parts/section-latest-intel' ); ?>
         </div>
-    </section>
+
 
 </main>
 
