@@ -1,0 +1,47 @@
+/*
+Theme Name: WOS Survival
+Theme URI: https://github.com/ryohryp/howasaba-lab
+Author: Antigravity
+Author URI: https://github.com/ryohryp/howasaba-lab
+Description: A custom theme for Whiteout Survival strategy guide, featuring Frost & Fire aesthetics.
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: wos-survival
+*/
+
+:root {
+    /* Color Palette */
+    --color-bg-deep-navy: #0A1128;
+    --color-text-ice-white: #F0F8FF;
+    --color-accent-fire-orange: #FF4500;
+    --color-accent-fire-glow: rgba(255, 69, 0, 0.6);
+    --color-glass-bg: rgba(255, 255, 255, 0.1);
+    --color-glass-border: rgba(255, 255, 255, 0.2);
+
+    /* Typography */
+    --font-primary: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--color-bg-deep-navy);
+    color: var(--color-text-ice-white);
+    font-family: var(--font-primary);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Base Styles */
+a {
+    color: var(--color-text-ice-white);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--color-accent-fire-orange);
+    text-shadow: 0 0 8px var(--color-accent-fire-glow);
+}

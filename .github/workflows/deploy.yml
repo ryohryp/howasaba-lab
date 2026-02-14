@@ -4,24 +4,38 @@ on:
   push:
     branches:
       - main
+      - master
 
 jobs:
-  web-deploy:
-    name: 🎉 Deploy
+  deploy:
+    name: Deploy Theme
     runs-on: ubuntu-latest
     steps:
-      - name: 🚚 Get latest code
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: 📂 Sync files (FTP)
+      - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./wos-furnace-core/
-          server-dir: /howasaba-code.com/public_html/wp-content/themes/wos-furnace-core/
+          # Xserver specific: protocol should be ftps usually, but ftp works too.
+          # If using SSH/SFTP, change protocol to sftp and provide port if needed.
+          protocol: ftps
+          port: 21
+          # Path to your theme on the server
+          # Example: /home/your-id/your-domain.com/public_html/wp-content/themes/wos-survival/
+          server-dir: ${{ secrets.FTP_TARGET_DIR }}
+          # Exclude files
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
+            .gitignore
+            README.md
+            task.md
+            implementation_plan.md
+            walkthrough.md
