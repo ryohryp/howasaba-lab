@@ -278,6 +278,11 @@ function wos_seed_pages() {
 <!-- /wp:shortcode -->',
             'slug'    => 'tier-list',
         ],
+        'Strategy Guides' => [
+            'content' => '',
+            'slug'    => 'guide',
+            'template'=> 'page-guide.php',
+        ],
     ];
 
     foreach ($pages_data as $title => $data) {
@@ -289,6 +294,7 @@ function wos_seed_pages() {
             'post_status'   => 'publish',
             'post_type'     => 'page',
             'post_name'     => $data['slug'],
+            'page_template' => $data['template'] ?? '',
         );
 
         if ($existing) {
