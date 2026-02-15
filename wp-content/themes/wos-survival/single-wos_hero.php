@@ -90,19 +90,19 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                         font-family: "Noto Sans JP", sans-serif;
                     }
                 </style>
-                <div class="grid md:grid-cols-12 gap-0">
-                    <!-- Image Column -->
-                    <div class="md:col-span-5 relative h-96 md:h-[500px] bg-slate-900">
-                         <?php if ( has_post_thumbnail() ) : ?>
-                            <?php the_post_thumbnail( 'large', array( 'class' => 'h-full w-full object-cover object-top' ) ); ?>
-                             <!-- Gradient for mobile text readability if needed, or removal for solid feel. Using subtle vignette. -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent md:bg-none opacity-80 md:hidden"></div>
-                        <?php endif; ?>
+                <div class="flex flex-col md:flex-row p-6 md:p-10 gap-6 md:gap-10 bg-slate-800 items-start">
+                    <!-- Image Column (Fixed 91x91) -->
+                    <div class="flex-shrink-0">
+                        <div class="w-[91px] h-[91px] relative rounded-lg overflow-hidden bg-slate-900 border-2 border-slate-600 shadow-lg">
+                             <?php if ( has_post_thumbnail() ) : ?>
+                                <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'h-full w-full object-cover object-top' ) ); ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
 
                     <!-- Info Column -->
-                    <div class="md:col-span-7 p-6 md:p-10 flex flex-col justify-center bg-slate-800">
-                        <div class="mb-6 flex flex-wrap gap-2 items-center">
+                    <div class="flex-grow flex flex-col justify-center">
+                        <div class="mb-4 flex flex-wrap gap-2 items-center">
                              <?php 
                                 $overall_tier = get_post_meta( $hero_id, 'overall_tier', true );
                                 $tier_bg = 'bg-gray-600';
@@ -111,42 +111,43 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                                 if ($overall_tier === 'B') $tier_bg = 'bg-blue-600';
                              ?>
                              <?php if($overall_tier): ?>
-                                <span class="rounded-lg <?php echo $tier_bg; ?> px-4 py-1.5 text-lg font-black text-white shadow-md">Tier <?php echo esc_html( $overall_tier ); ?></span>
+                                <span class="rounded-lg <?php echo $tier_bg; ?> px-3 py-1 text-base font-black text-white shadow-md">Tier <?php echo esc_html( $overall_tier ); ?></span>
                              <?php endif; ?>
                              <span class="rounded-lg bg-slate-700 px-3 py-1 text-sm font-bold text-ice-blue border border-slate-600"><?php echo esc_html( $gen_name ); ?></span>
                              <span class="rounded-lg bg-slate-700 px-3 py-1 text-sm font-bold text-gray-300 border border-slate-600"><?php echo esc_html( $type_name ); ?></span>
                         </div>
 
-                        <h1 class="mb-2 text-4xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none">
+                        <h1 class="mb-1 text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none">
                             <?php the_title(); ?>
                         </h1>
                         <?php if ( $japanese_name ) : ?>
-                            <h2 class="mb-6 text-2xl md:text-3xl font-bold text-slate-400 text-jp-name tracking-widest pl-1">
+                            <h2 class="mb-4 text-xl md:text-2xl font-bold text-slate-400 text-jp-name tracking-widest pl-1">
                                 <?php echo esc_html( $japanese_name ); ?>
                             </h2>
                         <?php endif; ?>
 
-                        <div class="prose prose-invert prose-lg max-w-none mb-10 text-slate-300 font-light leading-relaxed">
+                        <div class="prose prose-invert prose-lg max-w-none mb-6 text-slate-300 font-light leading-relaxed">
                             <?php the_content(); ?>
                         </div>
 
                         <!-- Quick Stats Grid (Flat Blocks) -->
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="text-center bg-slate-700/50 rounded-lg p-4 border border-slate-700">
-                                <div class="text-xs uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Attack', 'wos-frost-fire' ); ?></div>
-                                <div class="text-2xl font-black text-white font-mono"><?php echo esc_html( $stats_attack ?: '-' ); ?></div>
+                        <div class="grid grid-cols-3 gap-4 max-w-xl">
+                            <div class="text-center bg-slate-700/50 rounded-lg p-3 border border-slate-700">
+                                <div class="text-[10px] uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Attack', 'wos-frost-fire' ); ?></div>
+                                <div class="text-xl font-black text-white font-mono"><?php echo esc_html( $stats_attack ?: '-' ); ?></div>
                             </div>
-                            <div class="text-center bg-slate-700/50 rounded-lg p-4 border border-slate-700">
-                                <div class="text-xs uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Defense', 'wos-frost-fire' ); ?></div>
-                                <div class="text-2xl font-black text-white font-mono"><?php echo esc_html( $stats_defense ?: '-' ); ?></div>
+                            <div class="text-center bg-slate-700/50 rounded-lg p-3 border border-slate-700">
+                                <div class="text-[10px] uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Defense', 'wos-frost-fire' ); ?></div>
+                                <div class="text-xl font-black text-white font-mono"><?php echo esc_html( $stats_defense ?: '-' ); ?></div>
                             </div>
-                            <div class="text-center bg-slate-700/50 rounded-lg p-4 border border-slate-700">
-                                <div class="text-xs uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Health', 'wos-frost-fire' ); ?></div>
-                                <div class="text-2xl font-black text-white font-mono"><?php echo esc_html( $stats_health ?: '-' ); ?></div>
+                            <div class="text-center bg-slate-700/50 rounded-lg p-3 border border-slate-700">
+                                <div class="text-[10px] uppercase tracking-widest text-slate-400 mb-1"><?php _e( 'Health', 'wos-frost-fire' ); ?></div>
+                                <div class="text-xl font-black text-white font-mono"><?php echo esc_html( $stats_health ?: '-' ); ?></div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- Skills Section (Flat Cards) -->
