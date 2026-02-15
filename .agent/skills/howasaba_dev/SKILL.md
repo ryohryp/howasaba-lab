@@ -7,6 +7,14 @@ description: Development workflow and environment details for Howasaba Lab WordP
 
 このスキルは、Howasaba Lab プロジェクト（WordPressテーマ開発）における開発環境とワークフローを定義します。
 
+## Artifact Rules (Language Requirement)
+
+**以下の成果物（Artifacts）は必ず日本語で記述してください。**
+- `implementation_plan.md` (Implementation Plan)
+- `task.md` (Task List)
+- `walkthrough.md` (Walkthrough)
+
+
 ## 環境設定 (Environment Setup)
 
 ### PHP
@@ -23,6 +31,8 @@ description: Development workflow and environment details for Howasaba Lab WordP
 - **Dependencies**: `requirements.txt`
 - **Usage**: `python scripts/fetch_gift_codes.py` (Env vars required)
 - **i18n Tool**: `python scripts/compile_mo_pure.py` (Compiles .po to .mo without msgfmt)
+- **Article Poster**: `python scripts/post_gen6_article.py` (Draft creation for Gen 6 Heroes)
+
 
 ## Project Structure
 
@@ -60,7 +70,27 @@ description: Development workflow and environment details for Howasaba Lab WordP
 
 ### 3. Gift Codes (`gift_code`)
 - **Meta Fields**: `_wos_code_string`, `_wos_rewards`, `_wos_expiration_date`.
+- **Meta Fields**: `_wos_code_string`, `_wos_rewards`, `_wos_expiration_date`.
 - **Feature**: "Radar" UI effect for new codes (`gift-code-radar.css`).
+
+## REST API Custom Architecture
+
+Xserver（FastCGI）の制限により、標準の `Authorization` ヘッダーが削除されるため、独自のトークン認証を実装しています。
+
+### Authentication
+- **Header**: `X-Radar-Token`
+- **Value**: `WOS_RADAR_TOKEN` (Environment Variable)
+- **Validation**: `inc/api-endpoints.php`
+
+### Endpoints
+1. **Gift Code Registration**
+   - `POST /wp-json/wos-radar/v1/add-code`
+   - **Payload**: `{ "code_string": "...", "rewards": "..." }`
+
+2. **Post Management**
+   - `POST /wp-json/wos-radar/v1/create-post` (Draft Creation)
+   - `POST /wp-json/wos-radar/v1/update-post` (Update Existing)
+
 
 ## Tier List Generator System
 

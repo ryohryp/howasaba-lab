@@ -2,3 +2,5 @@ requests==2.31.0
 regex
 beautifulsoup4
 feedparser
+markdown
+

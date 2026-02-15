@@ -167,9 +167,99 @@ function wos_handle_add_gift_code( WP_REST_Request $request ) {
 }
 
 /**
+ * Handle POST request to add a post
+ *
+ * @param WP_REST_Request $request The request object.
+ * @return WP_REST_Response The response object.
+ */
+function wos_handle_create_post( WP_REST_Request $request ) {
+    $title   = $request->get_param( 'title' );
+    $content = $request->get_param( 'content' );
+    $status  = $request->get_param( 'status' );
+    $slug    = $request->get_param( 'slug' );
+
+    // Default status to draft if not provided
+    if ( empty( $status ) ) {
+        $status = 'draft';
+    }
+
+    $post_data = array(
+        'post_title'   => $title,
+        'post_content' => $content,
+        'post_status'  => $status,
+        'post_type'    => 'post',
+    );
+    
+    if ( ! empty( $slug ) ) {
+        $post_data['post_name'] = $slug;
+    }
+
+    $post_id = wp_insert_post( $post_data );
+
+    if ( is_wp_error( $post_id ) ) {
+        return new WP_REST_Response( array(
+            'code'    => 'create_failed',
+            'message' => $post_id->get_error_message(),
+            'data'    => array( 'status' => 500 ),
+        ), 500 );
+    }
+
+    return new WP_REST_Response( array(
+        'message' => '記事が作成されました',
+        'post_id' => $post_id,
+        'title'   => $title,
+    ), 201 );
+}
+
+/**
  * Register REST API routes for post updates
  */
 function wos_register_post_update_routes() {
+    register_rest_route( 'wos-radar/v1', '/create-post', array(
+        'methods'             => 'POST',
+        'callback'            => 'wos_handle_create_post',
+        'permission_callback' => function ( WP_REST_Request $request ) {
+            $token = $request->get_header( 'x-radar-token' );
+            $secret = 'WosRadarSecret2026_Operation!';
+
+            if ( $token === $secret ) {
+                return true;
+            }
+
+            return new WP_Error( 
+                'invalid_token', 
+                'Auth Token Invalid', 
+                array( 'status' => 401 ) 
+            );
+        },
+        'args'                => array(
+            'title'           => array(
+                'required'          => true,
+                'validate_callback' => function( $param, $request, $key ) {
+                    return is_string( $param ) && ! empty( $param );
+                },
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'content'         => array(
+                'required'          => true,
+                'validate_callback' => function( $param, $request, $key ) {
+                    return is_string( $param );
+                },
+            ),
+            'status'          => array(
+                'required'          => false,
+                'validate_callback' => function( $param, $request, $key ) {
+                    return in_array( $param, array( 'publish', 'draft', 'pending' ), true );
+                },
+                'default'           => 'draft',
+            ),
+            'slug'            => array(
+                'required'          => false,
+                'sanitize_callback' => 'sanitize_title',
+            ),
+        ),
+    ) );
+
     register_rest_route( 'wos-radar/v1', '/update-post', array(
         'methods'             => 'POST',
         'callback'            => 'wos_handle_update_post',
