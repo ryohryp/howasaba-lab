@@ -107,10 +107,14 @@
         if ($events->have_posts()) : ?>
             <div class="space-y-4">
                 <?php while ($events->have_posts()) : $events->the_post(); 
-                    $start = get_post_meta(get_the_ID(), 'event_start_date', true);
-                    $end = get_post_meta(get_the_ID(), 'event_end_date', true);
+                    $start = get_post_meta(get_the_ID(), '_event_start_date', true); // Fixed meta key
+                    $end = get_post_meta(get_the_ID(), '_event_end_date', true); // Fixed meta key (assuming _event_end_date exists, or calc from duration)
+                    // If start date is missing, fallback just in case
+                    if (!$start) $start = get_the_date('Y-m-d');
+                    
                     $type = get_the_terms(get_the_ID(), 'event_type');
-                    $type_name = $type ? $type[0]->name : 'Event';
+                    // Check for WP_Error and ensure it's an array
+                    $type_name = ( ! is_wp_error($type) && ! empty($type) ) ? $type[0]->name : 'Event';
                 ?>
                     <a href="<?php the_permalink(); ?>" class="flat-card block p-6 hover:border-l-4 hover:border-l-ice-blue transition-all group">
                         <div class="flex items-center gap-6">

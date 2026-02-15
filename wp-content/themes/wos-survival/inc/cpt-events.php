@@ -69,6 +69,18 @@ class WoS_Event_CPT {
             'rewrite'               => [ 'slug' => 'event', 'with_front' => true ],
         ];
         register_post_type( 'wos_event', $args );
+
+        // Register Event Type Taxonomy
+        register_taxonomy(
+            'event_type',
+            'wos_event',
+            [
+                'label' => __( 'Event Type', WOS_TEXT_DOMAIN ),
+                'rewrite' => [ 'slug' => 'event-type' ],
+                'hierarchical' => true,
+                'show_in_rest' => true,
+            ]
+        );
     }
 
     /**
