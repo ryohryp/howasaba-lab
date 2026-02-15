@@ -70,6 +70,7 @@ class WoS_Hero_CPT {
             'publicly_queryable'    => true,
             'capability_type'       => 'post',
             'show_in_rest'          => true, // Key for Gutenberg editor support
+            'rest_base'             => 'hero',
             'rewrite'               => [ 'slug' => 'hero', 'with_front' => true ],
         ];
         register_post_type( 'wos_hero', $args );
@@ -92,6 +93,7 @@ class WoS_Hero_CPT {
             'query_var'         => true,
             'rewrite'           => [ 'slug' => 'generation' ],
             'show_in_rest'      => true,
+            'rest_base'         => 'hero_generation',
         ]);
 
         // Type (Infantry, Lancer, etc.)
@@ -107,6 +109,7 @@ class WoS_Hero_CPT {
             'query_var'         => true,
             'rewrite'           => [ 'slug' => 'type' ],
             'show_in_rest'      => true,
+            'rest_base'         => 'hero_type',
         ]);
 
         // Rarity
@@ -122,6 +125,7 @@ class WoS_Hero_CPT {
             'query_var'         => true,
             'rewrite'           => [ 'slug' => 'rarity' ],
             'show_in_rest'      => true,
+            'rest_base'         => 'hero_rarity',
         ]);
     }
 
