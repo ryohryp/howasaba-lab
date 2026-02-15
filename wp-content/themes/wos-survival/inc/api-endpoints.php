@@ -91,6 +91,30 @@ function wos_register_gift_code_api_routes() {
             ),
 		),
 	) );
+
+    // Debug Endpoint: Flush Rules & Check Routes
+    register_rest_route( 'wos-radar/v1', '/debug/flush', array(
+        'methods'             => 'POST',
+        'callback'            => function() {
+            flush_rewrite_rules();
+            
+            // Get registered routes for verification
+            $server = rest_get_server();
+            $routes = $server->get_routes();
+            $hero_routes = array_filter( array_keys( $routes ), function($route) {
+                return strpos($route, 'hero') !== false;
+            });
+
+            return new WP_REST_Response( array(
+                'message' => 'Rewrite rules flushed.',
+                'routes'  => array_values($hero_routes)
+            ), 200 );
+        },
+        'permission_callback' => function ( WP_REST_Request $request ) {
+             $token = $request->get_header( 'x-radar-token' );
+             return $token === 'WosRadarSecret2026_Operation!';
+        },
+    ) );
 }
 add_action( 'rest_api_init', 'wos_register_gift_code_api_routes' );
 
