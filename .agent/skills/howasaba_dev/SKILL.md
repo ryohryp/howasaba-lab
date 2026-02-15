@@ -100,7 +100,8 @@ Xserver（FastCGI）の制限により、標準の `Authorization` ヘッダー�
 - **Generator**:
     1. **Data Seeding**: `/wp-admin/?seed_heroes=1` (Upsert logic)
     2. **Gen 6 Update**: `/wp-admin/?seed_gen6=1` & `?seed_gen6_skills=1`
-    3. **Page Creation**: `/wp-admin/?seed_pages=1`
+    3. **Year Beast Event**: `/wp-admin/?seed_year_beast=1`
+    4. **Page Creation**: `/wp-admin/?seed_pages=1`
 - **Shortcode**: `[wos_tier_list]` creates the comparison table.
 
 ## Deployment (CI/CD)
