@@ -148,8 +148,13 @@ class WoS_Hero_CPT {
         $fields = [
             'japanese_name'              => __( 'Japanese Name', WOS_TEXT_DOMAIN ),
             'hero_unlock_day'            => __( 'Unlock Day (from server start)', WOS_TEXT_DOMAIN ),
+            'tier_whale'                 => __( 'Tier - Whale (Grade: S+, S, A...)', WOS_TEXT_DOMAIN ),
+            'tier_f2p'                   => __( 'Tier - F2P (Grade: S+, S, A...)', WOS_TEXT_DOMAIN ),
             'hero_source'                => __( 'Source (e.g. Lucky Wheel)', WOS_TEXT_DOMAIN ),
             'hero_widget_name'           => __( 'Exclusive Widget Name', WOS_TEXT_DOMAIN ),
+            'recommended_widgets'        => __( 'Recommended Widgets (Text/HTML)', WOS_TEXT_DOMAIN ),
+            'best_pairings'              => __( 'Best Pairings (Text/HTML)', WOS_TEXT_DOMAIN ),
+            'f2p_viability'              => __( 'F2P Viability Notes', WOS_TEXT_DOMAIN ),
             'hero_stats_atk'             => __( 'ATK (0-100)', WOS_TEXT_DOMAIN ),
             'hero_stats_def'             => __( 'DEF (0-100)', WOS_TEXT_DOMAIN ),
             'hero_stats_hp'              => __( 'HP (0-100)', WOS_TEXT_DOMAIN ),
@@ -166,7 +171,7 @@ class WoS_Hero_CPT {
         $values = [];
         foreach ( $fields as $key => $label ) {
             // Keys that don't use underscore prefix in existing data
-             $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2', 'skill_expedition_3' ];
+             $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2', 'skill_expedition_3', 'tier_whale', 'tier_f2p', 'recommended_widgets', 'f2p_viability', 'best_pairings' ];
             $meta_key = in_array( $key, $no_underscore ) ? $key : '_' . $key;
             $values[ $key ] = get_post_meta( $post->ID, $meta_key, true );
         }
@@ -198,12 +203,15 @@ class WoS_Hero_CPT {
 
         foreach ( $fields as $key => $label ) {
             $type = ( strpos( $key, 'stats' ) !== false || strpos( $key, 'day' ) !== false ) ? 'number' : 'text';
-            $is_textarea = strpos( $key, 'skill' ) !== false;
+            $is_textarea = strpos( $key, 'skill' ) !== false || strpos( $key, 'best_pairings' ) !== false || strpos( $key, 'recommended_widgets' ) !== false || strpos( $key, 'f2p_viability' ) !== false;
             
             echo '<div class="wos-meta-row">';
             echo '<label for="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</label>';
             if ( $is_textarea ) {
                 echo '<textarea id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" rows="3" style="width:100%; max-width:600px;">' . esc_textarea( $values[ $key ] ) . '</textarea>';
+                if ( strpos( $key, 'skill' ) !== false ) {
+                    echo '<p class="description">HTML Allowed (e.g., &lt;span class="text-fire-crystal font-bold"&gt;)</p>';
+                }
             } else {
                 echo '<input type="' . $type . '" id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" value="' . esc_attr( $values[ $key ] ) . '" />';
             }
@@ -327,6 +335,11 @@ class WoS_Hero_CPT {
             'hero_unlock_day',
             'hero_source',
             'hero_widget_name',
+            'tier_whale',
+            'tier_f2p',
+            'recommended_widgets',
+            'f2p_viability',
+            'best_pairings',
             'hero_stats_atk',
             'hero_stats_def',
             'hero_stats_hp',
@@ -343,14 +356,29 @@ class WoS_Hero_CPT {
         foreach ( $fields as $field ) {
             if ( isset( $_POST[ $field ] ) ) {
                 // Keys that don't use underscore prefix
-                $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2', 'skill_expedition_3' ];
+                $no_underscore = [ 'japanese_name', 'skill_exploration_active', 'skill_exploration_passive_1', 'skill_exploration_passive_2', 'skill_expedition_1', 'skill_expedition_2', 'skill_expedition_3', 'tier_whale', 'tier_f2p', 'recommended_widgets', 'f2p_viability', 'best_pairings' ];
                 $meta_key = in_array( $field, $no_underscore ) ? $field : '_' . $field;
 
-                // Use sanitize_textarea_field for skills as they might be longer
-                if ( strpos($field, 'skill') !== false ) {
-                    update_post_meta( $post_id, $meta_key, sanitize_textarea_field( $_POST[ $field ] ) );
+                // Sanitize checks
+                if ( strpos( $field, 'skill' ) !== false ) {
+                    // Allow specific HTML tags for skills
+                    $allowed_html = [
+                        'br' => [],
+                        'span' => [
+                            'class' => true,
+                            'style' => true,
+                        ],
+                        'strong' => [],
+                        'em' => [],
+                        'b' => [],
+                        'i' => [],
+                    ];
+                    update_post_meta( $post_id, $meta_key, wp_kses( $_POST[ $field ], $allowed_html ) );
+                } elseif ( strpos( $field, 'stats' ) !== false || strpos( $field, 'day' ) !== false ) {
+                     update_post_meta( $post_id, $meta_key, intval( $_POST[ $field ] ) );
                 } else {
-                    update_post_meta( $post_id, $meta_key, sanitize_text_field( $_POST[ $field ] ) );
+                    // Default text sanitization
+                     update_post_meta( $post_id, $meta_key, sanitize_textarea_field( $_POST[ $field ] ) );
                 }
             }
         }
