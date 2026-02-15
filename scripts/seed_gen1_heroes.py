@@ -3,7 +3,7 @@ import os
 import json
 
 # Configuration
-WP_API_URL = os.environ.get("WP_API_URL", "http://localhost/wp-json") 
+WP_API_URL = os.environ.get("WP_API_URL", "http://localhost:10008/wp-json") 
 TOKEN = os.environ.get("X_RADAR_TOKEN", "WosRadarSecret2026_Operation!")
 
 HEADERS = {
