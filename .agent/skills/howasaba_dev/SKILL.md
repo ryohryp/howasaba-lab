@@ -14,6 +14,11 @@ description: Development workflow and environment details for Howasaba Lab WordP
 - `task.md` (Task List)
 - `walkthrough.md` (Walkthrough)
 
+## Content Guidelines (Tone & Style)
+
+- **客観的・情報中心のトーン**:「副司令官です！」「戦いを始めましょう！」のような、ゲーム世界に没入したロールプレイ的な表現（なりきり）は避けてください。
+- **簡潔さ**: 読者はスマホユーザーが多いため、結論を先に述べ、過度な挨拶や煽り文句は削除してください。
+
 
 ## 環境設定 (Environment Setup)
 
