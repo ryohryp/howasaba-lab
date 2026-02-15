@@ -208,32 +208,77 @@ add_action('init', 'wos_seed_heroes');
  */
 function wos_seed_events() {
     // Run if user has capability and triggered via GET param
-    if ( ! current_user_can('manage_options') || ! isset($_GET['seed_events']) ) {
+    if ( ! current_user_can('manage_options') ) {
         return;
     }
 
-    $today = date('Y-m-d');
-    $future = date('Y-m-d', strtotime('+30 days')); // Further out for upcoming
-    // Make sure we have dates that differ
-    $upcoming_date = date('Y-m-d', strtotime('+5 days'));
-    $past_date = date('Y-m-d', strtotime('-10 days'));
+    if ( isset($_GET['seed_events']) ) {
+        $today = date('Y-m-d');
+        $future = date('Y-m-d', strtotime('+30 days')); // Further out for upcoming
+        // Make sure we have dates that differ
+        $upcoming_date = date('Y-m-d', strtotime('+5 days'));
+        $past_date = date('Y-m-d', strtotime('-10 days'));
 
-    $events_data = [
-        'Sunfire Castle Battle' => ['start' => $upcoming_date, 'duration' => '1 Day',  'server_age' => 90, 'desc' => 'Prepare for the ultimate battle for the Sunfire Castle!'], // Upcoming
-        'Gina\'s Revenge'       => ['start' => $today,         'duration' => '3 Days', 'server_age' => 10, 'desc' => 'Hunt the beasts and earn exclusive rewards.'],       // Active
-        'Bear Hunt'             => ['start' => $past_date,     'duration' => '2 Days', 'server_age' => 5,  'desc' => 'Join your alliance to take down the Polar Terror.'],   // Past
-        'Crazy Joe'             => ['start' => $future,        'duration' => '1 Day',  'server_age' => 15, 'desc' => 'Defend your city against waves of bandits.'],          // Upcoming
-        'Foundry Battle'        => ['start' => $today,         'duration' => '1 Day',  'server_age' => 30, 'desc' => 'Alliance vs Alliance battle.'],                        // Active
-    ];
+        $events_data = [
+            'Sunfire Castle Battle' => ['start' => $upcoming_date, 'duration' => '1 Day',  'server_age' => 90, 'desc' => 'Prepare for the ultimate battle for the Sunfire Castle!'], // Upcoming
+            'Gina\'s Revenge'       => ['start' => $today,         'duration' => '3 Days', 'server_age' => 10, 'desc' => 'Hunt the beasts and earn exclusive rewards.'],       // Active
+            'Bear Hunt'             => ['start' => $past_date,     'duration' => '2 Days', 'server_age' => 5,  'desc' => 'Join your alliance to take down the Polar Terror.'],   // Past
+            'Crazy Joe'             => ['start' => $future,        'duration' => '1 Day',  'server_age' => 15, 'desc' => 'Defend your city against waves of bandits.'],          // Upcoming
+            'Foundry Battle'        => ['start' => $today,         'duration' => '1 Day',  'server_age' => 30, 'desc' => 'Alliance vs Alliance battle.'],                        // Active
+        ];
 
-    foreach ($events_data as $name => $data) {
-        $existing = get_page_by_title($name, OBJECT, 'wos_event');
+        foreach ($events_data as $name => $data) {
+            $existing = get_page_by_title($name, OBJECT, 'wos_event');
+            
+            $post_data = array(
+                'post_title'    => $name,
+                'post_content'  => $data['desc'],
+                'post_status'   => 'publish',
+                'post_type'     => 'wos_event',
+            );
+
+            if ($existing) {
+                $post_data['ID'] = $existing->ID;
+                $post_id = wp_update_post($post_data);
+            } else {
+                $post_id = wp_insert_post($post_data);
+            }
+
+            if ( ! is_wp_error($post_id) ) {
+                // Set Meta
+                update_post_meta($post_id, '_event_start_date', $data['start']);
+                update_post_meta($post_id, '_event_duration', $data['duration']);
+                update_post_meta($post_id, '_server_age_requirement', $data['server_age']);
+            }
+        }
+        
+        // Add admin notice
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-success"><p>Events Seeded Successfully (Theme: WoS Frost & Fire)!</p></div>';
+        });
+    }
+
+    // Year Beast Event Seeder
+    if ( isset($_GET['seed_year_beast']) ) {
+        $event_data = [
+            'title'     => 'イヤービースト大襲撃 (Year Beast Big Raid)',
+            'slug'      => 'year-beast-2026',
+            'content'   => '爆竹の歓声が雪原に響き渡り、伝説のイヤービーストが生存者たちを襲い始めました。無名と共に撃退し、祝祭を迎えましょう！',
+            'start'     => '2026-02-15',
+            'duration'  => '7 Days', // Calculated from 2026-02-15 to 2026-02-21 inclusive
+            'server_age'=> 1,
+            'currency'  => '寒玉コイン',
+            'shop_close'=> '2026-02-22'
+        ];
+
+        $existing = get_page_by_path($event_data['slug'], OBJECT, 'wos_event');
         
         $post_data = array(
-            'post_title'    => $name,
-            'post_content'  => $data['desc'],
+            'post_title'    => $event_data['title'],
+            'post_content'  => $event_data['content'],
             'post_status'   => 'publish',
             'post_type'     => 'wos_event',
+            'post_name'     => $event_data['slug'],
         );
 
         if ($existing) {
@@ -245,16 +290,18 @@ function wos_seed_events() {
 
         if ( ! is_wp_error($post_id) ) {
             // Set Meta
-            update_post_meta($post_id, '_event_start_date', $data['start']);
-            update_post_meta($post_id, '_event_duration', $data['duration']);
-            update_post_meta($post_id, '_server_age_requirement', $data['server_age']);
+            update_post_meta($post_id, '_event_start_date', $event_data['start']);
+            update_post_meta($post_id, '_event_duration', $event_data['duration']);
+            update_post_meta($post_id, '_server_age_requirement', $event_data['server_age']);
+            update_post_meta($post_id, '_event_currency_name', $event_data['currency']);
+            update_post_meta($post_id, '_event_shop_closing_date', $event_data['shop_close']);
         }
+
+        // Add admin notice
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-success"><p>Year Beast Event Seeded Successfully</p></div>';
+        });
     }
-    
-    // Add admin notice
-    add_action('admin_notices', function() {
-        echo '<div class="notice notice-success"><p>Events Seeded Successfully (Theme: WoS Frost & Fire)!</p></div>';
-    });
 }
 add_action('init', 'wos_seed_events');
 

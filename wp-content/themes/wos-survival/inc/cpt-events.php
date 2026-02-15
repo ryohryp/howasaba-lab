@@ -95,6 +95,8 @@ class WoS_Event_CPT {
             'event_start_date'       => __( 'Start Date (YYYY-MM-DD)', WOS_TEXT_DOMAIN ),
             'event_duration'         => __( 'Duration (e.g. 3 Days)', WOS_TEXT_DOMAIN ),
             'server_age_requirement' => __( 'Server Age Requirement (Days)', WOS_TEXT_DOMAIN ),
+            'event_currency_name'    => __( 'Event Currency Name (e.g. 寒玉コイン)', WOS_TEXT_DOMAIN ), // New Field
+            'event_shop_closing_date'=> __( 'Shop Closing Date (YYYY-MM-DD)', WOS_TEXT_DOMAIN ), // New Field
         ];
 
         $values = [];
@@ -139,11 +141,19 @@ class WoS_Event_CPT {
             'event_start_date',
             'event_duration',
             'server_age_requirement',
+            'event_currency_name',     // New Field
+            'event_shop_closing_date', // New Field
         ];
 
         foreach ( $fields as $field ) {
+            // Check if set, if so sanitize and save. If not, it might be empty or unchecked.
             if ( isset( $_POST[ $field ] ) ) {
+                 // specific sanitization for text/date can be just sanitize_text_field as they are simple strings
                 update_post_meta( $post_id, '_' . $field, sanitize_text_field( $_POST[ $field ] ) );
+            } else {
+                // If the field is missing from POST (e.g. empty checkbox if used, or just cleared), consider deleting it
+                // For text inputs provided by browser, empty string is sent, so isset is true.
+                // But good practice generally. Here we just update what is sent.
             }
         }
     }
