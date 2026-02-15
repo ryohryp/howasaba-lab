@@ -13,13 +13,14 @@ HEADERS = {
 
 # Hero Data Definition
 HEROES = [
+    # --- SSR (Mythic) Heroes ---
     {
         "name": "Jeronimo",
         "japanese_name": "ジェロニモ",
         "slug": "jeronimo",
         "generation": "1",
         "type": "Infantry",
-        "troop_type_jp": "盾",
+        "rarity": "SSR",
         "overall_tier": "S+",
         "skill_expedition_1": "全部隊の殺傷力・HP上昇",
         "note": "重課金向け、VIP7/最強領主報酬。"
@@ -30,7 +31,7 @@ HEROES = [
         "slug": "natalia",
         "generation": "1",
         "type": "Infantry",
-        "troop_type_jp": "盾",
+        "rarity": "SSR",
         "overall_tier": "S",
         "skill_expedition_1": "全部隊の攻撃・防御力上昇",
         "note": "課金者向け、初回チャージ/VIP報酬。"
@@ -41,7 +42,7 @@ HEROES = [
         "slug": "zinman",
         "generation": "1",
         "type": "Marksman",
-        "troop_type_jp": "弓",
+        "rarity": "SSR",
         "overall_tier": "A",
         "note": "デイリー割引。建設バフ、中盤以降は過小不足で価値低下。"
     },
@@ -51,19 +52,71 @@ HEROES = [
         "slug": "jasmine",
         "generation": "1",
         "type": "Lancer",
-        "troop_type_jp": "槍",
+        "rarity": "SSR",
         "overall_tier": "A",
         "note": "無課金最優先。7日間ログイン報酬。"
     },
+
+    # --- SR (Epic) Heroes ---
     {
         "name": "Sergey",
         "japanese_name": "セルゲイ",
         "slug": "sergey",
         "generation": "1",
         "type": "Infantry",
-        "troop_type_jp": "盾",
+        "rarity": "SR",
         "overall_tier": "B",
-        "note": "初期タンク。PvP/防衛/ジョイで優秀。"
+        "note": "序盤の最強タンク。PvPやクレイジージョイなど防衛で長期間活躍。"
+    },
+    {
+        "name": "Jessie",
+        "japanese_name": "ジェシー",
+        "slug": "jessie",
+        "generation": "1",
+        "type": "Lancer",
+        "rarity": "SR",
+        "overall_tier": "B",
+        "note": "遠征スキルで集結部隊のダメージUP。熊狩りや集結攻撃の必須枠。"
+    },
+    {
+        "name": "Patrick",
+        "japanese_name": "パトリック",
+        "slug": "patrick",
+        "generation": "1",
+        "type": "Infantry",
+        "rarity": "SR",
+        "overall_tier": "B",
+        "note": "HP回復と防衛時のHPバフ持ち。防衛・駐屯において非常に優秀。"
+    },
+    {
+        "name": "Jasser",
+        "japanese_name": "ジャセル",
+        "slug": "jasser",
+        "generation": "1",
+        "type": "Marksman",
+        "rarity": "SR",
+        "overall_tier": "C",
+        "note": "研究速度UPの内政バフ持ち。遠征スキルで集結火力も上げられる。"
+    },
+    {
+        "name": "Seo-yoon",
+        "japanese_name": "ソユン",
+        "slug": "seo-yoon",
+        "generation": "1",
+        "type": "Lancer",
+        "rarity": "SR",
+        "overall_tier": "C",
+        "note": "遠征スキルで集結火力を上昇。熊狩り等でのバッファーとして活躍。"
+    },
+    {
+        "name": "Gina",
+        "japanese_name": "ジーナ",
+        "slug": "gina",
+        "generation": "1",
+        "type": "Marksman",
+        "rarity": "SR",
+        "overall_tier": "C",
+        "note": "「ジーナの復讐」イベントで育成容易。野獣狩りのスタミナ軽減・行軍速度UPで必須。"
     },
     {
         "name": "Bahiti",
@@ -71,9 +124,71 @@ HEROES = [
         "slug": "bahiti",
         "generation": "1",
         "type": "Marksman",
-        "troop_type_jp": "弓",
+        "rarity": "SR",
         "overall_tier": "B",
-        "note": "初期弓火力。星上げが容易。"
+        "note": "序盤の貴重な弓火力枠。星上げが容易で長く無課金の主力となる。"
+    },
+    {
+        "name": "Walis Bokan",
+        "japanese_name": "ヴァリス・ボーガン",
+        "slug": "walis-bokan",
+        "generation": "1",
+        "type": "Lancer",
+        "rarity": "SR",
+        "overall_tier": "C",
+        "note": "兵士の訓練速度UPバフを持つ内政特化英雄。"
+    },
+    {
+        "name": "Ling Shuang",
+        "japanese_name": "リンソウ",
+        "slug": "ling-shuang",
+        "generation": "1",
+        "type": "Infantry",
+        "rarity": "SR",
+        "overall_tier": "C",
+        "note": "治療速度UPと鉄鉱所出力UPを持つ内政・サポート枠。"
+    },
+
+    # --- R (Rare) Heroes ---
+    {
+        "name": "Smith",
+        "japanese_name": "スミス",
+        "slug": "smith",
+        "generation": "1",
+        "type": "Infantry",
+        "rarity": "R",
+        "overall_tier": "D",
+        "note": "鉄鉱工場の出力UP。"
+    },
+    {
+        "name": "Eugene",
+        "japanese_name": "ユージーン",
+        "slug": "eugene",
+        "generation": "1",
+        "type": "Lancer",
+        "rarity": "R",
+        "overall_tier": "D",
+        "note": "ハンターの家の出力（生肉）UP。"
+    },
+    {
+        "name": "Charlie",
+        "japanese_name": "チャーリー",
+        "slug": "charlie",
+        "generation": "1",
+        "type": "Infantry",
+        "rarity": "R",
+        "overall_tier": "D",
+        "note": "炭鉱工場の出力UP。"
+    },
+    {
+        "name": "Cloris",
+        "japanese_name": "クラリス",
+        "slug": "cloris",
+        "generation": "1",
+        "type": "Marksman",
+        "rarity": "R",
+        "overall_tier": "D",
+        "note": "伐採場の出力UP。"
     }
 ]
 
@@ -116,7 +231,8 @@ def seed_heroes():
     # We cache term IDs to avoid repeated calls
     term_cache = {
         "generation": {},
-        "type": {}
+        "type": {},
+        "rarity": {}
     }
 
     for hero in HEROES:
@@ -124,18 +240,10 @@ def seed_heroes():
         
         # Resolve Generation
         gen_name = hero['generation']
-        # Try to match the existing naming convention if possible, or just use "1" as requested.
-        # User requested "1" for taxonomy `generation`.
-        # Existing site might use "Gen 1", but let's stick to requirement "1" or try to find "Gen 1" if "1" fails?
-        # Let's use "Gen 1" as the name but maybe slug "gen-1" is better?
-        # The prompt says: "タクソノミー `generation` に "1" ... を設定すること"
-        # I will use name "1" for now as requested.
-        
         if gen_name not in term_cache["generation"]:
             term_id = get_term_id("hero_generation", gen_name)
             if term_id:
                 term_cache["generation"][gen_name] = term_id
-        
         gen_id = term_cache["generation"].get(gen_name)
 
         # Resolve Type
@@ -144,15 +252,21 @@ def seed_heroes():
              term_id = get_term_id("hero_type", type_name)
              if term_id:
                  term_cache["type"][type_name] = term_id
-        
         type_id = term_cache["type"].get(type_name)
 
+        # Resolve Rarity
+        rarity_name = hero.get('rarity', 'SSR') # Default to SSR if not specified
+        if rarity_name not in term_cache["rarity"]:
+             term_id = get_term_id("hero_rarity", rarity_name)
+             if term_id:
+                 term_cache["rarity"][rarity_name] = term_id
+        rarity_id = term_cache["rarity"].get(rarity_name)
+
         if not gen_id or not type_id:
-            print(f"Skipping {hero['name']}: Could not resolve taxonomy terms.")
+            print(f"Skipping {hero['name']}: Could not resolve basic taxonomy terms.")
             continue
 
         # 2. Check if hero exists
-        # Use slug
         check_url = f"{WP_API_URL}/wp/v2/hero"
         check_params = {"slug": hero['slug'], "status": "any"}
         response = requests.get(check_url, params=check_params, headers=HEADERS)
@@ -175,9 +289,11 @@ def seed_heroes():
                 "overall_tier": hero['overall_tier'],
                 "skill_expedition_1": hero.get('skill_expedition_1', ''),
                 "japanese_name": hero['japanese_name'],
-                # Add troop_type_jp if we want to store it, but type taxonomy should handle it generally.
             }
         }
+        
+        if rarity_id:
+            post_data['hero_rarity'] = [rarity_id]
 
         # 4. Create or Update
         if existing_heroes:
