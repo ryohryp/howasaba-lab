@@ -10,6 +10,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Authenticate REST API requests using X-Radar-Token header.
+ *
+ * @param mixed $result Error, true, or null.
+ * @return mixed
+ */
+function wos_api_authentication( $result ) {
+    // If a previous authentication check was applied, rely on it.
+    if ( ! empty( $result ) ) {
+        return $result;
+    }
+
+    // Check for our custom header
+    $token = isset( $_SERVER['HTTP_X_RADAR_TOKEN'] ) ? $_SERVER['HTTP_X_RADAR_TOKEN'] : '';
+    
+    // Secret token (Should match the one in existing callbacks)
+    $secret = 'WosRadarSecret2026_Operation!'; 
+
+    if ( $token === $secret ) {
+        // Authenticate as ID 1 (Admin) to allow write access to standard endpoints
+        wp_set_current_user( 1 );
+        return true;
+    }
+
+    return $result;
+}
+add_filter( 'rest_authentication_errors', 'wos_api_authentication' );
+
+/**
  * Register REST API routes
  */
 function wos_register_gift_code_api_routes() {

@@ -1,0 +1,33 @@
+name: Seed Heroes
+
+on:
+  workflow_dispatch:
+    inputs:
+      script_name:
+        description: 'Script to run (default: seed_gen1_heroes.py)'
+        required: true
+        default: 'seed_gen1_heroes.py'
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Seeding Script
+        env:
+          WP_API_URL: ${{ secrets.WP_API_URL }}
+          X_RADAR_TOKEN: ${{ secrets.X_RADAR_TOKEN }}
+        run: |
+          python scripts/${{ inputs.script_name }}
