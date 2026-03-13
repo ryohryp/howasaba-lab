@@ -6,27 +6,44 @@
  * Expects to be used within The Loop or with a $post object.
  */
 
-$hero_id = get_the_ID();
-$generation = get_the_terms( $hero_id, 'hero_generation' );
-$type = get_the_terms( $hero_id, 'hero_type' );
-$rarity = get_the_terms( $hero_id, 'hero_rarity' );
-$gen_name = !empty($generation) && !is_wp_error($generation) ? $generation[0]->name : '';
-$type_name = !empty($type) && !is_wp_error($type) ? $type[0]->name : '';
-$rarity_name = !empty($rarity) && !is_wp_error($rarity) ? $rarity[0]->name : '';
-
 // Check if filtering is enabled (default: false)
 $use_filtering = $args['use_filtering'] ?? false;
 
-// Define slugs for data attributes
-$gen_slug = !empty($generation) && !is_wp_error($generation) ? $generation[0]->slug : '';
-$type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
+// Check if raw hero data is passed from Supabase
+$hero_data = $args['hero_data'] ?? null;
+
+if ( $hero_data ) {
+    $hero_id     = $hero_data['id'] ?? 0; // WP post ID if available, else 0
+    $gen_name    = 'Gen ' . ( $hero_data['generation'] ?? '' );
+    $type_name   = $hero_data['troop_type'] ?? '';
+    $rarity_name = $hero_data['rarity'] ?? 'SSR';
+    $gen_slug    = $hero_data['generation'] ?? '';
+    $type_slug   = strtolower( $type_name );
+    $permalink   = home_url( '/hero/' . ( $hero_data['slug'] ?? sanitize_title( $hero_data['name'] ) ) . '/' );
+    $title       = $hero_data['name'] ?? '';
+} else {
+    // WP Loop fallback
+    $hero_id    = get_the_ID();
+    $generation = get_the_terms( $hero_id, 'hero_generation' );
+    $type       = get_the_terms( $hero_id, 'hero_type' );
+    $rarity     = get_the_terms( $hero_id, 'hero_rarity' );
+    
+    $gen_name    = !empty($generation) && !is_wp_error($generation) ? $generation[0]->name : '';
+    $type_name   = !empty($type) && !is_wp_error($type) ? $type[0]->name : '';
+    $rarity_name = !empty($rarity) && !is_wp_error($rarity) ? $rarity[0]->name : '';
+    
+    $gen_slug  = !empty($generation) && !is_wp_error($generation) ? $generation[0]->slug : '';
+    $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
+    $permalink = get_permalink();
+    $title     = get_the_title();
+}
 
 ?>
 
 <article 
-    id="post-<?php the_ID(); ?>" 
+    id="post-<?php echo esc_attr( $hero_id ); ?>" 
     <?php post_class('relative group overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30'); ?>
-    data-name="<?php the_title(); ?>"
+    data-name="<?php echo esc_attr( $title ); ?>"
     data-gen="<?php echo esc_attr( $gen_slug ); ?>"
     data-type="<?php echo esc_attr( $type_slug ); ?>"
     <?php if ( $use_filtering ) : ?>
@@ -36,11 +53,13 @@ $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
         x-transition:enter-end="opacity-100 scale-100"
     <?php endif; ?>
 >
-    <a href="<?php the_permalink(); ?>" class="hero-card group block relative overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30">
+    <a href="<?php echo esc_url( $permalink ); ?>" class="hero-card group block relative overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30">
     
         <!-- Hero Image Area (Top) -->
         <div class="relative w-[90px] h-[90px] mx-auto mt-4 overflow-hidden bg-slate-900 rounded-lg">
-            <?php if ( has_post_thumbnail() ) : ?>
+            <?php if ( $hero_data && !empty($hero_data['image_url']) ) : ?>
+                <img src="<?php echo esc_url( $hero_data['image_url'] ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110">
+            <?php elseif ( ! $hero_data && has_post_thumbnail() ) : ?>
                 <?php the_post_thumbnail( 'medium', array( 'class' => 'h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110' ) ); ?>
             <?php else : ?>
                 <div class="h-full w-full flex items-center justify-center bg-slate-800 text-slate-700">
@@ -79,7 +98,7 @@ $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
         
         <!-- Hero Name -->
         <div class="px-2 pb-4 pt-2 text-center">
-            <h3 class="text-white font-bold text-lg leading-tight group-hover:text-ice-blue transition-colors"><?php the_title(); ?></h3>
+            <h3 class="text-white font-bold text-lg leading-tight group-hover:text-ice-blue transition-colors"><?php echo esc_html( $title ); ?></h3>
         </div>
     </a>
 </article>

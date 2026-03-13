@@ -9,31 +9,50 @@ get_header();
 
 // Get Hero Meta Data
 $hero_id = get_the_ID();
-$stats_attack = get_post_meta( $hero_id, '_hero_stats_atk', true );
-$stats_defense = get_post_meta( $hero_id, '_hero_stats_def', true );
-$stats_health = get_post_meta( $hero_id, '_hero_stats_hp', true );
+$hero_slug = get_post_field( 'post_name', $hero_id );
 
-// Old Skills (Fallback)
-$expedition_skill = get_post_meta( $hero_id, '_hero_expedition_skill', true );
-$exploration_skill = get_post_meta( $hero_id, '_hero_exploration_skill', true );
-
-// New Skills (Gen 6+)
-$skill_exploration_active = get_post_meta( $hero_id, 'skill_exploration_active', true );
-$skill_expedition_1 = get_post_meta( $hero_id, 'skill_expedition_1', true );
-$skill_expedition_2 = get_post_meta( $hero_id, 'skill_expedition_2', true );
-$skill_expedition_3 = get_post_meta( $hero_id, 'skill_expedition_3', true );
+$supabase_client = new Supabase_Client();
+$supabase_data = $supabase_client->is_configured() ? $supabase_client->get_hero_by_slug( $hero_slug ) : null;
+$use_supabase = !is_wp_error($supabase_data) && is_array($supabase_data);
 
 // Japanese Name
-$japanese_name = get_post_meta( $hero_id, 'japanese_name', true );
+$japanese_name = $use_supabase && !empty($supabase_data['japanese_name']) ? $supabase_data['japanese_name'] : get_post_meta( $hero_id, 'japanese_name', true );
 
 // Terms
-$generation = get_the_terms( $hero_id, 'hero_generation' );
-$type = get_the_terms( $hero_id, 'hero_type' );
-$rarity = get_the_terms( $hero_id, 'hero_rarity' );
-$gen_name = !empty($generation) ? $generation[0]->name : 'Unknown Gen';
-$type_name = !empty($type) ? $type[0]->name : 'Unknown Type';
-$rarity_name = !empty($rarity) ? $rarity[0]->name : 'Common';
-// ... (JSON-LD part skipped for brevity in replace, effectively keeping it same if I target correctly)
+if ( $use_supabase ) {
+    $gen_name    = 'Gen ' . ( $supabase_data['generation'] ?? '' );
+    $type_name   = $supabase_data['troop_type'] ?? 'Unknown Type';
+    $rarity_name = $supabase_data['rarity'] ?? 'Common';
+} else {
+    $generation = get_the_terms( $hero_id, 'hero_generation' );
+    $type = get_the_terms( $hero_id, 'hero_type' );
+    $rarity = get_the_terms( $hero_id, 'hero_rarity' );
+    $gen_name = !empty($generation) && !is_wp_error($generation) ? $generation[0]->name : 'Unknown Gen';
+    $type_name = !empty($type) && !is_wp_error($type) ? $type[0]->name : 'Unknown Type';
+    $rarity_name = !empty($rarity) && !is_wp_error($rarity) ? $rarity[0]->name : 'Common';
+}
+
+// Meta Data (Supabase Priority)
+if ( $use_supabase ) {
+    $overall_tier             = $supabase_data['tier_overall'] ?? get_post_meta( $hero_id, 'overall_tier', true );
+    $skill_exploration_active = $supabase_data['skill_exploration_active'] ?? get_post_meta( $hero_id, 'skill_exploration_active', true );
+    $skill_expedition_1       = $supabase_data['skill_expedition_1'] ?? get_post_meta( $hero_id, 'skill_expedition_1', true );
+    $skill_expedition_2       = $supabase_data['skill_expedition_2'] ?? get_post_meta( $hero_id, 'skill_expedition_2', true );
+    $skill_expedition_3       = $supabase_data['skill_expedition_3'] ?? get_post_meta( $hero_id, 'skill_expedition_3', true );
+} else {
+    $overall_tier             = get_post_meta( $hero_id, 'overall_tier', true );
+    $skill_exploration_active = get_post_meta( $hero_id, 'skill_exploration_active', true );
+    $skill_expedition_1       = get_post_meta( $hero_id, 'skill_expedition_1', true );
+    $skill_expedition_2       = get_post_meta( $hero_id, 'skill_expedition_2', true );
+    $skill_expedition_3       = get_post_meta( $hero_id, 'skill_expedition_3', true );
+}
+
+// Stats & Old Skills (Fallback only - not in current Supabase schema)
+$stats_attack      = get_post_meta( $hero_id, '_hero_stats_atk', true );
+$stats_defense     = get_post_meta( $hero_id, '_hero_stats_def', true );
+$stats_health      = get_post_meta( $hero_id, '_hero_stats_hp', true );
+$expedition_skill  = get_post_meta( $hero_id, '_hero_expedition_skill', true );
+$exploration_skill = get_post_meta( $hero_id, '_hero_exploration_skill', true );
 ?>
 
 <script type="application/ld+json">
@@ -104,7 +123,6 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                     <div class="flex-grow flex flex-col justify-center">
                         <div class="mb-4 flex flex-wrap gap-2 items-center">
                              <?php 
-                                $overall_tier = get_post_meta( $hero_id, 'overall_tier', true );
                                 $tier_bg = 'bg-gray-600';
                                 if ($overall_tier === 'S+' || $overall_tier === 'S') $tier_bg = 'bg-orange-500';
                                 if ($overall_tier === 'A') $tier_bg = 'bg-purple-600';

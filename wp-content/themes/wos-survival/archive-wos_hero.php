@@ -14,13 +14,24 @@ get_header();
 
     <?php
     // Fetch all heroes for client-side filtering
-    $args = array(
-        'post_type'      => 'wos_hero',
-        'posts_per_page' => -1, // Get all heroes
-        'orderby'        => 'title',
-        'order'          => 'ASC',
-    );
-    $hero_query = new WP_Query( $args );
+    $supabase_client = new Supabase_Client();
+    $supabase_heroes = $supabase_client->is_configured() 
+        ? $supabase_client->get('heroes', ['select' => 'id,name,japanese_name,generation,troop_type,rarity,slug,image_url', 'order' => 'name.asc']) 
+        : null;
+
+    $use_supabase = !is_wp_error($supabase_heroes) && is_array($supabase_heroes);
+    
+    // Fallback to WP_Query if Supabase fails
+    $hero_query = null;
+    if ( ! $use_supabase ) {
+        $args = array(
+            'post_type'      => 'wos_hero',
+            'posts_per_page' => -1, // Get all heroes
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+        );
+        $hero_query = new WP_Query( $args );
+    }
 
     // Get taxonomies for filter buttons
     $generations = get_terms( array(
@@ -110,17 +121,23 @@ get_header();
             <?php get_template_part( 'parts/calculator-server-age' ); ?>
         </section>
 
-        <?php if ( $hero_query->have_posts() ) : ?>
+        <?php if ( $use_supabase ? !empty($supabase_heroes) : $hero_query->have_posts() ) : ?>
 
             <!-- Mobile: 2 cols with smaller gap, Tablet: 3 cols, Desktop: 4/5 cols -->
             <!-- Using gap-3 for mobile to save space -->
             <div class="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 relative min-h-[200px]">
                 <?php
-                while ( $hero_query->have_posts() ) :
-                    $hero_query->the_post();
-                    get_template_part( 'parts/hero-card', null, ['use_filtering' => true] );
-                endwhile;
-                wp_reset_postdata();
+                if ( $use_supabase ) {
+                    foreach ( $supabase_heroes as $hero ) {
+                        get_template_part( 'parts/hero-card', null, ['use_filtering' => true, 'hero_data' => $hero] );
+                    }
+                } else {
+                    while ( $hero_query->have_posts() ) :
+                        $hero_query->the_post();
+                        get_template_part( 'parts/hero-card', null, ['use_filtering' => true] );
+                    endwhile;
+                    wp_reset_postdata();
+                }
                 ?>
                 
                 <!-- No Results Message -->

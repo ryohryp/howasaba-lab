@@ -143,6 +143,25 @@ class Supabase_Client {
     }
 
     /**
+     * Get a single hero by slug.
+     *
+     * @param string $slug Hero slug.
+     * @return array|null|WP_Error
+     */
+    public function get_hero_by_slug( string $slug ) {
+        $result = $this->get( 'heroes', [
+            'select' => '*',
+            'slug'   => 'eq.' . $slug,
+        ] );
+
+        if ( is_wp_error( $result ) ) {
+            return $result;
+        }
+
+        return ! empty( $result ) ? $result[0] : null;
+    }
+
+    /**
      * Get active gift codes.
      *
      * @return array|WP_Error
