@@ -3,4 +3,4 @@ regex
 beautifulsoup4
 feedparser
 markdown
-
+supabase

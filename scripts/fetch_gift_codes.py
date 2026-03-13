@@ -4,13 +4,19 @@ import feedparser
 import re
 import time
 
+from supabase import create_client, Client
+
 # Configuration
 # Reddit RSS Feed (New posts)
 RSS_URL = "https://www.reddit.com/r/whiteoutsurvival/new/.rss"
 
-# WordPress API
-WP_API_URL = os.environ.get("WP_API_URL")
-RADAR_SECRET_TOKEN = os.environ.get("RADAR_SECRET_TOKEN")
+# Supabase Configuration
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+
+supabase: Client | None = None
+if SUPABASE_URL and SUPABASE_KEY:
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Expanded Ignore List (Common French/English words that look like codes)
 IGNORE_LIST = {
@@ -105,51 +111,37 @@ def extract_potential_codes(text):
 
     return list(valid_codes)
 
-def submit_code_to_api(code, source_title, source_link):
+def submit_code_to_supabase(code, source_title, source_link):
     """
-    Submits the extracted code to the WordPress REST API.
+    Submits the extracted code to Supabase gift_codes table.
     """
-    if not WP_API_URL:
-        # For local testing, just print
-        # print(f"[DRY RUN] Would submit: {code}")
+    if not supabase:
+        print(f"[DRY RUN] Would submit to Supabase: {code}")
         return
 
-    payload = {
-        "code_string": code,
-        "rewards": f"Found via Reddit RSS: {source_title[:50]}...",
-        "source_link": source_link,
-        "status": "publish" 
-    }
-    
-    headers = {
-        'X-Radar-Token': RADAR_SECRET_TOKEN
+    data = {
+        "code": code,
+        "rewards": f"Found via Reddit RSS: {source_title[:50]}...\nSource: {source_link}",
+        "source": "reddit-rss",
+        "is_active": True
     }
     
     try:
-        print(f"Submitting code: {code}...")
-        response = requests.post(WP_API_URL, json=payload, headers=headers)
-        
-        if response.status_code == 201:
-            print(f"SUCCESS: Code '{code}' registered.")
-        elif response.status_code == 200:
-             print(f"SKIPPED: Code '{code}' already exists (200 OK).")
-        elif response.status_code == 409:
-            print(f"SKIPPED: Code '{code}' already exists (409).")
-        elif response.status_code == 401:
-            print(f"AUTH ERROR (401): Check RADAR_SECRET_TOKEN.")
-            print(f"Response: {response.text}")
-        else:
-            print(f"FAILED: Code '{code}' - Status: {response.status_code}")
-            print(f"Response: {response.text[:200]}") # Truncate long error HTML
-            
+        print(f"Submitting code to Supabase: {code}...")
+        response = supabase.table("gift_codes").insert(data).execute()
+        print(f"SUCCESS: Code '{code}' registered in Supabase.")
     except Exception as e:
-        print(f"Network Error submitting '{code}': {e}")
+        error_str = str(e).lower()
+        if "duplicate key value violates unique constraint" in error_str or "23505" in error_str:
+            print(f"SKIPPED: Code '{code}' already exists.")
+        else:
+            print(f"FAILED: Code '{code}' - Error: {e}")
 
 def main():
-    print("--- WOS Gift Code Radar (Production) Started ---")
+    print("--- WOS Gift Code Radar (Supabase) Started ---")
     
-    if not WP_API_URL:
-        print("WARNING: WP_API_URL environment variable is missing.")
+    if not supabase:
+        print("WARNING: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables are missing.")
     
     entries = fetch_reddit_rss()
     
@@ -177,11 +169,11 @@ def main():
             if code in processed_codes:
                 continue
 
-            submit_code_to_api(code, title, entry.link)
+            submit_code_to_supabase(code, title, entry.link)
             processed_codes.add(code)
             
             # Rate limit slightly
-            if WP_API_URL:
+            if supabase:
                 time.sleep(1)
 
     print("--- Radar Scan Completed ---")

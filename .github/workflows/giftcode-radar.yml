@@ -26,7 +26,7 @@ jobs:
       
       - name: Run Fetch Script
         env:
-          WP_API_URL: ${{ secrets.WP_API_URL }}
-          RADAR_SECRET_TOKEN: ${{ secrets.RADAR_SECRET_TOKEN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           python scripts/fetch_gift_codes.py
