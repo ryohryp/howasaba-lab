@@ -33,8 +33,8 @@ description: Development workflow and environment details for Howasaba Lab WordP
 
 ### Python (Automation Scripts)
 - **Scripts**: `scripts/`
-- **Dependencies**: `requirements.txt`
-- **Usage**: `python scripts/fetch_gift_codes.py` (Env vars required)
+- **Dependencies**: `requirements.txt` (including `supabase` SDK)
+- **Usage**: `python scripts/fetch_gift_codes.py` (Requires `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`)
 - **i18n Tool**: `python scripts/compile_mo_pure.py` (Compiles .po to .mo without msgfmt)
 - **Article Poster**: `python scripts/post_gen6_article.py` (Draft creation for Gen 6 Heroes)
 
@@ -59,28 +59,29 @@ description: Development workflow and environment details for Howasaba Lab WordP
 - **Alpine.js**: Lightweight JavaScript framework for interactivity (Filtering, Tab switching).
 - **Vite Asset Loader**: `inc/class-vite-asset-loader.php` handles asset enqueueing.
 
-## Data Structure (Custom Post Types)
+## Data Structure (Supabase Hybrid Architecture)
 
-### 1. Heroes (`wos_hero`)
-- **Taxonomies**: `hero_generation` (Gen 1..11), `hero_type` (Infantry/Lancer/Marksman), `hero_rarity` (SSR/SR/R).
-- **Meta Fields**: 
-    - `_hero_stats_atk/def/hp`
-    - `_skill_exploration_active`, `_skill_expedition_1/2`
-    - `_japanese_name`
-- **Helper**: `wos_seed_heroes()` in `functions.php`
+本プロジェクトは **Supabase を主なデータソース（構造化データ用）** とし、**WordPress をコンテンツ管理およびフォールバック用** に利用するハイブリッド構成を採用しています。
 
-### 2. Events (`wos_event`)
-- **Meta Fields**: `_event_start_date`, `_event_duration`, `_server_age_requirement`.
-- **Helper**: `wos_seed_events()`
+### 1. Supabase テーブル
+- **`heroes`**: 英雄データ（slug、image_url、generation、troop_type、rarity、tier_overall 等）。パブリック参照可。
+- **`gift_codes`**: ギフトコードデータ。`is_active = true` のみパブリック参照可。
+- **`events`**: イベント日程等。パブリック参照可。
 
-### 3. Gift Codes (`gift_code`)
-- **Meta Fields**: `_wos_code_string`, `_wos_rewards`, `_wos_expiration_date`.
-- **Meta Fields**: `_wos_code_string`, `_wos_rewards`, `_wos_expiration_date`.
-- **Feature**: "Radar" UI effect for new codes (`gift-code-radar.css`).
+### 2. WordPress 連携 (inc/class-supabase-client.php)
+- Supabase の PostgREST API を呼び出す `Supabase_Client` クラスを使用。
+- 呼び出し結果は WordPress の Transient API で 5分間キャッシュ。
+- **ショートコード** (`[wos_gift_codes]`, `[wos_tier_list]`) や **テンプレート** (`archive-wos_hero.php`, `single-wos_hero.php`) は、まず Supabase からデータを取得し、エラー時は WordPress の CPT や Metaデータにフォールバック。
 
-## REST API Custom Architecture
+### 3. WordPress (コンテンツルーティング用 CPT)
+- パーマリンク、SEO設定、サムネイル画像、本文などのコンテンツレイヤーは、引き続き WordPress の `wos_hero` カスタム投稿タイプを利用。
+- **Taxonomies**: `hero_generation`, `hero_type`, `hero_rarity`
+- **Helper**: `inc/seeders.php` (旧関数統合済み)
+
+## REST API Custom Architecture (Content Updates)
 
 Xserver（FastCGI）の制限により、標準の `Authorization` ヘッダーが削除されるため、独自のトークン認証を実装しています。
+※データ構造管理（ギフトコード追加等）は Supabase SDK に移行したため、WP REST API は主に記事やページのコンテンツ更新に使用されます。
 
 ### Authentication
 - **Header**: `X-Radar-Token`
@@ -88,13 +89,9 @@ Xserver（FastCGI）の制限により、標準の `Authorization` ヘッダー�
 - **Validation**: `inc/api-endpoints.php`
 
 ### Endpoints
-1. **Gift Code Registration**
-   - `POST /wp-json/wos-radar/v1/add-code`
-   - **Payload**: `{ "code_string": "...", "rewards": "..." }`
-
-2. **Post Management**
+1. **Post Management**
+   - `POST /wp-json/wos-radar/v1/update-post` (Update Existing Content via `scripts/update_post.py`)
    - `POST /wp-json/wos-radar/v1/create-post` (Draft Creation)
-   - `POST /wp-json/wos-radar/v1/update-post` (Update Existing)
 
 
 ## Tier List Generator System
