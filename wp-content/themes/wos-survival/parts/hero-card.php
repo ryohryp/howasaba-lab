@@ -20,7 +20,9 @@ if ( $hero_data ) {
     $gen_slug    = $hero_data['generation'] ?? '';
     $type_slug   = strtolower( $type_name );
     $permalink   = home_url( '/hero/' . ( $hero_data['slug'] ?? sanitize_title( $hero_data['name'] ) ) . '/' );
-    $title       = $hero_data['name'] ?? '';
+    // 言語に応じて表示名を切り替え
+    $is_ja       = get_locale() === 'ja';
+    $title       = ( $is_ja && ! empty( $hero_data['japanese_name'] ) ) ? $hero_data['japanese_name'] : ( $hero_data['name'] ?? '' );
 } else {
     // WP Loop fallback
     $hero_id    = get_the_ID();

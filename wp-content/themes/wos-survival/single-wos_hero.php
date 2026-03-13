@@ -15,8 +15,15 @@ $supabase_client = new Supabase_Client();
 $supabase_data = $supabase_client->is_configured() ? $supabase_client->get_hero_by_slug( $hero_slug ) : null;
 $use_supabase = !is_wp_error($supabase_data) && is_array($supabase_data);
 
-// Japanese Name
+// Language Detection
+$is_ja = get_locale() === 'ja';
+
+// Hero Names (Supabase Priority)
+$eng_name      = $use_supabase ? ( $supabase_data['name'] ?? get_the_title() ) : get_the_title();
 $japanese_name = $use_supabase && !empty($supabase_data['japanese_name']) ? $supabase_data['japanese_name'] : get_post_meta( $hero_id, 'japanese_name', true );
+
+// Display Name
+$display_name = ( $is_ja && ! empty( $japanese_name ) ) ? $japanese_name : $eng_name;
 
 // Terms
 if ( $use_supabase ) {
@@ -136,11 +143,14 @@ echo json_encode($json_ld, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                         </div>
 
                         <h1 class="mb-1 text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none">
-                            <?php the_title(); ?>
+                            <?php echo esc_html( $display_name ); ?>
                         </h1>
-                        <?php if ( $japanese_name ) : ?>
+                        <?php 
+                        $sub_name = ( $is_ja ) ? $eng_name : $japanese_name;
+                        if ( $sub_name && $sub_name !== $display_name ) : 
+                        ?>
                             <h2 class="mb-4 text-xl md:text-2xl font-bold text-slate-400 text-jp-name tracking-widest pl-1">
-                                <?php echo esc_html( $japanese_name ); ?>
+                                <?php echo esc_html( $sub_name ); ?>
                             </h2>
                         <?php endif; ?>
 

@@ -23,12 +23,11 @@ function wos_shortcode_tier_list( $atts ) {
 
     // Fallback to WordPress
     if ( is_wp_error( $heroes ) || $heroes === null ) {
-        $err_msg = is_wp_error( $heroes ) ? $heroes->get_error_message() : 'Supabase Client not configured';
-        return '<!-- Supabase Fallback Triggered: ' . esc_html( $err_msg ) . ' -->' . wos_tier_list_wp_fallback( $atts );
+        return wos_tier_list_wp_fallback( $atts );
     }
 
     if ( empty( $heroes ) ) {
-        return '<!-- Supabase Returned Empty --><div class="wos-tier-list-empty"><p>No heroes found for Gen ' . esc_html( $generation_num ) . '.</p></div>';
+        return '<div class="wos-tier-list-empty"><p>No heroes found for Gen ' . esc_html( $generation_num ) . '.</p></div>';
     }
 
     // Group by tier
@@ -227,9 +226,14 @@ function wos_render_tier_list_html( array $heroes_by_tier ): string {
                                         <span class="hero-type-icon icon-<?php echo esc_attr( strtolower( $hero['type'] ) ); ?>"></span>
                                     </div>
                                     <div class="hero-info">
-                                        <span class="hero-name"><?php echo esc_html( $hero['name'] ); ?></span>
-                                        <?php if ( ! empty( $hero['jp'] ) ) : ?>
-                                            <span class="hero-name-jp"><?php echo esc_html( $hero['jp'] ); ?></span>
+                                        <?php 
+                                        $is_ja = get_locale() === 'ja';
+                                        $main_name = ( $is_ja && ! empty( $hero['jp'] ) ) ? $hero['jp'] : $hero['name'];
+                                        $sub_name  = ( $is_ja ) ? $hero['name'] : $hero['jp'];
+                                        ?>
+                                        <span class="hero-name"><?php echo esc_html( $main_name ); ?></span>
+                                        <?php if ( ! empty( $sub_name ) && $sub_name !== $main_name ) : ?>
+                                            <span class="hero-name-jp"><?php echo esc_html( $sub_name ); ?></span>
                                         <?php endif; ?>
                                     </div>
                                 </div>

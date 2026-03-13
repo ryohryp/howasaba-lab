@@ -23,15 +23,7 @@ get_header();
     
     // Fallback to WP_Query if Supabase fails
     $hero_query = null;
-    $supabase_error_msg = '';
     if ( ! $use_supabase ) {
-        if ( is_wp_error( $supabase_heroes ) ) {
-            $supabase_error_msg = '<!-- Supabase Fallback Triggered: ' . esc_html( $supabase_heroes->get_error_message() ) . ' -->';
-        } else {
-            $supabase_error_msg = '<!-- Supabase Fallback Triggered: ' . ( $supabase_heroes === null ? 'Not configured or returned null' : 'Unknown error' ) . ' -->';
-        }
-        echo $supabase_error_msg;
-
         $args = array(
             'post_type'      => 'wos_hero',
             'posts_per_page' => -1, // Get all heroes

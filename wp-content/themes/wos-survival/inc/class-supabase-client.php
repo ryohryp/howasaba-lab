@@ -64,8 +64,7 @@ class Supabase_Client {
 
         // Build cache key
         $cache_key = 'sb_' . md5( $table . serialize( $params ) );
-        // DEBUG: Disable cache temporarily
-        $cached    = false; // get_transient( $cache_key );
+        $cached    = get_transient( $cache_key );
 
         if ( false !== $cached ) {
             return $cached;
