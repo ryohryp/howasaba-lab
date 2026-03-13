@@ -74,6 +74,11 @@ require get_template_directory() . '/inc/acf-tier-list.php';
 require get_template_directory() . '/inc/shortcode-tier-list.php';
 
 /**
+ * Supabase Client (Hybrid Data Layer)
+ */
+require get_template_directory() . '/inc/class-supabase-client.php';
+
+/**
  * Data Seeders (Development Helpers)
  */
 require get_template_directory() . '/inc/seeders.php';
