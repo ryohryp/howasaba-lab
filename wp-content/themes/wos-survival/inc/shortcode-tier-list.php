@@ -22,12 +22,13 @@ function wos_shortcode_tier_list( $atts ) {
     $heroes = wos_get_tier_list_from_supabase( $generation_num );
 
     // Fallback to WordPress
-    if ( $heroes === null ) {
-        return wos_tier_list_wp_fallback( $atts );
+    if ( is_wp_error( $heroes ) || $heroes === null ) {
+        $err_msg = is_wp_error( $heroes ) ? $heroes->get_error_message() : 'Supabase Client not configured';
+        return '<!-- Supabase Fallback Triggered: ' . esc_html( $err_msg ) . ' -->' . wos_tier_list_wp_fallback( $atts );
     }
 
     if ( empty( $heroes ) ) {
-        return '<div class="wos-tier-list-empty"><p>No heroes found for Gen ' . esc_html( $generation_num ) . '.</p></div>';
+        return '<!-- Supabase Returned Empty --><div class="wos-tier-list-empty"><p>No heroes found for Gen ' . esc_html( $generation_num ) . '.</p></div>';
     }
 
     // Group by tier
@@ -105,10 +106,6 @@ function wos_get_tier_list_from_supabase( $generation ): ?array {
     }
 
     $result = $supabase->get( 'heroes', $params );
-
-    if ( is_wp_error( $result ) ) {
-        return null;
-    }
 
     return $result;
 }
