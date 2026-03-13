@@ -10,8 +10,8 @@ lerna-debug.log*
 node_modules
 vendor/
 dist
-dist-ssr
 *.local
+.phpunit.cache
 
 # Editor directories and files
 .vscode/*

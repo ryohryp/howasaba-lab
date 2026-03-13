@@ -11,7 +11,7 @@
     </testsuites>
     <source>
         <include>
-            <directory>wp-content/themes/wos-frost-fire</directory>
+            <directory>wp-content/themes/wos-survival</directory>
         </include>
     </source>
 </phpunit>
