@@ -104,10 +104,10 @@ class Vite_Asset_Loader {
                     return $tag;
                 }, 10, 3 );
 
-                wp_enqueue_script( $handle, $this->dev_server_url . '/wp-content/themes/wos-frost-fire/' . $entry_point, $deps, null, true );
+                wp_enqueue_script( $handle, $this->dev_server_url . '/wp-content/themes/wos-survival/' . $entry_point, $deps, null, true );
             } elseif ( strpos( $entry_point, '.css' ) !== false ) {
                  // CSS in dev mode is usually injected by JS, but if standalone:
-                 wp_enqueue_style( $handle, $this->dev_server_url . '/wp-content/themes/wos-frost-fire/' . $entry_point, $deps, null );
+                 wp_enqueue_style( $handle, $this->dev_server_url . '/wp-content/themes/wos-survival/' . $entry_point, $deps, null );
             }
 
         } else {
