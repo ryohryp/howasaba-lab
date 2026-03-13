@@ -16,7 +16,7 @@ get_header();
     // Fetch all heroes for client-side filtering
     $supabase_client = new Supabase_Client();
     $supabase_heroes = $supabase_client->is_configured() 
-        ? $supabase_client->get('heroes', ['select' => 'id,name,japanese_name,generation,troop_type,rarity,slug,image_url', 'order' => 'name.asc']) 
+        ? $supabase_client->get('heroes', ['select' => 'id,name,japanese_name,generation,troop_type,rarity,slug,image_url', 'order' => 'generation.desc,name.asc']) 
         : null;
 
     $use_supabase = !is_wp_error($supabase_heroes) && is_array($supabase_heroes);
@@ -37,6 +37,8 @@ get_header();
     $generations = get_terms( array(
         'taxonomy'   => 'hero_generation',
         'hide_empty' => true,
+        'orderby'    => 'slug',
+        'order'      => 'DESC', // Newest first
     ) );
     $types = get_terms( array(
         'taxonomy'   => 'hero_type',
@@ -112,6 +114,21 @@ get_header();
                             <?php echo esc_html( $type->name ); ?>
                         </button>
                     <?php endforeach; ?>
+                </div>
+                <!-- Sort & Additional Filters -->
+                <div class="flex flex-wrap justify-center gap-4 mt-2">
+                    <div class="flex items-center gap-2">
+                        <label for="hero-sort" class="text-xs font-bold text-gray-400 uppercase tracking-widest"><?php _e( 'Sort By:', 'wos-frost-fire' ); ?></label>
+                        <select 
+                            id="hero-sort"
+                            x-model="sortBy"
+                            class="bg-slate-800 text-gray-300 text-sm font-bold border border-slate-700 rounded-lg px-3 py-2 focus:border-ice-blue focus:outline-none transition-colors"
+                        >
+                            <option value="gen-desc"><?php _e( 'Newest Generation', 'wos-frost-fire' ); ?></option>
+                            <option value="gen-asc"><?php _e( 'Oldest Generation', 'wos-frost-fire' ); ?></option>
+                            <option value="name-asc"><?php _e( 'Name (A-Z)', 'wos-frost-fire' ); ?></option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </header><!-- .page-header -->

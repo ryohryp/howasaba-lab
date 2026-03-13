@@ -9,10 +9,19 @@ document.addEventListener('alpine:init', () => {
         search: '',
         selectedGen: 'all',
         selectedType: 'all',
+        sortBy: 'gen-desc', // Default sort
 
         init() {
-            // Optional: Initialize from URL params if needed
             console.log('Hero Filter Initialized');
+            // Initial sort
+            this.$nextTick(() => {
+                this.sortItems();
+            });
+
+            // Watch for sortBy changes
+            this.$watch('sortBy', () => {
+                this.sortItems();
+            });
         },
 
         isVisible(el) {
@@ -36,6 +45,33 @@ document.addEventListener('alpine:init', () => {
 
         setType(type) {
             this.selectedType = type;
+        },
+
+        sortItems() {
+            const container = this.$el.querySelector('.grid');
+            if (!container) return;
+
+            const items = Array.from(container.querySelectorAll('article'));
+            
+            items.sort((a, b) => {
+                if (this.sortBy === 'gen-desc') {
+                    const genA = parseInt(a.dataset.gen) || 0;
+                    const genB = parseInt(b.dataset.gen) || 0;
+                    if (genB !== genA) return genB - genA;
+                    return a.dataset.name.localeCompare(b.dataset.name);
+                } else if (this.sortBy === 'gen-asc') {
+                    const genA = parseInt(a.dataset.gen) || 0;
+                    const genB = parseInt(b.dataset.gen) || 0;
+                    if (genA !== genB) return genA - genB;
+                    return a.dataset.name.localeCompare(b.dataset.name);
+                } else if (this.sortBy === 'name-asc') {
+                    return a.dataset.name.localeCompare(b.dataset.name);
+                }
+                return 0;
+            });
+
+            // Re-append items in new order
+            items.forEach(item => container.appendChild(item));
         }
     }));
 });

@@ -46,7 +46,7 @@ if ( $hero_data ) {
     id="post-<?php echo esc_attr( $hero_id ); ?>" 
     <?php post_class('relative group overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30'); ?>
     data-name="<?php echo esc_attr( $title ); ?>"
-    data-gen="<?php echo esc_attr( $gen_slug ); ?>"
+    data-gen="<?php echo esc_attr( preg_replace('/[^0-9]/', '', $gen_slug) ); ?>"
     data-type="<?php echo esc_attr( $type_slug ); ?>"
     <?php if ( $use_filtering ) : ?>
         x-show="isVisible($el)"
