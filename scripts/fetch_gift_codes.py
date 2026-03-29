@@ -18,6 +18,10 @@ supabase: Client | None = None
 if SUPABASE_URL and SUPABASE_KEY:
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# WordPress Configuration
+WP_API_URL = os.environ.get("WP_API_URL") # Example: https://howasaba-code.com/wp-json/wp/v2/gift_code
+WP_RADAR_TOKEN = os.environ.get("WP_RADAR_TOKEN")
+
 # Expanded Ignore List (Common French/English words that look like codes)
 IGNORE_LIST = {
     "REDDIT", "POST", "GAME", "STATE", "SVS", "GEN", "FC", 
@@ -59,6 +63,18 @@ def fetch_reddit_rss():
     except Exception as e:
         print(f"Error fetching Reddit RSS: {e}")
         return []
+
+def fetch_sns_codes_stub():
+    """
+    STUB: Placeholder for fetching gift codes from official SNS (X/Facebook).
+    Future implementation may use scraping or official APIs.
+    """
+    # Example logic:
+    # 1. Access X.com/Facebook official page
+    # 2. Extract latest posts
+    # 3. Use extract_potential_codes(post_text)
+    print("Fetching codes from SNS (Stub)...")
+    return [] # Currently returns empty list until implemented
 
 def extract_potential_codes(text):
     """
@@ -137,44 +153,131 @@ def submit_code_to_supabase(code, source_title, source_link):
         else:
             print(f"FAILED: Code '{code}' - Error: {e}")
 
+def is_code_already_on_wordpress(code):
+    """
+    Checks if a gift code already exists in WordPress via REST API search.
+    """
+    if not WP_API_URL:
+        return False
+        
+    params = {
+        "search": code,
+        "status": "publish,draft,private" # Check all statuses
+    }
+    headers = {
+        'X-Radar-Token': WP_RADAR_TOKEN
+    }
+    
+    try:
+        response = requests.get(WP_API_URL, params=params, headers=headers, timeout=15)
+        if response.status_code == 200:
+            posts = response.json()
+            # Strict match: search might return partials, so check exactly
+            for post in posts:
+                # Check title or custom field if possible
+                if post.get('title', {}).get('rendered') == code:
+                    return True
+                # Also check ACF field if present in response
+                acf = post.get('acf', {})
+                if acf and acf.get('code_string') == code:
+                    return True
+            return False
+        else:
+            print(f"Warning: WP Search failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"Warning: WP Search Error: {e}")
+        return False
+
+def submit_code_to_wordpress(code, rewards, expiration_date=None):
+    """
+    Submits the gift code to WordPress 'gift_code' CPT.
+    """
+    if not WP_API_URL or not WP_RADAR_TOKEN:
+        print(f"[DRY RUN] Would submit to WordPress: {code}")
+        return
+
+    # Check for duplicates
+    if is_code_already_on_wordpress(code):
+        print(f"SKIPPED: Code '{code}' already exists in WordPress.")
+        return
+
+    headers = {
+        'X-Radar-Token': WP_RADAR_TOKEN,
+        'Content-Type': 'application/json'
+    }
+
+    payload = {
+        "title": code,
+        "status": "publish",
+        "acf": {
+            "code_string": code,
+            "rewards": rewards,
+            "expiration_date": expiration_date if expiration_date else ""
+        }
+    }
+
+    try:
+        print(f"Submitting code to WordPress: {code}...")
+        response = requests.post(WP_API_URL, json=payload, headers=headers, timeout=20)
+        
+        if response.status_code == 201:
+            print(f"SUCCESS: Code '{code}' created in WordPress.")
+        else:
+            print(f"FAILED: WordPress API Status {response.status_code}")
+            print(f"Response: {response.text}")
+    except Exception as e:
+        print(f"FAILED: WordPress Submission Error: {e}")
+
 def main():
     print("--- WOS Gift Code Radar (Supabase) Started ---")
     
     if not supabase:
         print("WARNING: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables are missing.")
     
+    # 1. Fetch from Reddit RSS
     entries = fetch_reddit_rss()
     
     processed_codes = set()
     
     for entry in entries:
         title = entry.title
-        # Handle summary/content safely
         content = ""
         if hasattr(entry, 'summary'):
             content = entry.summary
         elif hasattr(entry, 'description'):
             content = entry.description
             
-        # Combine text for search
         full_text = f"{title} {content}"
-        
-        # Clean HTML tags very roughly
         clean_text = re.sub('<[^<]+?>', ' ', full_text)
         
-        # Extract codes with new logic
         codes = extract_potential_codes(clean_text)
         
         for code in codes:
             if code in processed_codes:
                 continue
 
+            # Submit to Supabase (Legacy)
             submit_code_to_supabase(code, title, entry.link)
-            processed_codes.add(code)
             
-            # Rate limit slightly
-            if supabase:
-                time.sleep(1)
+            # Submit to WordPress
+            rewards = f"Found via Reddit RSS: {title[:50]}...\nSource: {entry.link}"
+            submit_code_to_wordpress(code, rewards)
+            
+            processed_codes.add(code)
+            time.sleep(1)
+
+    # 2. Fetch from SNS (Stub)
+    sns_codes = fetch_sns_codes_stub()
+    for code in sns_codes:
+        if code in processed_codes:
+            continue
+        
+        # For SNS, we might have different reward text or metadata
+        rewards = "Found via SNS update."
+        submit_code_to_wordpress(code, rewards)
+        processed_codes.add(code)
+        time.sleep(1)
 
     print("--- Radar Scan Completed ---")
 
