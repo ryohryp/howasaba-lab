@@ -143,11 +143,11 @@ def main():
         tr = hero['tier']
         g = hero['gen']
         
-        sql = f"INSERT INTO heroes (name, japanese_name, slug, generation, troop_type, overall_tier, note) " \
+        sql = f"INSERT INTO heroes (name, japanese_name, slug, generation, troop_type, tier_overall, skill_exploration_active) " \
               f"VALUES ('{n}', '{jp}', '{slug}', {g}, '{t}', '{tr}', '{nt}') " \
               f"ON CONFLICT (name) DO UPDATE SET " \
               f"japanese_name = EXCLUDED.japanese_name, generation = EXCLUDED.generation, " \
-              f"troop_type = EXCLUDED.troop_type, overall_tier = EXCLUDED.overall_tier, note = EXCLUDED.note;"
+              f"troop_type = EXCLUDED.troop_type, tier_overall = EXCLUDED.tier_overall, skill_exploration_active = EXCLUDED.skill_exploration_active;"
         supabase_sql.append(sql)
 
     supabase_sql.append("\nCOMMIT;")
