@@ -97,13 +97,13 @@ if ($rarity_name === 'SSR') $rarity_class = 'text-orange-500';
             
             <div class="flex items-center gap-2 <?php echo esc_attr($rarity_class); ?>">
                  <span class="material-symbols-outlined text-sm"><?php echo esc_html($class_icon); ?></span>
-                 <span class="text-[10px] font-bold uppercase tracking-widest"><?php echo esc_html($type_name); ?> Specialist</span>
+                 <span class="text-[10px] font-bold uppercase tracking-widest"><?php printf( __( '%s Specialist', 'wos-survival' ), esc_html($type_name) ); ?></span>
             </div>
         </div>
 
         <!-- Card Footer (Tags/Actions) -->
         <div class="flex gap-2">
-            <span class="px-3 py-1 bg-surface-container-low rounded-full text-[9px] font-bold text-on-surface-variant uppercase tracking-tighter">View Build</span>
+            <span class="px-3 py-1 bg-surface-container-low rounded-full text-[9px] font-bold text-on-surface-variant uppercase tracking-tighter"><?php _e( 'View Build', 'wos-survival' ); ?></span>
         </div>
 
     </a>

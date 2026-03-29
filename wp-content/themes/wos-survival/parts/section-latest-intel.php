@@ -67,7 +67,7 @@
                         </div>
 
                         <button 
-                            onclick="navigator.clipboard.writeText('<?php echo esc_js($code); ?>'); this.querySelector('.btn-text').innerText='COPIED'; this.classList.add('bg-tertiary'); this.classList.remove('btn-secondary'); setTimeout(() => { this.querySelector('.btn-text').innerText='DEPLOY CODE'; this.classList.remove('bg-tertiary'); this.classList.add('btn-secondary'); }, 2000);"
+                            onclick="navigator.clipboard.writeText('<?php echo esc_js($code); ?>'); this.querySelector('.btn-text').innerText='<?php echo esc_js(__( 'COPIED', 'wos-survival' )); ?>'; this.classList.add('bg-tertiary'); this.classList.remove('btn-secondary'); setTimeout(() => { this.querySelector('.btn-text').innerText='<?php echo esc_js(__( 'DEPLOY CODE', 'wos-survival' )); ?>'; this.classList.remove('bg-tertiary'); this.classList.add('btn-secondary'); }, 2000);"
                             class="btn-secondary w-full py-4 flex items-center justify-center gap-3 transition-all duration-300"
                         >
                             <span class="material-symbols-outlined text-sm">content_copy</span>
@@ -148,7 +148,7 @@
                     if (!$start) $start = get_the_date('Y-m-d');
                     
                     $type = get_the_terms(get_the_ID(), 'event_type');
-                    $type_name = ( ! is_wp_error($type) && ! empty($type) ) ? $type[0]->name : 'Event';
+                    $type_name = ( ! is_wp_error($type) && ! empty($type) ) ? $type[0]->name : __( 'Event', 'wos-survival' );
                 ?>
                     <a href="<?php the_permalink(); ?>" class="glass-card p-6 flex items-center justify-between group overflow-hidden">
                         <div class="flex items-center gap-8">
@@ -167,7 +167,7 @@
                                 <h4 class="text-xl font-black text-on-surface mb-1 group-hover:text-primary transition-colors"><?php the_title(); ?></h4>
                                 <div class="flex items-center gap-1.5 text-on-surface-variant/40 text-[10px] font-black uppercase">
                                     <span class="material-symbols-outlined text-[12px]">schedule</span>
-                                    <?php echo date('Y/m/d', strtotime($start)); ?> - <?php echo $end ? date('m/d', strtotime($end)) : 'TBA'; ?>
+                                    <?php echo date('Y/m/d', strtotime($start)); ?> - <?php echo $end ? date('m/d', strtotime($end)) : __( 'TBA', 'wos-survival' ); ?>
                                 </div>
                             </div>
                         </div>

@@ -56,8 +56,8 @@
             </nav><!-- #site-navigation -->
 
             <div class="flex items-center gap-4">
-                <button class="hidden sm:block px-5 py-2 rounded-full font-bold text-on-surface-variant hover:bg-primary/10 transition-all scale-95 active:scale-90">Login</button>
-                <button class="btn-primary scale-95 md:scale-100">Join Alliance</button>
+                <button class="hidden sm:block px-5 py-2 rounded-full font-bold text-on-surface-variant hover:bg-primary/10 transition-all scale-95 active:scale-90"><?php _e( 'Login', 'wos-survival' ); ?></button>
+                <button class="btn-primary scale-95 md:scale-100"><?php _e( 'Join Alliance', 'wos-survival' ); ?></button>
                 
                 <!-- Mobile Menu Toggle -->
                 <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-on-surface-variant">
@@ -84,8 +84,8 @@
             ?>
             <div class="mt-8 pt-8 border-t border-outline-variant/20 flex justify-between items-center">
                 <div class="flex gap-4">
-                    <a href="<?php echo esc_url( wos_get_language_url('ja') ); ?>" class="font-bold <?php echo get_locale() === 'ja' ? 'text-primary' : 'text-on-surface-variant'; ?>">Japanese</a>
-                    <a href="<?php echo esc_url( wos_get_language_url('en') ); ?>" class="font-bold <?php echo get_locale() !== 'ja' ? 'text-primary' : 'text-on-surface-variant'; ?>">English</a>
+                    <a href="<?php echo esc_url( wos_get_language_url('ja') ); ?>" class="font-bold <?php echo get_locale() === 'ja' ? 'text-primary' : 'text-on-surface-variant'; ?>"><?php _e( 'Japanese', 'wos-survival' ); ?></a>
+                    <a href="<?php echo esc_url( wos_get_language_url('en') ); ?>" class="font-bold <?php echo get_locale() !== 'ja' ? 'text-primary' : 'text-on-surface-variant'; ?>"><?php _e( 'English', 'wos-survival' ); ?></a>
                 </div>
             </div>
         </div>

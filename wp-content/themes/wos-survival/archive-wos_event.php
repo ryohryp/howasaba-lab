@@ -163,15 +163,15 @@ get_header();
                                             <?php if ($status === 'active'): ?>
                                                 <div class="bg-error text-on-error px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-xl">
                                                     <span class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
-                                                    LIVE
+                                                    <?php _e( 'LIVE', 'wos-survival' ); ?>
                                                 </div>
                                             <?php elseif ($status === 'upcoming'): ?>
                                                 <div class="bg-primary text-on-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl">
-                                                    INCOMING
+                                                    <?php _e( 'INCOMING', 'wos-survival' ); ?>
                                                 </div>
                                             <?php else: ?>
                                                 <div class="bg-surface-container-highest/80 backdrop-blur-md text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
-                                                    ENDED
+                                                    <?php _e( 'ENDED', 'wos-survival' ); ?>
                                                 </div>
                                             <?php endif; ?>
                                         </div>

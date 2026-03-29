@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WoS Frost & Fire 1.0.2\n"
+"Project-Id-Version: WoS Survival 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 12:00+0900\n"
-"PO-Revision-Date: 2024-02-14 12:00+0900\n"
+"POT-Creation-Date: 2024-03-29 14:00+0900\n"
+"PO-Revision-Date: 2024-03-29 14:00+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.0\n"
-"X-Domain: wos-frost-fire\n"
+"X-Domain: wos-survival\n"
 "Language: ja\n"
 
 msgid "Latest Intel"
@@ -28,12 +28,6 @@ msgstr "コンテンツへスキップ"
 msgid "Menu"
 msgstr "メニュー"
 
-msgid "Proudly powered by %s"
-msgstr "Proudly powered by %s"
-
-msgid "Theme: %1$s by %2$s."
-msgstr "Theme: %1$s by %2$s."
-
 msgid "Home"
 msgstr "ホーム"
 
@@ -46,7 +40,7 @@ msgstr "ガイド"
 msgid "Tools"
 msgstr "ツール"
 
-msgid "Heroes Database"
+msgid "Hero Database"
 msgstr "英雄データベース"
 
 msgid "Event Calendar"
@@ -61,27 +55,6 @@ msgstr "全世代"
 msgid "All Types"
 msgstr "全兵種"
 
-msgid "Exploration Skill (Active)"
-msgstr "探検スキル (アクティブ)"
-
-msgid "Expedition Skills"
-msgstr "遠征スキル"
-
-msgid "Skill 1"
-msgstr "スキル 1"
-
-msgid "Skill 2"
-msgstr "スキル 2"
-
-msgid "No skill data available."
-msgstr "スキルデータがありません。"
-
-msgid "Exclusive Gear"
-msgstr "専用装備"
-
-msgid "Priority"
-msgstr "優先度"
-
 msgid "Recommended Formation"
 msgstr "おすすめ編成"
 
@@ -94,18 +67,6 @@ msgstr "防御力"
 msgid "Health"
 msgstr "HP"
 
-msgid "Featured Heroes (Top Tier)"
-msgstr "注目の英雄 (Top Tier)"
-
-msgid "Hero Database"
-msgstr "英雄データベース"
-
-msgid "Latest Gift Codes"
-msgstr "最新ギフトコード"
-
-msgid "Upcoming Events"
-msgstr "開催中のイベント"
-
 msgid "Language"
 msgstr "言語"
 
@@ -114,3 +75,202 @@ msgstr "日本語"
 
 msgid "English"
 msgstr "English"
+
+# New Strings for Pop Style
+msgid "Login"
+msgstr "ログイン"
+
+msgid "Join Alliance"
+msgstr "同盟に参加"
+
+msgid "Advanced Survival Protocol"
+msgstr "高度なサバイバルプロトコル"
+
+msgid "Survival"
+msgstr "サバイバル"
+
+msgid "Intelligence"
+msgstr "インテリジェンス"
+
+msgid "The definitive database for hero optimization, event strategy, and alliance warfare."
+msgstr "英雄の最適化、イベント戦略、同盟戦争のための決定版データベース。"
+
+msgid "Explore Heroes"
+msgstr "英雄を探索"
+
+msgid "Command Center"
+msgstr "コマンドセンター"
+
+msgid "System Status"
+msgstr "システムステータス"
+
+msgid "Operational"
+msgstr "正常稼働中"
+
+msgid "Intelligence core"
+msgstr "インテリジェンスコア"
+
+msgid "Survival Modules"
+msgstr "サバイバルモジュール"
+
+msgid "High-performance tools specifically engineered to optimize your progression through the frost."
+msgstr "極寒の中での進行を最適化するために特別に設計された高性能ツール。"
+
+msgid "Strategic Tools"
+msgstr "戦略ツール"
+
+msgid "Resource calculators, speed-up optimizers, and server-age deployment guides."
+msgstr "資源計算機、加速最適化、サーバー年齢に応じた配置ガイド。"
+
+msgid "Full breakdown of hero generations, skill synergies, and optimal gear configurations."
+msgstr "英雄の世代、スキルの相乗効果、最適な装備構成の完全な内訳。"
+
+msgid "Analysis Logs"
+msgstr "分析ログ"
+
+msgid "Deep-dive analysis on game mechanics, seasonal strategies, and warfare tactics."
+msgstr "ゲームメカニズム、シーズン戦略、戦争戦術に関する詳細な分析。"
+
+msgid "Data Feed: LIVE"
+msgstr "データフィード: LIVE"
+
+msgid "Access All Logs"
+msgstr "すべてのログにアクセス"
+
+msgid "No intelligence logs currently detected."
+msgstr "現在、インテリジェンスログは検出されていません。"
+
+msgid "Resources supply"
+msgstr "資源供給"
+
+msgid "Archive"
+msgstr "アーカイブ"
+
+msgid "Active"
+msgstr "有効"
+
+msgid "Encrypted Key"
+msgstr "暗号化キー"
+
+msgid "Estimated Yield"
+msgstr "推定利回り"
+
+msgid "DEPLOY CODE"
+msgstr "コードを展開"
+
+msgid "COPIED"
+msgstr "コピー完了"
+
+msgid "No active codes detected by intelligence."
+msgstr "現在、有効なコードは検出されていません。"
+
+msgid "Combat assets"
+msgstr "戦闘資産"
+
+msgid "Elite Heroes"
+msgstr "エリート英雄"
+
+msgid "Hero Intel"
+msgstr "英雄情報"
+
+msgid "Temporal operations"
+msgstr "時間作戦"
+
+msgid "Full Schedule"
+msgstr "全スケジュール"
+
+msgid "Event"
+msgstr "イベント"
+
+msgid "TBA"
+msgstr "後日発表"
+
+msgid "No upcoming operations scheduled."
+msgstr "予定されている次回の作戦はありません。"
+
+msgid "Hero Records"
+msgstr "英雄記録"
+
+msgid "Analyze statistics, skills, and generation cycles of Whiteout Survival heroes. From legendary Gen 1 survivors to the latest meta-defining warriors."
+msgstr "Whiteout Survivalの英雄の統計、スキル、世代サイクルを分析します。"
+
+msgid "Search by name..."
+msgstr "名前で検索..."
+
+msgid "All Classes"
+msgstr "全クラス"
+
+msgid "Generation (Newest)"
+msgstr "世代 (新しい順)"
+
+msgid "Generation (Oldest)"
+msgstr "世代 (古い順)"
+
+msgid "A - Z"
+msgstr "名前順"
+
+msgid "Heroes showing"
+msgstr "名の英雄を表示中"
+
+msgid "No heroes detected"
+msgstr "英雄が検出されませんでした"
+
+msgid "The blizzard has obscured your search. Try different filters or terms."
+msgstr "猛吹雪により視界（検索結果）が遮られました。別のフィルターやキーワードを試してください。"
+
+msgid "Reset Surveillance"
+msgstr "偵察をリセット"
+
+msgid "Intelligence data currently unavailable."
+msgstr "インテリジェンスデータは現在利用できません。"
+
+msgid "%s Specialist"
+msgstr "%s スペシャリスト"
+
+msgid "View Build"
+msgstr "ビルドを見る"
+
+msgid "LIVE"
+msgstr "開催中"
+
+msgid "INCOMING"
+msgstr "近日開催"
+
+msgid "ENDED"
+msgstr "終了"
+
+msgid "Strategic Hub"
+msgstr "戦略拠点"
+
+msgid "Event schedules, resource calculators, and advanced survival tools."
+msgstr "イベントスケジュール、資源計算機、高度なサバイバルツール。"
+
+msgid "Operations filter"
+msgstr "作戦フィルター"
+
+msgid "All Operations"
+msgstr "すべての作戦"
+
+msgid "Active Now"
+msgstr "現在開催中"
+
+msgid "Upcoming"
+msgstr "近日中"
+
+msgid "Declassified"
+msgstr "機密解除"
+
+msgid "Search Protocol"
+msgstr "検索プロトコル"
+
+msgid "Event name..."
+msgstr "イベント名..."
+
+msgid "No Operations Found"
+msgstr "作戦が見つかりませんでした"
+
+msgid "Clear Search"
+msgstr "検索をクリア"
+
+msgid "Awaiting new orders..."
+msgstr "新しい命令を待機中..."

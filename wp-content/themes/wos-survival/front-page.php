@@ -31,7 +31,7 @@ get_header();
                     <h1 class="text-6xl md:text-8xl font-black text-on-surface tracking-tighter leading-[0.9] mb-8 animate-slide-up">
                         Whiteout<br>
                         <span class="text-primary"><?php _e( 'Survival', 'wos-survival' ); ?></span><br>
-                        Intelligence
+                        <?php _e( 'Intelligence', 'wos-survival' ); ?>
                     </h1>
                     
                     <p class="text-xl md:text-2xl text-on-surface-variant font-medium mb-10 leading-relaxed max-w-xl animate-slide-up animation-delay-200">
@@ -57,7 +57,7 @@ get_header();
                              <?php 
                              $hero_bg = get_theme_mod( 'wos_hero_bg', get_template_directory_uri() . '/assets/images/hero-bg.jpg' );
                              ?>
-                             <img src="<?php echo esc_url( $hero_bg ); ?>" class="w-full h-full object-cover grayscale-[0.2] contrast-[1.1]" alt="Survival Hero">
+                             <img src="<?php echo esc_url( $hero_bg ); ?>" class="w-full h-full object-cover grayscale-[0.2] contrast-[1.1]" alt="<?php echo esc_attr__( 'Survival Hero', 'wos-survival' ); ?>">
                              <div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
                              
                              <!-- UI Overlay Elements -->
