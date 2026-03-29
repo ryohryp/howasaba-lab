@@ -3,6 +3,7 @@ import requests
 import feedparser
 import re
 import time
+from bs4 import BeautifulSoup
 
 from supabase import create_client, Client
 
@@ -10,7 +11,7 @@ from supabase import create_client, Client
 # Supported types: 'reddit_rss', 'html_wiki', 'sns_stub'
 SOURCES = [
     {"type": "reddit_rss", "url": "https://www.reddit.com/r/whiteoutsurvival/new/.rss", "name": "Reddit"},
-    {"type": "html_wiki", "url": "https://whiteoutsurvival.fandom.com/wiki/Gift_Codes", "name": "Fandom Wiki"}, # Example Wiki
+    {"type": "html_wiki", "url": "https://www.whiteoutsurvival.wiki/giftcodes/", "name": "WOS Wiki"},
     {"type": "sns_stub", "url": "", "name": "Official SNS"}
 ]
 
@@ -79,7 +80,7 @@ def fetch_reddit_rss(url):
 
 def fetch_html_source(url, name="External"):
     """
-    Fetches raw HTML from a URL and extracts potential codes.
+    Fetches raw HTML from a URL and extracts potential codes via BeautifulSoup.
     """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 WosRadar/1.0'
@@ -88,10 +89,27 @@ def fetch_html_source(url, name="External"):
         print(f"Fetching HTML source from {name}: {url}")
         response = requests.get(url, headers=headers, timeout=15)
         if response.status_code == 200:
-            # Combined cleanup of HTML tags
-            text = re.sub('<[^<]+?>', ' ', response.text)
-            codes = extract_potential_codes(text)
-            return codes
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # Target specific container for whiteoutsurvival.wiki
+            # If others are added, we might need a per-URL selector map
+            found_codes = []
+            if "whiteoutsurvival.wiki" in url:
+                # Based on subagent investigation: div.my-post-content span.code
+                selectors = ['.my-post-content span.code', 'span.code']
+                for selector in selectors:
+                    elements = soup.select(selector)
+                    for el in elements:
+                        txt = el.get_text(strip=True)
+                        if txt:
+                            # Still use extract logic for normalization and filtering
+                            found_codes.extend(extract_potential_codes(txt))
+            else:
+                # Fallback to general text scraping
+                text = soup.get_text(separator=' ')
+                found_codes = extract_potential_codes(text)
+                
+            return list(set(found_codes))
         else:
             print(f"Error fetching HTML from {name}: Status {response.status_code}")
             return []
