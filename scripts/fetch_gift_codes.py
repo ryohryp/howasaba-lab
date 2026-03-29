@@ -300,6 +300,16 @@ def submit_code_to_wordpress(code, rewards, existing_codes, expiration_date=None
 def main():
     print("--- WOS Gift Code Radar (Standard REST API) Started ---")
     
+    # 1. Configuration Integrity Check
+    missing_configs = []
+    if not WP_API_URL: missing_configs.append("WP_API_URL")
+    if not WP_RADAR_TOKEN: missing_configs.append("WP_RADAR_TOKEN")
+    if not SUPABASE_URL: missing_configs.append("SUPABASE_URL (For legacy Supabase sync)")
+    
+    if missing_configs:
+        print(f"WARNING: The following environment variables are missing: {', '.join(missing_configs)}")
+        print("Integration will run in [DRY RUN] mode for missing targets.")
+    
     # Pre-fetch existing codes for efficiency
     existing_codes = get_existing_codes_from_wp()
     processed_in_session = set()
