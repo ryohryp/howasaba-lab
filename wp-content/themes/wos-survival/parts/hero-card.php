@@ -2,8 +2,8 @@
 /**
  * Hero Card Component
  * 
- * Displays a hero card with Glassmorphism and hover effects.
- * Expects to be used within The Loop or with a $post object.
+ * Displays a hero card with Pop Style Glassmorphism.
+ * Based on Stitch "Hero Database (Pop Style)"
  */
 
 // Check if filtering is enabled (default: false)
@@ -13,16 +13,16 @@ $use_filtering = $args['use_filtering'] ?? false;
 $hero_data = $args['hero_data'] ?? null;
 
 if ( $hero_data ) {
-    $hero_id     = $hero_data['id'] ?? 0; // WP post ID if available, else 0
+    $hero_id     = $hero_data['id'] ?? 0;
     $gen_name    = 'Gen ' . ( $hero_data['generation'] ?? '' );
-    $type_name   = $hero_data['troop_type'] ?? '';
+    $type_name   = $hero_data['troop_type'] ?? ''; // Infantry, Marksman, Lancer
     $rarity_name = $hero_data['rarity'] ?? 'SSR';
     $gen_slug    = $hero_data['generation'] ?? '';
     $type_slug   = strtolower( $type_name );
     $permalink   = home_url( '/hero/' . ( $hero_data['slug'] ?? sanitize_title( $hero_data['name'] ) ) . '/' );
-    // 言語に応じて表示名を切り替え
     $is_ja       = get_locale() === 'ja';
     $title       = ( $is_ja && ! empty( $hero_data['japanese_name'] ) ) ? $hero_data['japanese_name'] : ( $hero_data['name'] ?? '' );
+    $image_url   = $hero_data['image_url'] ?? '';
 } else {
     // WP Loop fallback
     $hero_id    = get_the_ID();
@@ -32,19 +32,30 @@ if ( $hero_data ) {
     
     $gen_name    = !empty($generation) && !is_wp_error($generation) ? $generation[0]->name : '';
     $type_name   = !empty($type) && !is_wp_error($type) ? $type[0]->name : '';
-    $rarity_name = !empty($rarity) && !is_wp_error($rarity) ? $rarity[0]->name : '';
+    $rarity_name = !empty($rarity) && !is_wp_error($rarity) ? $rarity[0]->name : 'SSR';
     
     $gen_slug  = !empty($generation) && !is_wp_error($generation) ? $generation[0]->slug : '';
     $type_slug = !empty($type) && !is_wp_error($type) ? $type[0]->slug : '';
     $permalink = get_permalink();
     $title     = get_the_title();
+    $image_url = get_the_post_thumbnail_url($hero_id, 'large');
 }
+
+// Map Class to Material Symbols
+$class_icon = 'person';
+if (strpos($type_slug, 'infantry') !== false || strpos($type_slug, 'shield') !== false) $class_icon = 'shield';
+if (strpos($type_slug, 'marksman') !== false || strpos($type_slug, 'bow') !== false) $class_icon = 'ads_click';
+if (strpos($type_slug, 'lancer') !== false || strpos($type_slug, 'spear') !== false) $class_icon = 'directions_run';
+
+// Rarity Color
+$rarity_class = 'text-primary';
+if ($rarity_name === 'SSR') $rarity_class = 'text-orange-500';
 
 ?>
 
 <article 
     id="post-<?php echo esc_attr( $hero_id ); ?>" 
-    <?php post_class('relative group overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30'); ?>
+    <?php post_class('relative group'); ?>
     data-name="<?php echo esc_attr( $title ); ?>"
     data-gen="<?php echo esc_attr( preg_replace('/[^0-9]/', '', $gen_slug) ); ?>"
     data-type="<?php echo esc_attr( $type_slug ); ?>"
@@ -55,52 +66,46 @@ if ( $hero_data ) {
         x-transition:enter-end="opacity-100 scale-100"
     <?php endif; ?>
 >
-    <a href="<?php echo esc_url( $permalink ); ?>" class="hero-card group block relative overflow-hidden rounded-xl bg-slate-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-white/5 hover:border-ice-blue/30">
-    
-        <!-- Hero Image Area (Top) -->
-        <div class="relative w-[90px] h-[90px] mx-auto mt-4 overflow-hidden bg-slate-900 rounded-lg">
-            <?php if ( $hero_data && !empty($hero_data['image_url']) ) : ?>
-                <img src="<?php echo esc_url( $hero_data['image_url'] ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110">
-            <?php elseif ( ! $hero_data && has_post_thumbnail() ) : ?>
-                <?php the_post_thumbnail( 'medium', array( 'class' => 'h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110' ) ); ?>
-            <?php else : ?>
-                <div class="h-full w-full flex items-center justify-center bg-slate-800 text-slate-700">
-                    <span class="text-4xl">?</span>
-                </div>
-            <?php endif; ?>
-            
-            <!-- Hover interaction: Ice crack effect overlay -->
-            <div class="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-ice-blue/10 to-transparent"></div>
+    <a href="<?php echo esc_url( $permalink ); ?>" class="glass-card block p-6 flex flex-col items-center gap-5">
+        
+        <!-- Gen Badge (Top Left) -->
+        <div class="absolute top-4 left-4 bg-surface-container-high/80 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant backdrop-blur-md">
+            <?php echo esc_html( $gen_name ); ?>
         </div>
 
-        <!-- Gen Badge (Top Left) - Moved outside image -->
-        <div class="absolute top-2 left-2 flex gap-1 z-10">
-            <span class="inline-block px-2 py-1 bg-slate-900/90 text-ice-blue text-xs font-bold rounded border border-white/10 shadow-sm backdrop-blur-none">
-                <?php echo esc_html( $gen_name ); ?>
-            </span>
-            
-            <!-- Type Icon -->
-            <?php if ( $type_slug ) : ?>
-                <div class="flex items-center justify-center w-6 h-6 bg-slate-900/90 rounded border border-white/10 shadow-sm backdrop-blur-none text-white" title="<?php echo esc_attr( $type_name ); ?>">
-                    <?php if ( in_array( $type_slug, ['infantry', 'shield'] ) ) : ?>
-                        <!-- Shield Icon (Infantry) - Image Asset -->
-                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-infantry.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
-                    <?php elseif ( in_array( $type_slug, ['lancer', 'spear'] ) ) : ?>
-                            <!-- Spear Icon (Lancer) - Image Asset -->
-                            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-lancer.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
-                    <?php elseif ( in_array( $type_slug, ['marksman', 'bow', 'archer'] ) ) : ?>
-                            <!-- Bow Icon (Marksman) - Image Asset -->
-                            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/icon-type-marksman.png" alt="<?php echo esc_attr( $type_name ); ?>" class="w-5 h-5 object-contain" />
-                    <?php else : ?>
-                        <span class="text-xs font-bold"><?php echo esc_html( substr( $type_name, 0, 1 ) ); ?></span>
-                    <?php endif; ?>
+        <!-- Level/SSR Badge (Top Right) -->
+        <div class="absolute top-4 right-4 bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+            <?php echo esc_html( $rarity_name ); ?>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="relative w-36 h-36 md:w-44 md:h-44 rounded-3xl overflow-hidden border-4 border-white shadow-2xl bg-surface-dim">
+            <?php if ( $image_url ) : ?>
+                <img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110">
+            <?php else : ?>
+                <div class="h-full w-full flex items-center justify-center text-on-surface-variant/20">
+                    <span class="material-symbols-outlined text-6xl">person</span>
                 </div>
             <?php endif; ?>
         </div>
-        
-        <!-- Hero Name -->
-        <div class="px-2 pb-4 pt-2 text-center">
-            <h3 class="text-white font-bold text-lg leading-tight group-hover:text-ice-blue transition-colors"><?php echo esc_html( $title ); ?></h3>
+
+        <!-- Hero Name & Class Info -->
+        <div class="flex flex-col items-center gap-1 text-center">
+            <h3 class="text-xl md:text-2xl font-black text-on-surface leading-none group-hover:text-primary transition-colors">
+                <?php echo esc_html( $title ); ?>
+            </h3>
+            
+            <div class="flex items-center gap-2 <?php echo esc_attr($rarity_class); ?>">
+                 <span class="material-symbols-outlined text-sm"><?php echo esc_html($class_icon); ?></span>
+                 <span class="text-[10px] font-bold uppercase tracking-widest"><?php echo esc_html($type_name); ?> Specialist</span>
+            </div>
         </div>
+
+        <!-- Card Footer (Tags/Actions) -->
+        <div class="flex gap-2">
+            <span class="px-3 py-1 bg-surface-container-low rounded-full text-[9px] font-bold text-on-surface-variant uppercase tracking-tighter">View Build</span>
+        </div>
+
     </a>
 </article>
+

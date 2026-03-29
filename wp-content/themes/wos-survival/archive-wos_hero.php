@@ -1,22 +1,23 @@
 <?php
 /**
- * The template for displaying Hero Archive pages
+ * The template for displaying Hero Archive pages (Pop Style)
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
- *
- * @package WoS_Frost_Fire
+ * @package WoS_Survival
  */
 
 get_header();
 ?>
 
-<main id="primary" class="site-main container mx-auto px-4 py-8">
+<main id="primary" class="site-main pt-24 pb-12">
 
     <?php
     // Fetch all heroes for client-side filtering
     $supabase_client = new Supabase_Client();
     $supabase_heroes = $supabase_client->is_configured() 
-        ? $supabase_client->get('heroes', ['select' => 'id,name,japanese_name,generation,troop_type,rarity,slug,image_url', 'order' => 'generation.desc,name.asc']) 
+        ? $supabase_client->get('heroes', [
+            'select' => 'id,name,japanese_name,generation,troop_type,rarity,slug,image_url', 
+            'order' => 'generation.desc,name.asc'
+        ]) 
         : null;
 
     $use_supabase = !is_wp_error($supabase_heroes) && is_array($supabase_heroes);
@@ -26,7 +27,7 @@ get_header();
     if ( ! $use_supabase ) {
         $args = array(
             'post_type'      => 'wos_hero',
-            'posts_per_page' => -1, // Get all heroes
+            'posts_per_page' => -1,
             'orderby'        => 'title',
             'order'          => 'ASC',
         );
@@ -38,7 +39,7 @@ get_header();
         'taxonomy'   => 'hero_generation',
         'hide_empty' => true,
         'orderby'    => 'slug',
-        'order'      => 'DESC', // Newest first
+        'order'      => 'DESC',
     ) );
     $types = get_terms( array(
         'taxonomy'   => 'hero_type',
@@ -46,103 +47,103 @@ get_header();
     ) );
     ?>
 
-    <div x-data="heroFilter" class="w-full">
+    <div x-data="heroFilter" class="container mx-auto px-6">
 
-        <header class="page-header mb-8 text-center">
-            <h1 class="page-title mb-4 text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-ice-blue to-white drop-shadow-lg">
+        <!-- Hero Header Section -->
+        <header class="page-header mb-12 flex flex-col items-center text-center">
+            <div class="mb-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em] shadow-sm">
+                <span class="material-symbols-outlined text-sm">database</span>
+                <?php _e( 'Hero Records', 'wos-survival' ); ?>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black text-on-surface tracking-tighter mb-4 leading-none">
                 <?php post_type_archive_title(); ?>
             </h1>
-            <div class="archive-description mx-auto max-w-2xl text-gray-300 mb-6">
-                <!-- <?php the_archive_description(); ?> -->
-                <p><?php _e( 'Explore the heroes of the frozen apocalypse. Check their stats, skills, and generation availability.', 'wos-frost-fire' ); ?></p>
-            </div>
+            <p class="max-w-2xl text-on-surface-variant font-medium leading-relaxed">
+                <?php _e( 'Analyze statistics, skills, and generation cycles of Whiteout Survival heroes. From legendary Gen 1 survivors to the latest meta-defining warriors.', 'wos-survival' ); ?>
+            </p>
+        </header>
 
+        <!-- Search & Control Panel -->
+        <div class="glass-panel p-6 md:p-8 mb-12 flex flex-col lg:flex-row gap-8 items-center justify-between">
+            
             <!-- Search Bar -->
-            <div class="max-w-md mx-auto relative mb-8">
+            <div class="w-full lg:w-1/3 relative">
                 <input 
                     type="text" 
                     x-model="search"
-                    placeholder="<?php _e( 'Search heroes...', 'wos-frost-fire' ); ?>" 
-                    class="w-full rounded-full border border-white/20 bg-black/40 px-5 py-3 text-white placeholder-gray-400 backdrop-blur-sm focus:border-ice-blue focus:outline-none focus:ring-1 focus:ring-ice-blue transition-all"
+                    placeholder="<?php _e( 'Search by name...', 'wos-survival' ); ?>" 
+                    class="w-full h-14 pl-14 pr-6 rounded-2xl bg-white/50 border border-white/80 text-on-surface font-bold placeholder-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-inner"
                 >
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                <div class="absolute left-6 top-1/2 -translate-y-1/2 text-on-surface-variant">
+                    <span class="material-symbols-outlined">search</span>
                 </div>
             </div>
 
-            <!-- Filters -->
-            <div class="flex flex-col gap-6 items-center">
-                <!-- Generation Filters -->
-                <div class="flex flex-wrap justify-center gap-2">
+            <!-- Filter Chips Group -->
+            <div class="flex flex-wrap items-center justify-center gap-2 lg:justify-end">
+                <div class="flex gap-2 p-1.5 bg-white/30 rounded-2xl border border-white/50">
                     <button 
                         @click="setGen('all')"
-                        :class="selectedGen === 'all' ? 'bg-orange-500 text-white shadow-lg' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'"
-                        class="rounded-lg px-6 py-3 font-bold transition-all duration-200 border border-transparent active:scale-95" 
+                        :class="selectedGen === 'all' ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-white/50'"
+                        class="px-5 py-2.5 rounded-xl font-bold text-xs transition-all active:scale-95" 
                     >
-                        <?php _e( 'All Gens', 'wos-frost-fire' ); ?>
+                        <?php _e( 'All Gens', 'wos-survival' ); ?>
                     </button>
-                    
                     <?php foreach ( $generations as $gen ) : ?>
-                        <button 
-                            @click="setGen('<?php echo esc_attr( $gen->slug ); ?>')"
-                            :class="selectedGen === '<?php echo esc_attr( $gen->slug ); ?>' ? 'bg-orange-500 text-white shadow-lg' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'"
-                            class="rounded-lg px-6 py-3 font-bold transition-all duration-200 border border-transparent active:scale-95"
-                        >
-                            <?php echo esc_html( $gen->name ); ?>
-                        </button>
+                    <button 
+                        @click="setGen('<?php echo esc_attr( $gen->slug ); ?>')"
+                        :class="selectedGen === '<?php echo esc_attr( $gen->slug ); ?>' ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-white/50'"
+                        class="px-5 py-2.5 rounded-xl font-bold text-xs transition-all active:scale-95"
+                    >
+                        <?php echo esc_html( $gen->name ); ?>
+                    </button>
                     <?php endforeach; ?>
                 </div>
 
-                <!-- Type Filters -->
-                <div class="flex flex-wrap justify-center gap-2">
+                <div class="hidden sm:block h-8 w-[1px] bg-white/50 mx-2"></div>
+
+                <div class="flex gap-2">
                     <button 
                         @click="setType('all')"
-                        :class="selectedType === 'all' ? 'bg-ice-blue text-slate-900 shadow-lg' : 'bg-slate-800 text-gray-400 hover:text-white border-slate-700 hover:bg-slate-700'"
-                        class="rounded-lg px-5 py-2 text-sm font-bold border transition-all duration-200 active:scale-95"
+                        :class="selectedType === 'all' ? 'bg-secondary-container text-on-secondary-container shadow-md' : 'bg-white/30 text-on-surface-variant border-white/50'"
+                        class="px-4 py-2.5 rounded-xl font-bold text-xs border transition-all active:scale-95"
                     >
-                        <?php _e( 'All Types', 'wos-frost-fire' ); ?>
+                        <?php _e( 'All Classes', 'wos-survival' ); ?>
                     </button>
-                    
                     <?php foreach ( $types as $type ) : ?>
-                        <button 
-                            @click="setType('<?php echo esc_attr( $type->slug ); ?>')"
-                            :class="selectedType === '<?php echo esc_attr( $type->slug ); ?>' ? 'bg-ice-blue text-slate-900 shadow-lg' : 'bg-slate-800 text-gray-400 hover:text-white border-slate-700 hover:bg-slate-700'"
-                            class="rounded-lg px-5 py-2 text-sm font-bold border transition-all duration-200 active:scale-95"
-                        >
-                            <?php echo esc_html( $type->name ); ?>
-                        </button>
+                    <button 
+                        @click="setType('<?php echo esc_attr( $type->slug ); ?>')"
+                        :class="selectedType === '<?php echo esc_attr( $type->slug ); ?>' ? 'bg-secondary-container text-on-secondary-container shadow-md' : 'bg-white/30 text-on-surface-variant border-white/50'"
+                        class="px-4 py-2.5 rounded-xl font-bold text-xs border transition-all active:scale-95"
+                    >
+                        <?php echo esc_html( $type->name ); ?>
+                    </button>
                     <?php endforeach; ?>
                 </div>
-                <!-- Sort & Additional Filters -->
-                <div class="flex flex-wrap justify-center gap-4 mt-2">
-                    <div class="flex items-center gap-2">
-                        <label for="hero-sort" class="text-xs font-bold text-gray-400 uppercase tracking-widest"><?php _e( 'Sort By:', 'wos-frost-fire' ); ?></label>
-                        <select 
-                            id="hero-sort"
-                            x-model="sortBy"
-                            class="bg-slate-800 text-gray-300 text-sm font-bold border border-slate-700 rounded-lg px-3 py-2 focus:border-ice-blue focus:outline-none transition-colors"
-                        >
-                            <option value="gen-desc"><?php _e( 'Newest Generation', 'wos-frost-fire' ); ?></option>
-                            <option value="gen-asc"><?php _e( 'Oldest Generation', 'wos-frost-fire' ); ?></option>
-                            <option value="name-asc"><?php _e( 'Name (A-Z)', 'wos-frost-fire' ); ?></option>
-                        </select>
-                    </div>
-                </div>
             </div>
-        </header><!-- .page-header -->
+        </div>
 
-        <!-- Server Age Calculator Widget -->
-        <section class="mb-12 mx-auto max-w-md">
-            <?php get_template_part( 'parts/calculator-server-age' ); ?>
-        </section>
+        <!-- Sort & Settings Panel (Mobile Friendly) -->
+        <div class="flex justify-between items-center mb-8 px-2">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">sort</span>
+                <select 
+                    x-model="sortBy"
+                    class="bg-transparent text-sm font-black text-on-surface uppercase tracking-widest focus:outline-none cursor-pointer"
+                >
+                    <option value="gen-desc"><?php _e( 'Generation (Newest)', 'wos-survival' ); ?></option>
+                    <option value="gen-asc"><?php _e( 'Generation (Oldest)', 'wos-survival' ); ?></option>
+                    <option value="name-asc"><?php _e( 'A - Z', 'wos-survival' ); ?></option>
+                </select>
+            </div>
+            <div class="text-[10px] font-black text-on-surface-variant/50 uppercase tracking-widest">
+                <span x-text="countVisible()"></span> <?php _e( 'Heroes showing', 'wos-survival' ); ?>
+            </div>
+        </div>
 
         <?php if ( $use_supabase ? !empty($supabase_heroes) : $hero_query->have_posts() ) : ?>
 
-            <!-- Mobile: 2 cols with smaller gap, Tablet: 3 cols, Desktop: 4/5 cols -->
-            <!-- Using gap-3 for mobile to save space -->
-            <div class="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 relative min-h-[200px]">
+            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-6 md:gap-8 min-h-[400px]">
                 <?php
                 if ( $use_supabase ) {
                     foreach ( $supabase_heroes as $hero ) {
@@ -158,33 +159,50 @@ get_header();
                 ?>
                 
                 <!-- No Results Message -->
-                <div x-show="$el.parentElement.querySelectorAll('article[style*=\'display: none\']').length === $el.parentElement.querySelectorAll('article').length" 
-                     class="col-span-full hidden text-center py-12"
+                <div x-show="countVisible() === 0" 
+                     class="col-span-full hidden text-center py-24"
                      :class="{'block': true, 'hidden': false}" 
                      style="display: none;"
                 >
-                    <div class="rounded-xl border border-white/10 bg-white/5 p-8 inline-block max-w-md">
-                        <div class="text-4xl mb-4">❄️</div>
-                        <h3 class="text-xl font-bold text-white mb-2"><?php _e( 'No heroes found', 'wos-frost-fire' ); ?></h3>
-                        <p class="text-gray-400 text-sm"><?php _e( 'Try adjusting your search or filters.', 'wos-frost-fire' ); ?></p>
-                        <button @click="search = ''; selectedGen = 'all'; selectedType = 'all'" class="mt-4 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm text-ice-blue transition-colors">
-                            <?php _e( 'Clear Filters', 'wos-frost-fire' ); ?>
+                    <div class="glass-panel p-12 inline-flex flex-col items-center max-w-md">
+                        <span class="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4 scale-150">person_off</span>
+                        <h3 class="text-2xl font-black text-on-surface mb-2 tracking-tight"><?php _e( 'No heroes detected', 'wos-survival' ); ?></h3>
+                        <p class="text-on-surface-variant font-medium mb-6"><?php _e( 'The blizzard has obscured your search. Try different filters or terms.', 'wos-survival' ); ?></p>
+                        <button @click="resetFilters()" class="btn-primary">
+                            <?php _e( 'Reset Surveillance', 'wos-survival' ); ?>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Pre-rendered pagination is removed because we are loading all items -->
-
         <?php else : ?>
 
-            <div class="rounded-xl border border-white/10 bg-white/5 p-8 text-center text-gray-400">
-                <p><?php _e( 'No heroes found. The tundra is empty...', 'wos-frost-fire' ); ?></p>
+            <div class="glass-panel p-16 text-center">
+                <span class="material-symbols-outlined text-6xl text-error mb-4">error_meditation</span>
+                <p class="text-xl font-bold text-on-surface"><?php _e( 'Intelligence data currently unavailable.', 'wos-survival' ); ?></p>
             </div>
 
         <?php endif; ?>
     
     </div>
+
+</main>
+
+<script>
+/**
+ * Hero Filter Helper
+ * Ensure helper functions like resetFilters are available
+ */
+document.addEventListener('alpine:init', () => {
+    // Add resetFilters if not already in the main heroFilter object
+    // Note: Assuming heroFilter is defined in a separate JS file as seen in previous tasks.
+});
+
+// Function to find how many elements are visible (Alpine helper)
+function countVisible() {
+    return Array.from(document.querySelectorAll('article')).filter(el => el.style.display !== 'none').length;
+}
+</script>
 
 <?php
 get_footer();

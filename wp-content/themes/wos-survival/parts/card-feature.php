@@ -1,37 +1,45 @@
 <?php
 /**
- * Template part for displaying a feature card
+ * Template part for displaying a feature card (Pop Style)
  *
- * @package WOS_Frost_Fire
+ * @package WoS_Survival
  *
  * @param array $args {
  *     @type string $href          Link URL.
- *     @type string $icon_bg_class Tailwind class for icon background (e.g., 'bg-cyan-400/10').
- *     @type string $icon_path     Path to the icon file (relative to theme root, e.g., 'parts/icons/wrench').
+ *     @type string $icon          Material Symbol name.
  *     @type string $title         Card title.
  *     @type string $description   Card description.
+ *     @type string $color         Accent color (primary, secondary, tertiary, etc.)
  * }
  */
 
-$href          = $args['href'] ?? '#';
-$icon_bg_class = $args['icon_bg_class'] ?? 'bg-white/10';
-$icon_path     = $args['icon_path'] ?? '';
-$title         = $args['title'] ?? '';
-$description   = $args['description'] ?? '';
+$href        = $args['href'] ?? '#';
+$icon        = $args['icon'] ?? 'star';
+$title       = $args['title'] ?? '';
+$description = $args['description'] ?? '';
+$color       = $args['color'] ?? 'primary';
 ?>
 
-<a href="<?php echo esc_url( $href ); ?>" class="block group backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-2xl p-6 hover:border-blue-200/30 transition-colors duration-300 flex flex-col h-full">
-    <div class="w-12 h-12 rounded-xl <?php echo esc_attr( $icon_bg_class ); ?> flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-        <?php if ( $icon_path ) : ?>
-            <?php get_template_part( $icon_path ); ?>
-        <?php endif; ?>
+<a href="<?php echo esc_url( $href ); ?>" class="glass-card group flex flex-col h-full p-8 hover:-translate-y-1 transition-all duration-500">
+    <div class="mb-8 flex items-center justify-between">
+        <div class="w-14 h-14 rounded-2xl bg-<?php echo esc_attr($color); ?>-container/30 flex items-center justify-center text-<?php echo esc_attr($color); ?> group-hover:scale-110 group-hover:bg-<?php echo esc_attr($color); ?>-container transition-all duration-500 shadow-sm">
+            <span class="material-symbols-outlined text-3xl"><?php echo esc_html($icon); ?></span>
+        </div>
+        <div class="w-8 h-8 rounded-full border border-secondary-container flex items-center justify-center text-secondary-container group-hover:text-primary group-hover:border-primary transition-colors">
+            <span class="material-symbols-outlined text-sm">arrow_outward</span>
+        </div>
     </div>
-    <h3 class="text-xl font-bold text-blue-100 mb-2 group-hover:text-white transition-colors"><?php echo esc_html( $title ); ?></h3>
-    <p class="text-blue-200/60 text-sm mb-6 flex-1">
+    
+    <h3 class="text-2xl font-black text-on-surface mb-3 tracking-tight group-hover:text-primary transition-colors">
+        <?php echo esc_html( $title ); ?>
+    </h3>
+    
+    <p class="text-on-surface-variant font-medium text-sm leading-relaxed flex-grow">
         <?php echo esc_html( $description ); ?>
     </p>
-    <div class="flex items-center text-sm font-medium text-blue-200 group-hover:text-cyan-400 transition-colors mt-auto">
-        <span><?php _e( 'Access Modules', 'wos-frost-fire' ); ?></span>
-        <?php get_template_part( 'parts/icons/arrow-right' ); ?>
+    
+    <div class="mt-8 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 group-hover:text-primary transition-colors">
+        <span><?php _e( 'Deploy Module', 'wos-survival' ); ?></span>
+        <div class="h-px flex-grow bg-on-surface-variant/10 group-hover:bg-primary/20 transition-colors"></div>
     </div>
 </a>

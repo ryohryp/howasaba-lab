@@ -1,22 +1,20 @@
 <?php
 /**
- * The template for displaying Event Archive pages
+ * The template for displaying Event Archive pages (Command Center - Pop Style)
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
- *
- * @package WoS_Frost_Fire
+ * @package WoS_Survival
  */
 
 get_header();
 ?>
 
-<main id="primary" class="site-main container mx-auto px-4 py-8">
+<main id="primary" class="site-main pt-24 pb-12">
 
     <?php
     // Fetch all events for client-side filtering
     $args = array(
         'post_type'      => 'wos_event',
-        'posts_per_page' => -1, // Get all events
+        'posts_per_page' => -1,
         'orderby'        => 'meta_value',
         'meta_key'       => '_event_start_date',
         'order'          => 'ASC',
@@ -27,213 +25,205 @@ get_header();
     <div x-data="{
         search: '',
         filter: 'all', // all, active, upcoming, past
-        
-        // Helper to check if an event matches current filters
+        countVisible() {
+            return Array.from(document.querySelectorAll('article')).filter(el => el.style.display !== 'none').length;
+        },
         isVisible(el) {
             const name = el.dataset.name.toLowerCase();
-            const status = el.dataset.status; // active, upcoming, past
-            
+            const status = el.dataset.status;
             const matchesSearch = name.includes(this.search.toLowerCase());
             const matchesFilter = this.filter === 'all' || status === this.filter;
-            
             return matchesSearch && matchesFilter;
         }
-    }" class="w-full">
+    }" class="container mx-auto px-6">
 
-        <header class="page-header mb-8 text-center">
-            <h1 class="page-title mb-4 text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-ice-blue to-white drop-shadow-lg">
-                <?php post_type_archive_title(); ?>
-            </h1>
-            <div class="archive-description mx-auto max-w-2xl text-gray-300 mb-6">
-                <!-- <?php the_archive_description(); ?> -->
-                <p><?php _e( 'Track upcoming events, plan your strategy, and maximize your rewards.', 'wos-frost-fire' ); ?></p>
-            </div>
-
-            <!-- Search Bar -->
-            <div class="max-w-md mx-auto relative mb-8">
-                <input 
-                    type="text" 
-                    x-model="search"
-                    placeholder="<?php _e( 'Search events...', 'wos-frost-fire' ); ?>" 
-                    class="w-full rounded-full border border-white/20 bg-black/40 px-5 py-3 text-white placeholder-gray-400 backdrop-blur-sm focus:border-ice-blue focus:outline-none focus:ring-1 focus:ring-ice-blue transition-all"
-                >
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+        <!-- Command Center Header -->
+        <header class="page-header mb-12 flex flex-col md:flex-row justify-between items-end gap-6">
+            <div class="flex-grow">
+                <div class="mb-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary-container/30 text-secondary text-[10px] font-black uppercase tracking-[0.2em] shadow-sm">
+                    <span class="material-symbols-outlined text-sm">terminal</span>
+                    <?php _e( 'Strategic Hub', 'wos-survival' ); ?>
                 </div>
+                <h1 class="text-4xl md:text-6xl font-black text-on-surface tracking-tighter leading-none mb-2">
+                    <?php _e( 'Command Center', 'wos-survival' ); ?>
+                </h1>
+                <p class="text-on-surface-variant font-medium">
+                    <?php _e( 'Event schedules, resource calculators, and advanced survival tools.', 'wos-survival' ); ?>
+                </p>
             </div>
-
-            <!-- Filters -->
-            <div class="flex flex-wrap justify-center gap-2 mb-8">
-                <button 
-                    @click="filter = 'all'"
-                    :class="filter === 'all' ? 'bg-ice-blue text-deep-freeze font-bold' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                    class="rounded-full px-6 py-2 text-sm transition-all duration-300"
-                >
-                    <?php _e( 'All Events', 'wos-frost-fire' ); ?>
-                </button>
-                <button 
-                    @click="filter = 'active'"
-                    :class="filter === 'active' ? 'bg-fire-crystal text-white shadow-glow' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                    class="rounded-full px-6 py-2 text-sm transition-all duration-300 flex items-center gap-2"
-                >
-                    <span class="relative flex h-2 w-2">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                    </span>
-                    <?php _e( 'Active Now', 'wos-frost-fire' ); ?>
-                </button>
-                <button 
-                    @click="filter = 'upcoming'"
-                    :class="filter === 'upcoming' ? 'bg-indigo-500 text-white shadow-glow' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                    class="rounded-full px-6 py-2 text-sm transition-all duration-300"
-                >
-                    <?php _e( 'Upcoming', 'wos-frost-fire' ); ?>
-                </button>
-                <button 
-                    @click="filter = 'past'"
-                    :class="filter === 'past' ? 'bg-gray-600 text-white' : 'bg-white/5 text-gray-300 hover:bg-white/10'"
-                    class="rounded-full px-6 py-2 text-sm transition-all duration-300"
-                >
-                    <?php _e( 'Past', 'wos-frost-fire' ); ?>
-                </button>
+            
+            <!-- Quick Tools Navigation -->
+            <div class="flex gap-3">
+                <a href="#events" class="btn-primary flex items-center gap-2 py-3 px-6">
+                    <span class="material-symbols-outlined text-sm">calendar_month</span>
+                    <?php _e( 'Events', 'wos-survival' ); ?>
+                </a>
+                <a href="#" class="btn-secondary flex items-center gap-2 py-3 px-6">
+                    <span class="material-symbols-outlined text-sm">calculate</span>
+                    <?php _e( 'Tools', 'wos-survival' ); ?>
+                </a>
             </div>
-        </header><!-- .page-header -->
+        </header>
 
-        <?php if ( $event_query->have_posts() ) : ?>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative min-h-[200px]">
-                <?php
-                while ( $event_query->have_posts() ) :
-                    $event_query->the_post();
-                    $meta = wos_get_event_meta( get_the_ID() );
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            <!-- Sidebar: Filters & Mini Widgets -->
+            <aside class="lg:col-span-3">
+                <div class="glass-panel p-6 sticky top-28">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-primary mb-6"><?php _e( 'Operations filter', 'wos-survival' ); ?></h3>
                     
-                    // Determine status logic
-                    $start_date = $meta['start_date'];
-                    $today = date('Y-m-d');
-                    
-                    // Simple logic: 
-                    // If start > today => upcoming
-                    // If start <= today => active (assuming short duration for simplicity, or we can check duration)
-                    // Let's refine: start <= today AND end >= today => active.
-                    // But duration is a string "3 Days". Need to parse? 
-                    // For now, let's keep it simple: 
-                    // upcoming: start > today
-                    // past: start < today - 7 days (mock)
-                    // active: start <= today >= start - 7 days
-                    // Better: We'll rely on start date comparison for now.
-                    
-                    $status = 'active';
-                    if ( $start_date > $today ) {
-                        $status = 'upcoming';
-                    } elseif ( $start_date < date('Y-m-d', strtotime('-3 days')) ) { // Assuming avg 3 days duration
-                        $status = 'past';
-                    }
-                    
-                    // Card Styling based on status
-                    $status_colors = [
-                        'active' => 'border-fire-crystal/50 shadow-fire-crystal/20',
-                        'upcoming' => 'border-ice-blue/30',
-                        'past' => 'border-white/5 opacity-60',
-                    ];
-                    $card_border = $status_colors[$status] ?? 'border-white/10';
-
-                    ?>
-                    <article 
-                        id="post-<?php the_ID(); ?>" 
-                        <?php post_class("relative group overflow-hidden rounded-xl border {$card_border} bg-white/5 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:shadow-lg"); ?>
-                        x-show="isVisible($el)"
-                        data-name="<?php echo esc_attr( get_the_title() ); ?>"
-                        data-status="<?php echo esc_attr( $status ); ?>"
-                    >
-                        <a href="<?php the_permalink(); ?>" class="block h-full flex flex-col">
-                            <div class="aspect-w-16 aspect-h-9 relative overflow-hidden rounded-t-xl bg-black/40">
-                                <?php if ( has_post_thumbnail() ) : ?>
-                                    <?php the_post_thumbnail( 'medium', array( 'class' => 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-110' ) ); ?>
-                                <?php else : ?>
-                                    <div class="flex h-full w-full items-center justify-center text-ice-blue/20">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                <?php endif; ?>
-                                
-                                <!-- Date Badge -->
-                                <div class="absolute top-0 right-0 rounded-bl-xl bg-black/60 px-3 py-1 text-sm font-mono text-ice-blue backdrop-blur-sm border-l border-b border-white/10">
-                                    <?php echo esc_html( $start_date ); ?>
-                                </div>
-                                
-                                <!-- Status Badge -->
-                                <div class="absolute top-2 left-2">
-                                    <?php if ($status === 'active'): ?>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-red-500/80 px-2 py-0.5 text-xs font-bold text-white shadow-lg backdrop-blur-sm">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
-                                            LIVE
-                                        </span>
-                                    <?php elseif ($status === 'upcoming'): ?>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-blue-500/80 px-2 py-0.5 text-xs font-bold text-white shadow-lg backdrop-blur-sm">
-                                            SOON
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-
-                            <div class="p-5 flex-grow flex flex-col">
-                                <h2 class="mb-2 text-xl font-bold text-white group-hover:text-ice-blue transition-colors">
-                                    <?php the_title(); ?>
-                                </h2>
-                                
-                                <div class="mt-auto flex items-center justify-between text-sm text-gray-400">
-                                    <div class="flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <?php echo esc_html( $meta['duration'] ?: 'N/A' ); ?>
-                                    </div>
-                                    <?php if ( $meta['server_age'] ) : ?>
-                                        <div class="flex items-center gap-1" title="Server Age Requirement">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                            </svg>
-                                            <?php echo esc_html( $meta['server_age'] ); ?>d+
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </a>
-                    </article>
-                <?php
-                endwhile;
-                wp_reset_postdata();
-                ?>
-                
-                <!-- No Results Message -->
-                <div x-show="$el.parentElement.querySelectorAll('article[style*=\'display: none\']').length === $el.parentElement.querySelectorAll('article').length" 
-                     class="col-span-full hidden text-center py-12"
-                     :class="{'block': true, 'hidden': false}" 
-                     style="display: none;"
-                >
-                    <div class="rounded-xl border border-white/10 bg-white/5 p-8 inline-block max-w-md">
-                        <div class="text-4xl mb-4">📅</div>
-                        <h3 class="text-xl font-bold text-white mb-2"><?php _e( 'No events found', 'wos-frost-fire' ); ?></h3>
-                        <p class="text-gray-400 text-sm"><?php _e( 'There are no events matching your filter.', 'wos-frost-fire' ); ?></p>
-                        <button @click="search = ''; filter = 'all'" class="mt-4 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm text-ice-blue transition-colors">
-                            <?php _e( 'View All Events', 'wos-frost-fire' ); ?>
+                    <div class="flex flex-col gap-3">
+                        <button @click="filter = 'all'" 
+                                :class="filter === 'all' ? 'bg-primary text-on-primary' : 'hover:bg-primary/10 text-on-surface-variant'" 
+                                class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all">
+                            <span><?php _e( 'All Operations', 'wos-survival' ); ?></span>
+                            <span class="material-symbols-outlined text-sm">list</span>
+                        </button>
+                        <button @click="filter = 'active'" 
+                                :class="filter === 'active' ? 'bg-error-container text-on-error-container' : 'hover:bg-error/10 text-error'" 
+                                class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all border border-error/20">
+                            <span class="flex items-center gap-2">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-error"></span>
+                                </span>
+                                <?php _e( 'Active Now', 'wos-survival' ); ?>
+                            </span>
+                            <span class="material-symbols-outlined text-sm">sensors</span>
+                        </button>
+                        <button @click="filter = 'upcoming'" 
+                                :class="filter === 'upcoming' ? 'bg-primary-container text-on-primary-container' : 'hover:bg-primary/10 text-on-surface-variant'" 
+                                class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all">
+                            <span><?php _e( 'Upcoming', 'wos-survival' ); ?></span>
+                            <span class="material-symbols-outlined text-sm">schedule</span>
+                        </button>
+                        <button @click="filter = 'past'" 
+                                :class="filter === 'past' ? 'bg-surface-container-high text-on-surface-variant' : 'hover:bg-white/50 text-on-surface-variant/50'" 
+                                class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all">
+                            <span><?php _e( 'Declassified', 'wos-survival' ); ?></span>
+                            <span class="material-symbols-outlined text-sm">archive</span>
                         </button>
                     </div>
+
+                    <div class="mt-8 pt-8 border-t border-white/50">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-on-surface-variant mb-4"><?php _e( 'Search Protocol', 'wos-survival' ); ?></h3>
+                        <div class="relative">
+                            <input type="text" x-model="search" placeholder="<?php _e( 'Event name...', 'wos-survival' ); ?>" 
+                                   class="w-full bg-white/50 border border-white/80 rounded-xl px-4 py-2.5 text-sm font-bold focus:outline-none transition-all">
+                            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/30">search</span>
+                        </div>
+                    </div>
                 </div>
+            </aside>
+
+            <!-- Main Content: Event Grid -->
+            <div id="events" class="lg:col-span-9">
+                <?php if ( $event_query->have_posts() ) : ?>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xxl:grid-cols-3 gap-8">
+                        <?php
+                        while ( $event_query->have_posts() ) :
+                            $event_query->the_post();
+                            $meta = wos_get_event_meta( get_the_ID() );
+                            $today = date('Y-m-d');
+                            $start_date = $meta['start_date'];
+                            
+                            $status = 'active';
+                            if ( $start_date > $today ) {
+                                $status = 'upcoming';
+                            } elseif ( $start_date < date('Y-m-d', strtotime('-4 days')) ) {
+                                $status = 'past';
+                            }
+
+                            // Icons based on post title/content (simplified)
+                            $icon = 'event';
+                            if (stripos(get_the_title(), 'crystal') !== false) $icon = 'diamond';
+                            if (stripos(get_the_title(), 'battle') !== false) $icon = 'swords';
+                            if (stripos(get_the_title(), 'recru') !== false) $icon = 'group_add';
+                            ?>
+                            <article 
+                                id="post-<?php the_ID(); ?>" 
+                                <?php post_class("group relative"); ?>
+                                x-show="isVisible($el)"
+                                data-name="<?php echo esc_attr( get_the_title() ); ?>"
+                                data-status="<?php echo esc_attr( $status ); ?>"
+                            >
+                                <a href="<?php the_permalink(); ?>" class="glass-card flex flex-col h-full p-2 overflow-hidden">
+                                    <!-- Image Header -->
+                                    <div class="relative aspect-video rounded-lg overflow-hidden bg-surface-dim">
+                                        <?php if ( has_post_thumbnail() ) : ?>
+                                            <?php the_post_thumbnail( 'large', array( 'class' => 'h-full w-full object-cover transition-transform duration-700 group-hover:scale-110' ) ); ?>
+                                        <?php else : ?>
+                                            <div class="h-full w-full flex items-center justify-center text-on-surface-variant/10">
+                                                <span class="material-symbols-outlined text-6xl"><?php echo $icon; ?></span>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <!-- Status Badge (Overlay) -->
+                                        <div class="absolute top-4 left-4">
+                                            <?php if ($status === 'active'): ?>
+                                                <div class="bg-error text-on-error px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-xl">
+                                                    <span class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+                                                    LIVE
+                                                </div>
+                                            <?php elseif ($status === 'upcoming'): ?>
+                                                <div class="bg-primary text-on-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl">
+                                                    INCOMING
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="bg-surface-container-highest/80 backdrop-blur-md text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                                                    ENDED
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+
+                                    <!-- Content -->
+                                    <div class="p-4 flex-grow flex flex-col">
+                                        <div class="flex justify-between items-start gap-2 mb-3">
+                                            <h2 class="text-xl font-black text-on-surface leading-tight group-hover:text-primary transition-colors">
+                                                <?php the_title(); ?>
+                                            </h2>
+                                            <span class="material-symbols-outlined text-on-surface-variant/30"><?php echo $icon; ?></span>
+                                        </div>
+
+                                        <div class="mt-auto space-y-3">
+                                            <!-- Meta Items -->
+                                            <div class="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                                                <div class="flex items-center gap-1 border-r border-outline-variant/30 pr-4">
+                                                    <span class="material-symbols-outlined text-xs">calendar_today</span>
+                                                    <?php echo date('M d', strtotime($start_date)); ?>
+                                                </div>
+                                                <div class="flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-xs">hourglass_empty</span>
+                                                    <?php echo esc_html( $meta['duration'] ?: '3 Days' ); ?>
+                                                </div>
+                                            </div>
+
+                                            <div class="w-full bg-surface-container-low/50 h-1.5 rounded-full overflow-hidden">
+                                                <div class="bg-primary h-full transition-all duration-1000" style="width: <?php echo ($status === 'active' ? '65%' : ($status === 'past' ? '100%' : '5%')); ?>"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                        <?php endwhile; wp_reset_postdata(); ?>
+
+                        <!-- No Results -->
+                        <div x-show="countVisible() === 0" class="col-span-full py-24 text-center hidden" :class="{'block': true, 'hidden': false}">
+                            <span class="material-symbols-outlined text-6xl text-on-surface-variant/20 mb-4">search_off</span>
+                            <h3 class="text-2xl font-black text-on-surface mb-2"><?php _e( 'No Operations Found', 'wos-survival' ); ?></h3>
+                            <button @click="search = ''; filter = 'all'" class="btn-primary mt-4"><?php _e( 'Clear Search', 'wos-survival' ); ?></button>
+                        </div>
+                    </div>
+                <?php else : ?>
+                    <div class="glass-panel p-20 text-center">
+                        <p class="text-on-surface-variant font-bold"><?php _e( 'Awaiting new orders...', 'wos-survival' ); ?></p>
+                    </div>
+                <?php endif; ?>
             </div>
-
-        <?php else : ?>
-
-            <div class="rounded-xl border border-white/10 bg-white/5 p-8 text-center text-gray-400">
-                <p><?php _e( 'No events scheduled yet. Stay tuned!', 'wos-frost-fire' ); ?></p>
-            </div>
-
-        <?php endif; ?>
-    
+        </div>
     </div>
+</main>
 
 <?php
 get_footer();

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ArcticHearth | Hero Database</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed": "#68abff",
+              "primary-container": "#68abff",
+              "on-tertiary-fixed": "#433700",
+              "outline": "#70787e",
+              "on-surface": "#283035",
+              "surface-container": "#dfeaf2",
+              "surface-variant": "#d2dee8",
+              "background": "#eff7fe",
+              "tertiary-fixed": "#fdd400",
+              "surface-container-low": "#e9f2fa",
+              "on-primary-fixed-variant": "#003461",
+              "secondary-fixed": "#ffc791",
+              "tertiary-fixed-dim": "#edc600",
+              "inverse-on-surface": "#969ea4",
+              "inverse-surface": "#070f14",
+              "tertiary": "#6d5a00",
+              "surface-container-high": "#d9e4ed",
+              "on-background": "#283035",
+              "tertiary-container": "#fdd400",
+              "on-primary-container": "#002b52",
+              "on-secondary-fixed-variant": "#774400",
+              "on-surface-variant": "#545d62",
+              "primary-dim": "#005192",
+              "secondary": "#874e00",
+              "surface-container-highest": "#d2dee8",
+              "error": "#b31b25",
+              "outline-variant": "#a6aeb5",
+              "primary-fixed-dim": "#599ef1",
+              "on-tertiary-fixed-variant": "#645300",
+              "on-secondary-fixed": "#4f2c00",
+              "on-secondary-container": "#6a3c00",
+              "on-primary-fixed": "#000c1e",
+              "on-error-container": "#570008",
+              "on-error": "#ffefee",
+              "error-container": "#fb5151",
+              "surface-tint": "#005da7",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#ffc791",
+              "error-dim": "#9f0519",
+              "on-tertiary-container": "#594a00",
+              "on-tertiary": "#fff2ce",
+              "primary": "#005da7",
+              "secondary-dim": "#764400",
+              "on-primary": "#eef3ff",
+              "tertiary-dim": "#5f4e00",
+              "surface-bright": "#eff7fe",
+              "surface": "#eff7fe",
+              "inverse-primary": "#68abff",
+              "secondary-fixed-dim": "#ffb467"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #eff7fe 0%, #d9e4ed 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hero-grid-asymmetric {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-blue-50/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,93,167,0.08)]">
+<div class="flex justify-between items-center px-6 py-4 max-w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-blue-800 tracking-tighter">ArcticHearth</span>
+<div class="hidden md:flex items-center gap-6">
+<a class="font-semibold tracking-tight text-slate-600 hover:text-blue-600 transition-all duration-300" href="#">Guides</a>
+<a class="font-semibold tracking-tight text-blue-700 border-b-2 border-blue-600 pb-1" href="#">Heroes</a>
+<a class="font-semibold tracking-tight text-slate-600 hover:text-blue-600 transition-all duration-300" href="#">Alliance</a>
+<a class="font-semibold tracking-tight text-slate-600 hover:text-blue-600 transition-all duration-300" href="#">Events</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden lg:block px-6 py-2 rounded-full font-bold text-slate-600 hover:bg-blue-100/50 transition-all duration-300 scale-95 active:scale-90">Login</button>
+<button class="px-6 py-2 rounded-full bg-primary text-on-primary font-bold shadow-lg shadow-blue-200 hover:translate-y-[-2px] transition-all duration-300 scale-95 active:scale-90">Join Alliance</button>
+</div>
+</div>
+</nav>
+<div class="flex pt-20">
+<!-- SideNavBar (Filtering Desktop) -->
+<aside class="hidden md:flex flex-col w-64 p-4 gap-2 bg-white/70 backdrop-blur-2xl rounded-r-[3rem] h-[calc(100vh-5rem)] mt-4 sticky top-24">
+<div class="px-4 py-6">
+<h2 class="text-lg font-bold text-blue-900">Unit Database</h2>
+<p class="text-xs font-medium text-slate-500 uppercase tracking-widest">Arctic Strategy</p>
+</div>
+<nav class="flex flex-col gap-1">
+<button class="flex items-center gap-3 px-4 py-3 bg-orange-500 text-white rounded-full shadow-lg shadow-orange-200 transition-transform duration-200 hover:translate-x-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grade</span>
+<span class="font-medium text-sm">SSR Heroes</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 rounded-full transition-transform duration-200 hover:translate-x-1">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-medium text-sm">SR Heroes</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 rounded-full transition-transform duration-200 hover:translate-x-1">
+<span class="material-symbols-outlined">star_outline</span>
+<span class="font-medium text-sm">R Heroes</span>
+</button>
+<div class="my-4 border-t border-blue-50"></div>
+<button class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 rounded-full transition-transform duration-200 hover:translate-x-1">
+<span class="material-symbols-outlined">shield</span>
+<span class="font-medium text-sm">Infantry</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 rounded-full transition-transform duration-200 hover:translate-x-1">
+<span class="material-symbols-outlined">ads_click</span>
+<span class="font-medium text-sm">Marksmen</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 rounded-full transition-transform duration-200 hover:translate-x-1">
+<span class="material-symbols-outlined">directions_run</span>
+<span class="font-medium text-sm">Lancers</span>
+</button>
+</nav>
+<div class="mt-auto p-4">
+<button class="w-full py-4 rounded-2xl bg-tertiary-container text-on-tertiary-container font-bold text-sm shadow-md hover:brightness-105 transition-all">
+                    Upgrade Calculator
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 px-6 md:px-12 py-10">
+<!-- Header Section -->
+<header class="mb-12">
+<h1 class="text-5xl font-extrabold tracking-tighter text-on-surface mb-2">The Hero Roster</h1>
+<p class="text-lg text-on-surface-variant max-w-2xl leading-relaxed">Master the frozen wasteland by recruiting elite commanders. Filter by rarity or troop specialty to find your perfect squad leader.</p>
+</header>
+<!-- Mobile Quick Filter -->
+<div class="md:hidden flex gap-3 overflow-x-auto pb-6 mb-8 no-scrollbar">
+<span class="px-6 py-2 rounded-full bg-primary-container text-on-primary-container font-bold whitespace-nowrap">SSR Only</span>
+<span class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-bold whitespace-nowrap">Infantry</span>
+<span class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-bold whitespace-nowrap">Marksmen</span>
+<span class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-bold whitespace-nowrap">Lancers</span>
+</div>
+<!-- Hero Cards Grid -->
+<div class="hero-grid-asymmetric">
+<!-- Hero Card 1 (SSR) -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-blue-200/50">
+<div class="absolute top-4 right-4 z-10">
+<span class="bg-tertiary-container text-on-tertiary-container font-black px-4 py-1 rounded-full text-xs uppercase tracking-widest shadow-sm">Level 80</span>
+</div>
+<div class="h-64 overflow-hidden relative">
+<img alt="Hero Portrait" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="dignified fantasy commander in ornate heavy winter armor standing against a snowy mountain backdrop, cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC82jJ8GNoWmllLSnIzhxlur88dV1Kd5WCopfgCSQwGxQEOJxnRcxjuQ_9eILev6UAYjC6nmtavn-9aQFxk0mColtHvw-VQOyBk6RBZTp-SuHXEhyKH42Wykexi1hP70AwIA0Fa8lq45lt-7GzsUbP6tWMmXzyro3rwonuCNreYXOH62nNM5dYMbyLP6a0-RLeqTunrpq-f6fZfJPTak6wK7YknIy4rkuofgxdlDBjSZpWG-Nucu0_yqXDt6J2JnMEQ-94cFV-KlCI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-orange-600/40 to-transparent"></div>
+</div>
+<div class="p-6 relative border-t-4 border-orange-500">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-extrabold text-blue-900 tracking-tight">Zinman</h3>
+<div class="flex items-center gap-1 text-orange-500">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-xs font-bold uppercase tracking-wider">SSR Grade</span>
+</div>
+</div>
+<div class="bg-blue-50 p-2 rounded-xl">
+<span class="material-symbols-outlined text-blue-600">shield</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Master of defensive fortifications. Boosts infantry health by 40% and reduces construction time globally.</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-[10px] font-bold uppercase text-slate-500">Defense</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-[10px] font-bold uppercase text-slate-500">Construction</span>
+</div>
+</div>
+</div>
+<!-- Hero Card 2 (SSR) -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-blue-200/50">
+<div class="absolute top-4 right-4 z-10">
+<span class="bg-tertiary-container text-on-tertiary-container font-black px-4 py-1 rounded-full text-xs uppercase tracking-widest shadow-sm">Level 75</span>
+</div>
+<div class="h-64 overflow-hidden relative">
+<img alt="Hero Portrait" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="athletic female archer in white and blue fur-lined gear aiming a glowing bow, mystical icy forest background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP5-D38ZIZVU0nG_L7fVhvBnTHOrqG9RDBb4cbyYzTjiVCv1mXgPKZmGPkGXs6Rgzc8YDIqDBtinJaZ0-cZxIvSI3TWKaUcgIrUvQnEjxB42qd1e5vp00d-57vRBD_B5-4POjWLsWXiMNBtygGQiWlfSwlU4ShPji2ZM24MIFmvvp66Vh9_Xuhw50xwx-DtNrzjYdtMUIq3Spm2gZBc0xQ21GE_7CmoxWPAsbPHVfL3RhJsjTF15o36pZZue-PL3JRYMQ_O5h3P6o"/>
+<div class="absolute inset-0 bg-gradient-to-t from-orange-600/40 to-transparent"></div>
+</div>
+<div class="p-6 relative border-t-4 border-orange-500">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-extrabold text-blue-900 tracking-tight">Molly</h3>
+<div class="flex items-center gap-1 text-orange-500">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-xs font-bold uppercase tracking-wider">SSR Grade</span>
+</div>
+</div>
+<div class="bg-blue-50 p-2 rounded-xl">
+<span class="material-symbols-outlined text-blue-600">ads_click</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Expert marksman with high burst damage. Specializes in rapid-fire volley and critical strike chance.</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-[10px] font-bold uppercase text-slate-500">High DPS</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-[10px] font-bold uppercase text-slate-500">Ranged</span>
+</div>
+</div>
+</div>
+<!-- Hero Card 3 (SR) -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-blue-200/50">
+<div class="absolute top-4 right-4 z-10">
+<span class="bg-surface-container-high text-on-surface font-black px-4 py-1 rounded-full text-xs uppercase tracking-widest shadow-sm">Level 50</span>
+</div>
+<div class="h-64 overflow-hidden relative">
+<img alt="Hero Portrait" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.3]" data-alt="rugged older man in weathered leather exploration gear holding a frozen map, soft daylight in a tundra setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgAMHLZSXKGtbrnYi2sUsSqPTuxjmfHivs8WLVDkLWBAiZoPRAQq1YWwbGrQxDVYbA1-Q_tp2xCYWzOqetWTrllBrSTrv-ftHMCb5P4lCYmKvKu9JRlmRhQqV1k02GgVvsa1G3EGZVC4UZ_d6ymbuiGhQG6uLX75JShze6BXFiotq9FytuWk1XEKjZDweEG8lpwfpb9KF0I1CBWxzjDQxKNOr7-6PpcrPXFbSsse2fYmT_TBtm1hiUpVnQu2wA29H8nXnwuPtZRF8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-purple-600/40 to-transparent"></div>
+</div>
+<div class="p-6 relative border-t-4 border-purple-400">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-extrabold text-blue-900 tracking-tight">Sergey</h3>
+<div class="flex items-center gap-1 text-purple-600">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-xs font-bold uppercase tracking-wider">SR Grade</span>
+</div>
+</div>
+<div class="bg-blue-50 p-2 rounded-xl">
+<span class="material-symbols-outlined text-blue-600">shield</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Reliable tank for early game progression. High sustainability and effective shield generation.</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-[10px] font-bold uppercase text-slate-500">Tank</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-[10px] font-bold uppercase text-slate-500">Survival</span>
+</div>
+</div>
+</div>
+<!-- Hero Card 4 (SSR) -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-blue-200/50">
+<div class="absolute top-4 right-4 z-10">
+<span class="bg-tertiary-container text-on-tertiary-container font-black px-4 py-1 rounded-full text-xs uppercase tracking-widest shadow-sm">Level 60</span>
+</div>
+<div class="h-64 overflow-hidden relative">
+<img alt="Hero Portrait" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="elegant woman in white furs and silver jewelry standing amidst falling snow, mystical blue glowing energy at her fingertips" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChRhd9ekMSkW8nSBYkBgRBGusOpe_tE-UKqWnbp0-K7kaN9ZRhDhOIJk9jujEDcPB-eAaBGHBaZRgw9zW3OMXtNE_pe8fJ8umNRqUflVkMULzXOJjBO-_CAWPmWnpPs0Esa2pfqD2UXoukyg-LMDb4LelU7WJrvu72uz2A5j6v6YLDlzD6LReWRDAeH4sTTBLE6RNmfdxzfyDUt3rgkp0rSyi4Ggh14LApVhVzfoItmNJ_aZnXvo1lcDPaqbqSXo7Jb75NQCNrS_0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-orange-600/40 to-transparent"></div>
+</div>
+<div class="p-6 relative border-t-4 border-orange-500">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-extrabold text-blue-900 tracking-tight">Natalia</h3>
+<div class="flex items-center gap-1 text-orange-500">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-xs font-bold uppercase tracking-wider">SSR Grade</span>
+</div>
+</div>
+<div class="bg-blue-50 p-2 rounded-xl">
+<span class="material-symbols-outlined text-blue-600">directions_run</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Lancer specialist with devastating charge abilities. Increases march speed and hunting efficiency.</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-[10px] font-bold uppercase text-slate-500">Speed</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-[10px] font-bold uppercase text-slate-500">Hunting</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="w-full mt-20 border-t border-blue-100 bg-blue-50">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 gap-6">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-bold text-blue-800 text-xl tracking-tighter">ArcticHearth Strategy</span>
+<p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500">© 2024 Arctic Hearth Strategy. Not affiliated with Century Games.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-orange-600 transition-colors underline-offset-4 hover:underline" href="#">Discord Community</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-orange-600 transition-colors underline-offset-4 hover:underline" href="#">Strategy Wiki</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-orange-500 font-bold transition-colors underline-offset-4 hover:underline" href="#">Hero Tier List</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-orange-600 transition-colors underline-offset-4 hover:underline" href="#">Privacy Policy</a>
+</div>
+</div>
+</footer>
+</body></html>

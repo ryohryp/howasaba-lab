@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ArcticHearth - Tools &amp; Events</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed": "#68abff",
+              "primary-container": "#68abff",
+              "on-tertiary-fixed": "#433700",
+              "outline": "#70787e",
+              "on-surface": "#283035",
+              "surface-container": "#dfeaf2",
+              "surface-variant": "#d2dee8",
+              "background": "#eff7fe",
+              "tertiary-fixed": "#fdd400",
+              "surface-container-low": "#e9f2fa",
+              "on-primary-fixed-variant": "#003461",
+              "secondary-fixed": "#ffc791",
+              "tertiary-fixed-dim": "#edc600",
+              "inverse-on-surface": "#969ea4",
+              "surface-dim": "#c9d6e0",
+              "on-secondary": "#fff0e5",
+              "inverse-surface": "#070f14",
+              "tertiary": "#6d5a00",
+              "surface-container-high": "#d9e4ed",
+              "on-background": "#283035",
+              "tertiary-container": "#fdd400",
+              "on-primary-container": "#002b52",
+              "on-secondary-fixed-variant": "#774400",
+              "on-surface-variant": "#545d62",
+              "primary-dim": "#005192",
+              "secondary": "#874e00",
+              "surface-container-highest": "#d2dee8",
+              "error": "#b31b25",
+              "outline-variant": "#a6aeb5",
+              "primary-fixed-dim": "#599ef1",
+              "on-tertiary-fixed-variant": "#645300",
+              "on-secondary-fixed": "#4f2c00",
+              "on-secondary-container": "#6a3c00",
+              "on-primary-fixed": "#000c1e",
+              "on-error-container": "#570008",
+              "on-error": "#ffefee",
+              "error-container": "#fb5151",
+              "surface-tint": "#005da7",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#ffc791",
+              "error-dim": "#9f0519",
+              "on-tertiary-container": "#594a00",
+              "on-tertiary": "#fff2ce",
+              "primary": "#005da7",
+              "secondary-dim": "#764400",
+              "on-primary": "#eef3ff",
+              "tertiary-dim": "#5f4e00",
+              "surface-bright": "#eff7fe",
+              "surface": "#eff7fe",
+              "inverse-primary": "#68abff",
+              "secondary-fixed-dim": "#ffb467"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #dfeaf2, #eff7fe);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-blue-50/80 dark:bg-blue-950/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,93,167,0.08)]">
+<div class="flex justify-between items-center px-6 py-4 max-w-full">
+<div class="text-2xl font-black text-blue-800 dark:text-blue-200 tracking-tighter">ArcticHearth</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 font-semibold transition-all duration-300" href="#">Guides</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 font-semibold transition-all duration-300" href="#">Heroes</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 font-semibold transition-all duration-300" href="#">Alliance</a>
+<a class="text-blue-700 dark:text-blue-300 border-b-2 border-blue-600 dark:border-blue-400 pb-1 font-semibold transition-all duration-300" href="#">Events</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-5 py-2 rounded-full font-bold text-slate-600 hover:bg-blue-100/50 transition-all scale-95 active:scale-90">Login</button>
+<button class="px-6 py-2 bg-primary text-on-primary rounded-full font-bold shadow-lg shadow-primary/20 hover:translate-y-[-2px] transition-all scale-95 active:scale-90">Join Alliance</button>
+</div>
+</div>
+</nav>
+<div class="flex flex-1 pt-20">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col w-64 p-4 gap-2 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl rounded-r-[3rem] h-[calc(100vh-5rem)] mt-4 sticky top-24">
+<div class="px-4 py-6">
+<h2 class="text-lg font-bold text-blue-900 dark:text-blue-100">Unit Database</h2>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Arctic Strategy</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 transition-transform duration-200 hover:translate-x-1 rounded-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">grade</span>
+<span class="font-medium">SSR Heroes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 transition-transform duration-200 hover:translate-x-1 rounded-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">stars</span>
+<span class="font-medium">SR Heroes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 transition-transform duration-200 hover:translate-x-1 rounded-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">star_outline</span>
+<span class="font-medium">R Heroes</span>
+</a>
+<div class="h-px bg-surface-container my-2 mx-4"></div>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 transition-transform duration-200 hover:translate-x-1 rounded-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">shield</span>
+<span class="font-medium">Infantry</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 transition-transform duration-200 hover:translate-x-1 rounded-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">ads_click</span>
+<span class="font-medium">Marksmen</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-blue-50 transition-transform duration-200 hover:translate-x-1 rounded-full group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">directions_run</span>
+<span class="font-medium">Lancers</span>
+</a>
+</nav>
+<div class="mt-auto p-4">
+<button class="w-full py-4 bg-orange-500 text-white rounded-full font-bold shadow-lg shadow-orange-200 hover:scale-105 transition-transform">
+                    Upgrade Calculator
+                </button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 px-6 py-8 md:px-12">
+<header class="mb-12">
+<h1 class="text-5xl font-extrabold text-on-surface tracking-tight mb-2">Command Center</h1>
+<p class="text-on-surface-variant text-lg max-w-2xl">Optimize your survival strategy with real-time tools and event tracking. The hearth never goes cold for the prepared.</p>
+</header>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+<!-- Event Calendar Section (Left Wide) -->
+<section class="xl:col-span-8 flex flex-col gap-6">
+<div class="glass-panel p-8 rounded-xl shadow-[0_20px_40px_rgba(0,93,167,0.08)]">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-2xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+                                Event Calendar
+                            </h3>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-xs font-bold uppercase tracking-wider">Week 42</span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded-full text-xs font-bold uppercase tracking-wider">Active</span>
+</div>
+</div>
+<!-- Calendar Grid -->
+<div class="grid grid-cols-7 gap-3">
+<!-- Header Days -->
+<div class="text-center text-xs font-bold text-slate-400 pb-2">MON</div>
+<div class="text-center text-xs font-bold text-slate-400 pb-2">TUE</div>
+<div class="text-center text-xs font-bold text-slate-400 pb-2">WED</div>
+<div class="text-center text-xs font-bold text-slate-400 pb-2">THU</div>
+<div class="text-center text-xs font-bold text-slate-400 pb-2">FRI</div>
+<div class="text-center text-xs font-bold text-slate-400 pb-2">SAT</div>
+<div class="text-center text-xs font-bold text-slate-400 pb-2">SUN</div>
+<!-- Day Cells -->
+<div class="aspect-square bg-surface-container-low rounded-lg p-2 flex flex-col items-end opacity-50">14</div>
+<div class="aspect-square bg-surface-container-low rounded-lg p-2 flex flex-col items-end opacity-50">15</div>
+<div class="aspect-square bg-surface-container-low rounded-lg p-2 flex flex-col items-end">16</div>
+<div class="aspect-square bg-surface-container-low rounded-lg p-2 flex flex-col items-end border-2 border-primary-fixed ring-4 ring-primary-container/10">17</div>
+<div class="aspect-square bg-surface-container-low rounded-lg p-2 flex flex-col items-end">18</div>
+<div class="aspect-square bg-surface-container-low rounded-lg p-2 flex flex-col items-end">19</div>
+<div class="aspect-square bg-surface-container-low rounded-lg p-2 flex flex-col items-end">20</div>
+<!-- Event Blocks Overlaying the Grid -->
+<div class="col-span-3 bg-secondary-container text-on-secondary-container p-3 rounded-lg shadow-sm border-l-4 border-secondary flex flex-col gap-1">
+<span class="text-[10px] font-bold uppercase">Alliance</span>
+<span class="font-bold text-sm">Foundry Battle</span>
+</div>
+<div class="col-span-4 bg-primary-container text-on-primary-container p-3 rounded-lg shadow-sm border-l-4 border-primary flex flex-col gap-1">
+<span class="text-[10px] font-bold uppercase">Personal</span>
+<span class="font-bold text-sm">Hero Hall of Fame</span>
+</div>
+<div class="col-span-2 bg-tertiary-container text-on-tertiary-container p-3 rounded-lg shadow-sm border-l-4 border-tertiary flex flex-col gap-1">
+<span class="text-[10px] font-bold uppercase">Global</span>
+<span class="font-bold text-sm">Sunfire Castle</span>
+</div>
+<div class="col-span-5 bg-surface-container-highest p-3 rounded-lg shadow-sm flex flex-col gap-1 opacity-70 italic">
+<span class="text-[10px] font-bold uppercase">Coming Soon</span>
+<span class="font-bold text-sm">State of Power</span>
+</div>
+</div>
+</div>
+<!-- Resource Calculator Section -->
+<div class="glass-panel p-8 rounded-xl shadow-[0_20px_40px_rgba(0,93,167,0.08)] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/20 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<div class="mb-8">
+<h3 class="text-2xl font-bold flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">calculate</span>
+                                Resource Calculator
+                            </h3>
+<div class="flex gap-4 mb-6">
+<div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="w-2/3 h-full bg-primary-fixed"></div>
+</div>
+<span class="text-xs font-bold text-primary whitespace-nowrap">Step 2 of 3</span>
+</div>
+</div>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Meat Stockpile</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl p-4 text-xl font-bold focus:ring-4 focus:ring-primary-fixed/20 transition-all outline-none" placeholder="5,000,000" type="number"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Wood Stockpile</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl p-4 text-xl font-bold focus:ring-4 focus:ring-primary-fixed/20 transition-all outline-none" placeholder="4,200,000" type="number"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Coal Reserve</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl p-4 text-xl font-bold focus:ring-4 focus:ring-primary-fixed/20 transition-all outline-none" placeholder="1,500,000" type="number"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Target Building Level</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl p-4 text-xl font-bold focus:ring-4 focus:ring-primary-fixed/20 transition-all outline-none appearance-none">
+<option>Furnace Level 28</option>
+<option>Furnace Level 29</option>
+<option>Furnace Level 30</option>
+</select>
+</div>
+</div>
+<button class="w-full py-5 bg-gradient-to-r from-primary to-primary-dim text-white text-xl font-black rounded-xl shadow-xl shadow-primary/30 hover:scale-[1.02] transition-transform active:scale-95" type="button">
+                                Calculate Requirements
+                            </button>
+</form>
+</div>
+</section>
+<!-- Hero Simulator Section (Right Side) -->
+<section class="xl:col-span-4">
+<div class="glass-panel p-6 rounded-xl shadow-[0_20px_40px_rgba(0,93,167,0.08)] sticky top-28">
+<h3 class="text-2xl font-bold flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">swords</span>
+                            Hero Simulator
+                        </h3>
+<div class="bg-surface-dim rounded-lg p-4 aspect-video relative overflow-hidden mb-6 border-b-4 border-surface-container-highest">
+<img class="absolute inset-0 w-full h-full object-cover opacity-40" data-alt="vibrant abstract background with swirling icy blues and warm orange sparks representing a stylized digital battleground arena" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyb2_Owmw2CUlJhLcQMBP5PRQIOulWz3qbbNqD9mxrvAcB5maLBoXaxOr-marDrzk2AZhm40a77MfCW7kqdi4kOrr8ZXMercdnVZwmYRNgvaTbbJT7Rqg_E3xbLG39G537dXe1qE4JmMXyhDhecO5yoYlWkS2bPCRZqGKFXEW_idwIeSAOHQvpsMfa1BZBJ9Vm6KgB9bXODoHtbL9SMo6_Zana07rvZt5wVZt3qU2dSJs8QojmM4RSBkLKtBJ9LIQrYEhS1CdGGX8"/>
+<!-- Team Layout -->
+<div class="relative z-10 flex justify-between h-full items-center">
+<!-- Your Team -->
+<div class="flex flex-col gap-2">
+<div class="w-12 h-12 bg-primary-container rounded-full border-2 border-white flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white">person</span>
+</div>
+<div class="w-12 h-12 bg-primary rounded-full border-2 border-white flex items-center justify-center shadow-lg -translate-x-2">
+<span class="material-symbols-outlined text-white">person</span>
+</div>
+<div class="w-12 h-12 bg-primary-container rounded-full border-2 border-white flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white">person</span>
+</div>
+</div>
+<!-- Center Clash -->
+<div class="flex items-center justify-center">
+<div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+<span class="text-2xl font-black text-white italic">VS</span>
+</div>
+</div>
+<!-- Enemy Team -->
+<div class="flex flex-col gap-2">
+<div class="w-12 h-12 bg-error rounded-full border-2 border-white flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white">person</span>
+</div>
+<div class="w-12 h-12 bg-error-container rounded-full border-2 border-white flex items-center justify-center shadow-lg translate-x-2">
+<span class="material-symbols-outlined text-white">person</span>
+</div>
+<div class="w-12 h-12 bg-error rounded-full border-2 border-white flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white">person</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Win Probability</p>
+<p class="text-2xl font-black text-primary">68.4%</p>
+</div>
+<span class="material-symbols-outlined text-primary text-3xl">trending_up</span>
+</div>
+<button class="w-full py-4 bg-tertiary-container text-on-tertiary-container rounded-xl font-extrabold flex items-center justify-center gap-2 hover:bg-tertiary-fixed transition-colors active:scale-95">
+<span class="material-symbols-outlined">play_arrow</span>
+                                Simulate Battle
+                            </button>
+<p class="text-[10px] text-center text-on-surface-variant font-medium px-4">Simulation uses current hero gear and power levels from your connected profile.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Bento Stats Section -->
+<section class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-4">
+<div class="w-12 h-12 bg-primary-container/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+<div>
+<h4 class="font-bold text-xl">Active Alliances</h4>
+<p class="text-on-surface-variant text-sm">Join over 2,400 commanders planning their next raid.</p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-4">
+<div class="w-12 h-12 bg-secondary-container/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h4 class="font-bold text-xl">Defense Meta</h4>
+<p class="text-on-surface-variant text-sm">Updated layout strategies for the current patch 1.24.</p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-4">
+<div class="w-12 h-12 bg-tertiary-container/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h4 class="font-bold text-xl">Power Spikes</h4>
+<p class="text-on-surface-variant text-sm">Learn when to use your speedups for maximum efficiency.</p>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer -->
+<footer class="w-full mt-auto border-t border-blue-100 dark:border-blue-900 bg-blue-50 dark:bg-slate-950">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 gap-6">
+<div class="flex flex-col gap-2">
+<span class="font-bold text-blue-800 dark:text-blue-200 text-lg">Arctic Hearth Strategy</span>
+<p class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500">© 2024 Arctic Hearth Strategy. Not affiliated with Century Games.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-orange-600 transition-colors underline-offset-4 hover:underline" href="#">Discord Community</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-orange-600 transition-colors underline-offset-4 hover:underline" href="#">Strategy Wiki</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-orange-600 transition-colors underline-offset-4 hover:underline" href="#">Hero Tier List</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-slate-500 hover:text-orange-600 transition-colors underline-offset-4 hover:underline" href="#">Privacy Policy</a>
+</div>
+</div>
+</footer>
+</body></html>
