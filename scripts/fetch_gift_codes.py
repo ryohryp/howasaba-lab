@@ -103,8 +103,8 @@ def fetch_html_source(url, name="External"):
                     for el in elements:
                         txt = el.get_text(strip=True)
                         if txt:
-                            # Still use extract logic for normalization and filtering
-                            found_codes.extend(extract_potential_codes(txt))
+                            # Use force=True because we found it via a precision selector (.code)
+                            found_codes.extend(extract_potential_codes(txt, force=True))
             else:
                 # Fallback to general text scraping
                 text = soup.get_text(separator=' ')
@@ -130,20 +130,16 @@ def fetch_sns_codes_stub():
     print("Fetching codes from SNS (Stub)...")
     return [] # Currently returns empty list until implemented
 
-def extract_potential_codes(text):
+def extract_potential_codes(text, force=False):
     """
-    Enhanced extraction logic:
-    1. Only process text containing 'code' or 'gift'.
-    2. Extract 5-15 char alphanumeric strings (Upper + Lower).
-    3. Filter out IGNORE_LIST.
-    4. Validate:
-       - If contains digit OR matches keywords: High Confidence.
-       - If ALL UPPER without digit: Needs context.
+    Enhanced extraction logic.
+    force=True skips the "code/gift" keyword requirement (used for precision selectors).
     """
-    # 1. Broad filter: skip if no keywords found
-    text_lower = text.lower()
-    if "code" not in text_lower and "gift" not in text_lower:
-        return []
+    # 1. Broad filter: skip if no keywords found (unless force=True)
+    if not force:
+        text_lower = text.lower()
+        if "code" not in text_lower and "gift" not in text_lower:
+            return []
 
     # Regex for potential candidates: 5-15 alphanumeric (broad match)
     candidates = re.findall(r'\b[A-Za-z0-9]{5,15}\b', text)
