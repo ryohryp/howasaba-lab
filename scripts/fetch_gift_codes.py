@@ -248,38 +248,49 @@ def submit_code_to_supabase(code, source_title, source_link):
 
 def submit_code_to_wordpress(code, rewards, existing_codes, expiration_date=None):
     """
-    Submits the gift code to WordPress 'gift_code' CPT.
+    Submits the gift code to WordPress using the custom 'wos-radar/v1/add-code' endpoint.
+    This custom endpoint handles deduplication and ACF mapping correctly.
     """
     if not WP_API_URL or not WP_RADAR_TOKEN:
         print(f"[DRY RUN] Would submit to WordPress: {code}")
         return
 
-    # Check for duplicates using the pre-fetched list
+    # Check for duplicates using the pre-fetched list (Client-side check)
     if code.upper() in existing_codes:
-        print(f"SKIPPED: Code '{code}' already exists in WordPress.")
+        print(f"SKIPPED: Code '{code}' already exists in WordPress (Client-side).")
         return
+
+    # Derive the custom endpoint URL from the base WP_API_URL
+    # Standard: .../wp-json/wp/v2/gift_code -> Custom: .../wp-json/wos-radar/v1/add-code
+    base_url = WP_API_URL.split('/wp/v2/')[0] if '/wp/v2/' in WP_API_URL else WP_API_URL.split('/wp-json/')[0] + '/wp-json' if '/wp-json/' in WP_API_URL else WP_API_URL
+    custom_endpoint = f"{base_url.rstrip('/')}/wos-radar/v1/add-code"
 
     headers = {
         'X-Radar-Token': WP_RADAR_TOKEN,
         'Content-Type': 'application/json'
     }
 
+    # Payload for the custom 'wos-radar/v1/add-code' endpoint
     payload = {
-        "title": f"ギフトコード: {code}",
-        "status": "publish",
-        "acf": {
-            "code_string": code,
-            "rewards": rewards,
-            "expiration_date": expiration_date if expiration_date else ""
-        }
+        "code_string": code,
+        "rewards": rewards,
+        "expiration_date": expiration_date if expiration_date else "",
+        "status": "publish"
     }
 
     try:
-        print(f"Submitting code to WordPress: {code}...")
-        response = requests.post(WP_API_URL, json=payload, headers=headers, timeout=20)
+        print(f"Submitting code to WordPress (Custom API): {code}...")
+        response = requests.post(custom_endpoint, json=payload, headers=headers, timeout=20)
         
         if response.status_code == 201:
             print(f"SUCCESS: Code '{code}' created in WordPress.")
+        elif response.status_code == 200:
+            # The custom endpoint might return 200 if it was skipped internally
+            res_data = response.json()
+            if res_data.get('code') == 'gift_code_exists':
+                print(f"SKIPPED: Code '{code}' already exists (Server-side check).")
+            else:
+                print(f"SUCCESS: WordPress response: {res_data.get('message')}")
         else:
             print(f"FAILED: WordPress API Status {response.status_code}")
             print(f"Response: {response.text}")
