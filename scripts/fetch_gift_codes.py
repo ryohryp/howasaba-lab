@@ -3,6 +3,7 @@ import requests
 import feedparser
 import re
 import time
+import sys
 from bs4 import BeautifulSoup
 
 from supabase import create_client, Client
@@ -307,8 +308,10 @@ def main():
     if not SUPABASE_URL: missing_configs.append("SUPABASE_URL (For legacy Supabase sync)")
     
     if missing_configs:
-        print(f"WARNING: The following environment variables are missing: {', '.join(missing_configs)}")
-        print("Integration will run in [DRY RUN] mode for missing targets.")
+        print(f"CRITICAL ERROR: The following environment variables are missing: {', '.join(missing_configs)}")
+        print("Please set these variables in GitHub Secrets or your local environment.")
+        # Exit with error to fail the GitHub Action and make the issue visible
+        sys.exit(1)
     
     # Pre-fetch existing codes for efficiency
     existing_codes = get_existing_codes_from_wp()

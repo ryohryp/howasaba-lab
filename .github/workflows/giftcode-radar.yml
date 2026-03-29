@@ -22,6 +22,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r scripts/requirements.txt
 
+      - name: Verify Configuration
+        env:
+          WP_RADAR_TOKEN: ${{ secrets.WP_RADAR_TOKEN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        run: |
+          echo "Checking if critical secrets are set..."
+          if [ -z "$WP_RADAR_TOKEN" ]; then echo "::error ::WP_RADAR_TOKEN is missing in GitHub Secrets!"; exit 1; fi
+          if [ -z "$SUPABASE_URL" ]; then echo "::error ::SUPABASE_URL is missing in GitHub Secrets!"; exit 1; fi
+          echo "All critical secrets are present."
+
       - name: Run Gift Code Radar
         env:
           WP_API_URL: ${{ secrets.WP_API_URL }}
