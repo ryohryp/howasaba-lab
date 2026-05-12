@@ -10,13 +10,15 @@
   1. **英雄データベース (Hero Database)**: クライアントサイドでの高速な世代別・兵種別フィルタリングとソート、アクセスロケールに応じた多言語動的表示 (i18n)。
   2. **自動ギフトコードレーダー (Gift Code Radar)**: Reddit RSS、Wiki等からの自動スクレイピング、高度な文脈解析によるコード抽出、重複排除、SupabaseおよびWordPressへの自動同期。
   3. **自動Tierリストジェネレーター (Tier List Generator)**: ショートコードを用いた最新環境メタに基づく英雄ランキング表の動的生成。
-  4. **データ一括投入・シード機能 (Data Seeders)**: 開発・メンテナンス用の一括データ投入・SQL生成システム。
+  4. **イベントスケジュール・データベース (Event Schedule & DB)**: ゲーム内イベントの開催期間、必要サーバー稼働日数、専用通貨およびショップ終了期間の統合管理。
+  5. **データ一括投入・シード機能 (Data Seeders)**: 開発・メンテナンス用の一括データ投入・SQL生成システム。
 
 ---
 
 ## 2. システム・アーキテクチャ (System Architecture)
 
 本システムは、**Supabase (構造化データ管理・高速API層)** と **WordPress (コンテンツ表示・CMS・フォールバック層)** を組み合わせた**ハイブリッド構成**を採用しています。
+また、フロントエンドのアセット管理には **Vite Asset Loader** を導入し、開発環境と本番環境のビルド統合を自動化しています。
 
 ```mermaid
 graph TD
@@ -41,11 +43,16 @@ graph TD
         WP_DB[("MySQL / Transient Cache")]
         CPT_H["CPT: wos_hero"]
         CPT_G["CPT: gift_code"]
+        CPT_E["CPT: wos_event"]
     end
 
-    subgraph "Frontend Layer (Vite + Tailwind + Alpine.js)"
+    subgraph "Frontend & Build Layer (Vite + Tailwind + Alpine.js)"
+        VAL["Vite Asset Loader"]
+        DEV["Dev Mode: HMR / @vite/client (Port 5173)"]
+        PROD["Prod Mode: manifest.json (Dist Assets)"]
         UI_H["英雄アーカイブページ (即時フィルタ/ソート)"]
         UI_T["Tierリスト表示 (ショートコード)"]
+        UI_E["イベント情報表示"]
     end
 
     R -->|Feedparser| FGC
@@ -60,12 +67,21 @@ graph TD
     
     WP_REST --> CPT_G
     WP_REST --> CPT_H
+    WP_REST --> CPT_E
     
     SB_H -->|Transient API (5分間キャッシュ)| WP_DB
     SB_G -->|Transient API (5分間キャッシュ)| WP_DB
     
-    WP_DB --> UI_H
-    WP_DB --> UI_T
+    WP_DB --> VAL
+    VAL -->|is_dev_mode() == true| DEV
+    VAL -->|is_dev_mode() == false| PROD
+    
+    DEV --> UI_H
+    DEV --> UI_T
+    DEV --> UI_E
+    PROD --> UI_H
+    PROD --> UI_T
+    PROD --> UI_E
 ```
 
 ---
@@ -95,6 +111,21 @@ Supabase側の `heroes` テーブルをマスタデータとし、WordPressの�
 | `is_active` | `post_status` (publish) | Boolean | 有効状態フラグ |
 | `created_at` | `post_date` | Timestamp | レーダーによる発見・登録日時 |
 | - | `expiration_date`<br>`_wos_expiration_date` | Date | 有効期限（未明示の場合は発見から30日後に自動設定） |
+
+### 3.3 イベントデータ (Events)
+ゲーム内イベントの詳細スケジュールや参加条件を管理するため、専用のカスタム投稿タイプ `wos_event` を設計しています。
+
+| フィールド名 (WP Meta/Taxonomy) | データ型 | 説明・仕様 |
+| :--- | :--- | :--- |
+| `ID` (Post ID) | Int | 識別子 |
+| `post_title` | String | イベント名称 |
+| `post_content` | String | イベントの詳細な攻略情報・ガイド |
+| `event_type` (Taxonomy) | Term | イベントの種類・カテゴリ（階層型タクソノミー） |
+| `_event_start_date` (Meta) | Date | イベント開始日 (`YYYY-MM-DD` 形式) |
+| `_event_duration` (Meta) | String | イベント開催期間（例: `3 Days`） |
+| `_server_age_requirement` (Meta) | Int | 参加に必要なサーバーの最小稼働日数 |
+| `_event_currency_name` (Meta) | String | イベント固有の報酬・交換用通貨名（例: `寒玉コイン`） |
+| `_event_shop_closing_date` (Meta) | Date | イベントショップ・交換所の最終閉鎖日 (`YYYY-MM-DD` 形式) |
 
 ---
 
@@ -131,6 +162,16 @@ Supabase側の `heroes` テーブルをマスタデータとし、WordPressの�
 - **構成技術**: `inc/shortcode-tier-list.php`
 - **利用インターフェース**: ショートコード `[wos_tier_list gen="x"]`
 - **レンダリング仕様**: 指定世代（省略時は全データ）の英雄を抽出し、メタデータ `overall_tier` の階層ごとにセクション分割して表示。兵種アイコンや多言語対応ラベルを自動付与したレスポンシブなカードレイアウトを生成。
+
+### 5.3 Vite Asset Loaderによるビルド統合
+- **クラス定義**: `inc/class-vite-asset-loader.php`
+- **統合目的**: 最新のモジュール型JavaScriptやTailwind CSSのリアルタイムコンパイル結果をWordPressのテーマ機構へシームレスに統合します。
+- **動作モード自動判定 (`is_dev_mode`)**:
+  - `VITE_DEV_MODE` 定数が定義されている場合、または現在の環境タイプ (`wp_get_environment_type()`) が `local` / `development` に設定されているかを判別。
+  - さらにローカル環境においては、Viteのデフォルト開発ポート **5173** へソケット通信を試行し、サーバーが実際に稼働している場合のみ開発モードを有効化する堅牢なフォールバック判定を実装しています。
+- **エンキュー制御**:
+  - **開発モード時**: Viteの開発サーバー (`http://localhost:5173`) から `@vite/client` を読み込み、`type="module"` 属性を付与してスクリプトをロードすることで、完全なHot Module Replacement (HMR) を実現します。
+  - **本番モード時**: ビルド時に生成される `.vite/manifest.json` をパースし、キャッシュバスター用のハッシュが付与された実ファイル (`/dist/assets/...`) を自動ロードするとともに、依存するCSSファイル群も正しく関連付けて展開します。
 
 ---
 
