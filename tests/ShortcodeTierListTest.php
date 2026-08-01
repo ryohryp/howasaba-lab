@@ -63,7 +63,7 @@ namespace Tests {
                 \wos_tier_list_get_generation(
                     array(
                         'generation' => '0',
-                        'gen'        => '-2',
+                        'gen'        => '',
                     )
                 )
             );
